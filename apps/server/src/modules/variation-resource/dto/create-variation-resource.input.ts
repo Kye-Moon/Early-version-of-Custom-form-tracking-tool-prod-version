@@ -3,6 +3,9 @@ import {VariationResourceType} from "../entities/variation-resource.entity";
 
 @InputType()
 export class CreateVariationResourceInput {
+    @Field(() => String, {nullable: true})
+    id?: string;
+
     @Field(() => String)
     jobRecordId: string;
 

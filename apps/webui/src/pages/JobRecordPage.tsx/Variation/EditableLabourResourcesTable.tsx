@@ -28,6 +28,7 @@ const columns = [
         cell: EditableTableCell,
         meta: {
             type: "text",
+			className: 'w-28'
         },
     }),
     columnHelper.accessor("rate", {
@@ -35,18 +36,23 @@ const columns = [
         cell: EditableTableCell,
         meta: {
             type: "dollars",
-        },
+			className: 'w-28'
+		},
     }),
     columnHelper.accessor("numPeople", {
         header: "# People",
         cell: EditableTableCell,
         meta: {
             type: "text",
-        },
+			className: 'w-28'
+		},
     }),
     columnHelper.display({
         id: "edit",
         cell: EditCell,
+		meta: {
+			className: 'w-6'
+		}
     }),
 ];
 
@@ -60,7 +66,7 @@ export default function EditableLabourResourcesTable() {
     useEffect(() => {
         setData(() => labourResources ? [...labourResources] : []);
         setOriginalData(() => labourResources ? [...labourResources] : []);
-    }, [labourResources]);
+    }, []);
 
 
     return (

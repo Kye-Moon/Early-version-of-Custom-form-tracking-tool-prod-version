@@ -50,7 +50,7 @@ export default function EditableMaterialsResourcesTable() {
 	useEffect(() => {
 		setData(() => materialResources ? [...materialResources] : []);
 		setOriginalData(() => materialResources ? [...materialResources] : []);
-	}, [materialResources]);
+	}, []);
 
 
 	return (

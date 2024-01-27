@@ -387,6 +387,7 @@ input CreateVariationInitialDataInput {
 }
 
 input CreateVariationResourceInput {
+  id: String
   jobRecordId: String!
   type: String!
   description: String
@@ -399,6 +400,7 @@ input CreateVariationResourceInput {
 }
 
 input UpdateVariationResourceInput {
+  id: String!
   jobRecordId: String
   type: String
   description: String
@@ -408,7 +410,6 @@ input UpdateVariationResourceInput {
   hours: String
   rate: String
   numPeople: String
-  id: String!
 }
 
 input CreateCrewLogInput {

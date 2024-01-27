@@ -9,6 +9,8 @@ import {MyDocument} from "@/Assets/pdfTemplate";
 import useVariationResources from "@/Hooks/useVariationResources";
 import {graphql, VariationQuery} from "gql-types";
 import {Button} from "@/Primitives/Button/Button";
+import {EditableTableV2} from "@/Components/EditableTableV2/EditableTableV2";
+import React from "react";
 
 
 interface VariationJobRecordViewProps {
@@ -43,7 +45,8 @@ export default function VariationJobRecordView({jobRecord}: VariationJobRecordVi
 
     return (
         <div>
-            <div className={' pb-4'}>
+			{/*<EditableTableV2/>*/}
+			<div className={' pb-4'}>
                 <h3 className={'text-xl font-semibold'}>Initial Recorded Data</h3>
                 <ViewInitialData variation={jobRecord}/>
             </div>

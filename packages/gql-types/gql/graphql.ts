@@ -101,6 +101,7 @@ export type CreateVariationInitialDataInput = {
 export type CreateVariationResourceInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   hours?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
   jobRecordId: Scalars['String']['input'];
   numPeople?: InputMaybe<Scalars['String']['input']>;
   quantity?: InputMaybe<Scalars['String']['input']>;

@@ -42,7 +42,7 @@ export default function EditableMiscResourcesTable() {
 	useEffect(() => {
 		setData(() => otherResources ? [...otherResources] : []);
 		setOriginalData(() => otherResources ? [...otherResources] : []);
-	}, [otherResources]);
+	}, []);
 
 
 	return (

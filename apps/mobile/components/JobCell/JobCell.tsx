@@ -8,7 +8,7 @@ import {
     Text,
     View,
     VStack,
-    BadgeText, Pressable
+    BadgeText, Pressable, Button, ButtonIcon
 } from "@gluestack-ui/themed";
 import {graphql} from "gql-types";
 import {useSuspenseQuery} from "@apollo/client";
@@ -102,9 +102,10 @@ export default function JobCell({jobId}: { jobId: string }) {
                                 >
                                     <HStack style={styles.row}>
                                         <Text size="md">{attachment.name}</Text>
-                                        <Pressable onPress={() => Linking.openURL(attachment.url)}>
-                                            <EyeIcon size={24}/>
-                                        </Pressable>
+                                        <Button onPress={() => Linking.openURL(attachment.url)} variant={'outline'}
+                                                size={'xs'}>
+                                            <ButtonIcon as={EyeIcon} size={'lg'}/>
+                                        </Button>
                                     </HStack>
                                     <Divider my={'$2'}/>
                                 </Box>

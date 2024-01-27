@@ -87,7 +87,7 @@ export const MyDocument = ({
 									<Text
 										style={[styles.innerCell, {width: "20%"}]}>{item?.hours}</Text>
 									<Text
-										style={[styles.innerCell, {width: "20%"}]}>{`$${item?.rate}`}</Text>
+										style={[styles.innerCell, {width: "20%"}]}>{`$${item?.rate ?? "-"}`}</Text>
 									<Text
 										style={[styles.rightCell, {width: "20%"}]}>{item?.numPeople}</Text>
 								</View>

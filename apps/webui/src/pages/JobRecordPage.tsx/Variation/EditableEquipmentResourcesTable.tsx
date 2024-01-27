@@ -51,7 +51,7 @@ export default function EditableEquipmentResourcesTable() {
     useEffect(() => {
         setData(() => equipmentResources ? [...equipmentResources] : []);
         setOriginalData(() => equipmentResources ? [...equipmentResources] : []);
-    }, [equipmentResources]);
+    }, []);
     return (
         <EditableTable
             columns={columns}

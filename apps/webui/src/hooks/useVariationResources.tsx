@@ -79,7 +79,7 @@ export default function useVariationResources({variationId}: VariationResourceHo
 		refetchQueries: ['VariationResources','ResourceSummary'],
     })
 
-    const addResource = async (resource: Omit<CreateVariationResourceInput, 'variationId'>) => {
+    const addResource = async (resource: Omit<CreateVariationResourceInput, 'jobRecordId'>) => {
         await create({variables: {input: {...resource, jobRecordId: variationId}}})
     }
 
