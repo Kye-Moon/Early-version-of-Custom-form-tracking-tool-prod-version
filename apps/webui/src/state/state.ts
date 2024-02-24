@@ -8,6 +8,19 @@ export interface UserInfo {
 	role: string;
 	orgId: string;
 }
+
+const localStorageEffect = (key: string) => ({setSelf, onSet}: { setSelf: any, onSet: any }) => {
+	const savedValue = localStorage.getItem(key)
+	if (savedValue != null) {
+		setSelf(JSON.parse(savedValue));
+	}
+
+	onSet((newValue: any, _: any, isReset: any) => {
+		isReset
+			? localStorage.removeItem(key)
+			: localStorage.setItem(key, JSON.stringify(newValue));
+	});
+};
 export const userState = selector({
 	key: 'userState',
 	get: ({get}): UserInfo | null => {
@@ -29,3 +42,12 @@ export const tokenState = atom({
 		});
 	}]
 })
+
+export const userInitialisedState = atom({
+	key: 'userInitialisedState',
+	default: false,
+	effects: [localStorageEffect('userInitialisedState')]
+})
+
+
+

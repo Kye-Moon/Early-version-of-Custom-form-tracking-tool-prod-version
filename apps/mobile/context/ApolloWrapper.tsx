@@ -1,18 +1,20 @@
 import {ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache} from "@apollo/client";
-import React from "react";
-import {useRecoilStateLoadable, useRecoilValueLoadable} from "recoil";
-import {accessTokenState, apiUrlState} from "../state/atoms";
+import React, {useMemo} from "react";
+import {useRecoilValueLoadable} from "recoil";
+import {apiUrlState} from "../state/atoms";
 import {onError} from "@apollo/client/link/error";
+import {useAuth} from "@clerk/clerk-expo";
+import {setContext} from "@apollo/client/link/context";
 
 export function ApolloWrapper({children}: React.PropsWithChildren) {
-    const [authToken, setAuthToken] = useRecoilStateLoadable(accessTokenState)
+    const {getToken, signOut} = useAuth();
     const apiUrl = useRecoilValueLoadable(apiUrlState)
 
     const errorLink = onError(({graphQLErrors, networkError}) => {
         if (graphQLErrors)
             graphQLErrors.forEach(({message}) => {
                 if (message === "Unauthorized") {
-                    setAuthToken("")
+                    signOut()
                 }
             })
         if (networkError) console.log(`[Network error]: ${networkError.message}`);
@@ -20,16 +22,27 @@ export function ApolloWrapper({children}: React.PropsWithChildren) {
 
     const httpLink = new HttpLink({
         uri: apiUrl.getValue() ? `${apiUrl.getValue()}` : "",
-        headers: {
-            authorization: authToken.getValue() ? `Bearer ${authToken.getValue()}` : "",
-        },
         credentials: "include",
     })
 
-    const client = new ApolloClient({
-        link: from([errorLink, httpLink]),
-        cache: new InMemoryCache(),
-    });
+    const client = useMemo(() => {
+        const authMiddleware = setContext(async (operation, {headers}) => {
+            const token = await getToken()
+            return {
+                headers: {
+                    ...headers,
+                    "Access-Control-Allow-Origin": "*",
+                    authorization: `Bearer ${token}`,
+                },
+            }
+        })
+
+        return new ApolloClient({
+            link: from([authMiddleware, errorLink, httpLink]),
+            cache: new InMemoryCache(),
+        })
+    }, [getToken])
+
 
     return <ApolloProvider client={client}>{children}</ApolloProvider>
 }

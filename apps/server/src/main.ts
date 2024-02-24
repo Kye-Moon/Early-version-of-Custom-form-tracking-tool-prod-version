@@ -1,8 +1,14 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module';
-import { Logger } from 'nestjs-pino';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+import {NestFactory} from '@nestjs/core';
+import {AppModule} from './app/app.module';
+import {Logger} from 'nestjs-pino';
+import {LooseAuthProp,} from '@clerk/clerk-sdk-node'; // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cookieParser = require('cookie-parser');
+
+declare global {
+  namespace Express {
+    interface Request extends LooseAuthProp {}
+  }
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +23,7 @@ async function bootstrap() {
 
   // Add cookie parser
   app.use(cookieParser());
+
 
   await app.listen(4000);
 }

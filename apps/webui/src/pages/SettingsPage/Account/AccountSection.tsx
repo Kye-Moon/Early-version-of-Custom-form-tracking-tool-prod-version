@@ -1,7 +1,7 @@
 import PersonalInformationForm from "@/Pages/SettingsPage/Account/PersonalInformationForm";
 import {graphql} from "gql-types";
 import {useMutation, useSuspenseQuery} from "@apollo/client";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import PersonalInformationView from "@/Pages/SettingsPage/Account/PersonalInformationView";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -21,7 +21,6 @@ const query = graphql(`
 			name
 			email
 			phone
-			role
 			organisation {
 				id
 				name

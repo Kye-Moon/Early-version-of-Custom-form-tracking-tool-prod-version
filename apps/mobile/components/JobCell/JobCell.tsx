@@ -8,7 +8,8 @@ import {
     Text,
     View,
     VStack,
-    BadgeText, Pressable, Button, ButtonIcon
+    BadgeText,
+    Button, ButtonIcon
 } from "@gluestack-ui/themed";
 import {graphql} from "gql-types";
 import {useSuspenseQuery} from "@apollo/client";
@@ -17,9 +18,8 @@ import ScreenSection from "../ScreenSection";
 import ScreenContentSection from "../ScreenContentSection";
 import LabelAndValue from "../LabelAndValue";
 import {enumToSentenceCase, truncate} from "../../lib/utils";
-import dayjs from "dayjs";
 import {EyeIcon} from "lucide-react-native";
-
+import {isValid, parseISO} from "date-fns";
 
 const query = graphql(`
     query JobCell($jobId: String!) {
@@ -43,6 +43,7 @@ const query = graphql(`
         }
     }
 `);
+
 export default function JobCell({jobId}: { jobId: string }) {
     const {data} = useSuspenseQuery(query, {variables: {jobId: jobId}})
     return (
@@ -56,7 +57,8 @@ export default function JobCell({jobId}: { jobId: string }) {
                         </View>
                         <View style={styles.container}>
                             <LabelAndValue label={'Customer'} value={data.job.customerName}/>
-                            <LabelAndValue label={'Due Date'} value={dayjs(data.job?.dueDate).format('DD/MM/YYYY')}/>
+                            <LabelAndValue label={'Due Date'}
+                                           value={isValid(data.job.dueDate) ? parseISO(data.job.dueDate).toDateString() : '-'}/>
                         </View>
                         <View style={styles.container}>
                             <LabelAndValue label={'Description'} value={data.job?.description}/>

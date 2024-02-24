@@ -2,6 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {CreateOrganisationInput} from './dto/create-organisation.input';
 import {UpdateOrganisationInput} from './dto/update-organisation.input';
 import {OrganisationRepository} from "./organisation.repository";
+import clerkClient from '@clerk/clerk-sdk-node'
 
 @Injectable()
 export class OrganisationService {
@@ -11,11 +12,24 @@ export class OrganisationService {
     ) {
     }
 
+    async findOrCreateByAuthId(authId: string) {
+        const org = await this.organisationRepository.findByAuthId(authId);
+        if (org) {
+            return org;
+        } else {
+            const authOrg = await clerkClient.organizations.getOrganization({organizationId: authId})
+            return await this.create({
+                name: authOrg.name,
+                authId: authId
+            });
+        }
+    }
+
     create(createOrganisationInput: CreateOrganisationInput) {
         return this.organisationRepository.create(createOrganisationInput);
     }
 
-    findAll() {
+    findAllByUserId() {
         return `This action returns all organisation`;
     }
 

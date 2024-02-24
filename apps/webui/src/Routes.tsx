@@ -1,24 +1,21 @@
 import {Outlet, RootRoute, Route, Router, useRouter} from "@tanstack/react-router";
 import AppLayout from "./pages/layout";
-import React, {useEffect} from "react";
+import React from "react";
 
 import "./styles/global.css";
 import {DashboardPage} from "@/Pages/DashboardPage/DashboardPage";
-import Signup from "@/Pages/SignUpPage/SignUpPage";
 import JobsPage from "@/Pages/JobsPage/JobsPage";
 import {Toaster} from "react-hot-toast";
 import JobPage from "@/Pages/JobPage/JobPage";
 import JobRecordsPage from "@/Pages/JobRecordsPage/JobRecordsPage";
 import EditJobPage from "@/Pages/EditJobPage/EditJobPage";
-import CrewPage from "@/Pages/CrewPage/CrewPage";
+import OrganisationUsersPage from "@/Pages/CrewPage/OrganisationUsersPage";
 import JobRecordPage from "@/Pages/JobRecordPage.tsx/JobRecordPage";
 import ScrollToTop from "./ScrollToTop";
 import Login from "@/Pages/LoginPage/LoginPage";
-import {userState} from "@/State/state";
 import AdminPage from "@/Pages/AdminPage/AdminPage";
-import {useRecoilValue} from "recoil";
-import PasswordResetPage from "@/Pages/PasswordResetPage/PasswordResetPage";
 import SettingsPage from "@/Pages/SettingsPage/SettingsPage";
+import {useAuth} from "@clerk/clerk-react";
 
 const rootRoute = new RootRoute({
 	component: () => (
@@ -30,30 +27,20 @@ const rootRoute = new RootRoute({
 	),
 });
 
-async function Index() {
+function Index() {
 	const router = useRouter();
-	const userInfo = useRecoilValue(userState);
-	if (userInfo) {
-		await router.navigate({to: "/dashboard"});
+	const {isSignedIn, isLoaded} = useAuth();
+	if (!isSignedIn && isLoaded) {
+		router.navigate({to: "/login"});
 	} else {
-		await router.navigate({to: "/login"});
+		router.navigate({to: "/dashboard"});
 	}
-	return null;
+	return <div>Redirecting...</div>;
 }
 
 function UnAuthenticatedIndex() {
-	const router = useRouter();
-	const userInfo = useRecoilValue(userState);
 
-	useEffect(() => {
-		async function checkUser() {
-			if (userInfo) {
-				await router.navigate({to: "/dashboard"});
-			}
-		}
 
-		checkUser();
-	}, [userInfo]);
 	return (
 		<>
 			<Toaster/>
@@ -75,24 +62,12 @@ const indexRoute = new Route({
 	component: Index,
 });
 
-
-const signupRoute = new Route({
-	getParentRoute: () => unAuthenticatedLayoutRoute,
-	path: "/signup",
-	component: Signup,
-});
-
 const loginRoute = new Route({
 	getParentRoute: () => unAuthenticatedLayoutRoute,
 	path: "/login",
 	component: Login,
 });
 
-const passwordResetRoute = new Route({
-	getParentRoute: () => unAuthenticatedLayoutRoute,
-	path: "/reset-password",
-	component: PasswordResetPage,
-});
 
 const layoutRoute = new Route({
 	getParentRoute: () => rootRoute,
@@ -149,8 +124,8 @@ const editVariationRoute = new Route({
 
 const crewRoute = new Route({
 	getParentRoute: () => layoutRoute,
-	path: "/crew",
-	component: CrewPage,
+	path: "/organisation-users",
+	component: OrganisationUsersPage,
 });
 
 const adminRoute = new Route({
@@ -168,9 +143,7 @@ export const settingsRoute = new Route({
 const routeTree = rootRoute.addChildren([
 	indexRoute,
 	unAuthenticatedLayoutRoute.addChildren([
-		signupRoute,
 		loginRoute,
-		passwordResetRoute,
 	]),
 	layoutRoute.addChildren([
 		dashboardRoute,

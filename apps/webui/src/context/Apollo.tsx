@@ -1,39 +1,49 @@
 import {ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache} from "@apollo/client";
-import React from "react";
-import {useRecoilState} from "recoil";
-import {tokenState} from "@/State/state";
+import React, {useMemo} from "react";
 import {onError} from "@apollo/client/link/error";
+import {useAuth} from "@clerk/clerk-react";
+import {setContext} from "@apollo/client/link/context";
 
 
 export default function ApolloWrapper({children}: { children: React.ReactNode }) {
-    const [token, setToken] = useRecoilState(tokenState)
-    const errorLink = onError(({graphQLErrors, networkError}) => {
-        if (graphQLErrors)
-            graphQLErrors.forEach(({message}) => {
-                if (message === "Unauthorized") {
-                    setToken("")
-                }
-            })
-        if (networkError) console.log(`[Network error]: ${networkError}`);
-    });
+	const {getToken, signOut} = useAuth()
 
-    const httpLink = new HttpLink({
-        uri: `${import.meta.env.VITE_SERVER_URL}/graphql`,
-        headers: {
-            authorization: token ? `Bearer ${token}` : "",
-            "Access-Control-Allow-Origin": "*",
-        },
-        credentials: "include",
-    })
+	const errorLink = onError(({graphQLErrors, networkError}) => {
+		if (graphQLErrors)
+			graphQLErrors.forEach(({message}) => {
+				if (message === "Unauthorized") {
+					signOut()
+				}
+			})
+		if (networkError) console.log(`[Network error]: ${networkError}`);
+	});
 
-    const client = new ApolloClient({
-        link: from([errorLink, httpLink]),
-        cache: new InMemoryCache(),
-    });
+	const httpLink = new HttpLink({
+		uri: `${import.meta.env.VITE_SERVER_URL}/graphql`,
+		credentials: "include",
+	})
 
-    return (
-        <ApolloProvider client={client}>
-            {children}
-        </ApolloProvider>
-    )
+	const client = useMemo(() => {
+		const authMiddleware = setContext(async (operation, {headers}) => {
+			const token = await getToken()
+			return {
+				headers: {
+					...headers,
+					"Access-Control-Allow-Origin": "*",
+					authorization: `Bearer ${token}`,
+				},
+			}
+		})
+
+		return new ApolloClient({
+			link: from([authMiddleware, httpLink, errorLink]),
+			cache: new InMemoryCache(),
+		})
+	}, [getToken])
+
+	return (
+		<ApolloProvider client={client}>
+			{children}
+		</ApolloProvider>
+	)
 }

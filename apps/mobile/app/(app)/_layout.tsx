@@ -1,11 +1,10 @@
 import {Redirect, Stack} from 'expo-router';
-import {useRecoilValueLoadable} from "recoil";
-import {accessTokenState} from "../../state/atoms";
 import React from 'react';
+import {useAuth} from "@clerk/clerk-expo";
 
 export default function RootLayout() {
-    const auth = useRecoilValueLoadable(accessTokenState); // TODO: This is just crude auth, we need to check if the token is valid
-    if (!auth.getValue()) {
+    const { isLoaded, userId, sessionId, getToken } = useAuth();
+    if (isLoaded && !userId && !sessionId) {
         return <Redirect href={'/sign-in'}/>
     }
     return <RootLayoutNav/>;

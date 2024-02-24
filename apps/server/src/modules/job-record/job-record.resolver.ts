@@ -4,7 +4,7 @@ import {JobRecord} from './entities/job-record.entity';
 import {CreateJobRecordInput} from './dto/create-job-record.input';
 import {UpdateJobRecordInput} from './dto/update-job-record.input';
 import {UseGuards} from "@nestjs/common";
-import {JwtAuthGuard} from "../auth/jwt-auth.guards";
+import {AuthGuard} from "../../guards/auth.guard";
 import {Job} from "../job/entities/job.entity";
 import {User} from "../user/entities/user.entity";
 import {JobRecordSearchInput} from "./dto/search-job-record";
@@ -22,25 +22,27 @@ export class JobRecordResolver {
     ) {
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Mutation(() => JobRecord)
-    createJobRecord(@Args('createJobRecordInput') createJobRecordInput: CreateJobRecordInput) {
-        return this.jobRecordService.create(createJobRecordInput);
+    async createJobRecord(@Args('createJobRecordInput') createJobRecordInput: CreateJobRecordInput) {
+        const result =  await this.jobRecordService.create(createJobRecordInput);
+        console.log('result', result)
+        return result;
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Query(() => [JobRecord], {name: 'searchJobRecords'})
     async searchJobRecords(@Args('jobRecordSearchInput') jobRecordSearchInput: JobRecordSearchInput) {
         return await this.jobRecordService.search(jobRecordSearchInput);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Query(() => JobRecord, {name: 'jobRecord'})
     findOne(@Args('id', {type: () => String}) id: string) {
         return this.jobRecordService.findOne(id);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Mutation(() => JobRecord)
     async updateJobRecord(@Args('updateJobRecordInput') updateJobRecordInput: UpdateJobRecordInput) {
         return await this.jobRecordService.update(updateJobRecordInput.id, updateJobRecordInput);

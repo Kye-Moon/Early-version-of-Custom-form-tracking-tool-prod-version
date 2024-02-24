@@ -8,8 +8,10 @@ import {
     organisation,
     user,
     User,
+    UserOrganisation,
+    userOrganisation
 } from '../../drizzle/schema';
-import {and, eq, inArray, or} from 'drizzle-orm';
+import {and, eq} from 'drizzle-orm';
 import {SearchUserInput} from "./dto/search-user.input";
 
 @Injectable()
@@ -26,11 +28,11 @@ export class UserRepository {
         return _user[0];
     }
 
-    async findOneByEmail(email: string): Promise<User> {
+    async findOneByAuthId(authId: string): Promise<User> {
         const _user = await this.db
             .select()
             .from(user)
-            .where(eq(user.email, email));
+            .where(eq(user.authId, authId));
         return _user[0];
     }
 
@@ -42,38 +44,26 @@ export class UserRepository {
         return _user[0];
     }
 
-    async findOneByIdWithOrganisation(id: string) {
-        const _user = await this.db.query.user.findFirst({
-            where: eq(user.id, id),
-            with: {
-                organisation: true
-            }
-        })
-        return _user;
-    }
-
-    async findOneByEmailWithOrganisation(email: string): Promise<{ user: User, organisation: Organisation }> {
-        const _user = await this.db
-            .select()
-            .from(user)
-            .leftJoin(organisation, eq(user.organisationId, organisation.id))
-            .where(eq(user.email, email));
-        return _user[0];
-    }
 
     /**
      * Find all users that belong to an organisation based on search criteria
      * @param searchInput
      */
-    async search(searchInput: SearchUserInput): Promise<User[]> {
-        return await this.db.query.user.findMany({
-            where: and(
-                eq(user.organisationId, searchInput.organisationId),
-                or(
-                    inArray(user.role, searchInput.role),
+    async search(searchInput: SearchUserInput): Promise<{
+        user: User,
+        organisation: Organisation
+        user_organisation: UserOrganisation,
+    }[]> {
+        return await this.db
+            .select()
+            .from(user)
+            .innerJoin(userOrganisation, eq(user.id, userOrganisation.userId))
+            .innerJoin(organisation, eq(userOrganisation.organisationId, organisation.id))
+            .where(
+                and(
+                    ...(searchInput.organisationId ? [eq(organisation.id, searchInput.organisationId)] : []),
                 )
-            )
-        });
+            );
     }
 
     async updateUser(id: string, updateUserInput: Partial<NewUser>): Promise<User> {

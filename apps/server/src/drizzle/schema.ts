@@ -8,13 +8,11 @@ export const user = pgTable('user', {
         .default(sql`gen_random_uuid
         ()`)
         .primaryKey(),
-    name: text('full_name').notNull(),
+    authId: text('auth_id').notNull(),
+    name: text('full_name'),
     phone: varchar('phone', {length: 20}),
-    password: varchar('password', {length: 100}),
     email: varchar('email', {length: 100}).unique(),
-    organisationId: uuid('organisation_id').notNull(),
-    role: varchar('role', {enum: ['OWNER', 'ADMIN', 'SUPERVISOR', 'CREW_MEMBER']}),
-    status: varchar('status', {enum: ['ACTIVE', 'INVITED', "DEACTIVATED"]}).notNull(),
+    status: varchar('status', {enum: ['ACTIVE', 'INACTIVE']}).notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
@@ -23,10 +21,7 @@ export type User = InferSelectModel<typeof user>;
 export type NewUser = InferInsertModel<typeof user>;
 
 export const userRelations = relations(user, ({one, many}) => ({
-    organisation: one(organisation, {
-        fields: [user.organisationId],
-        references: [organisation.id],
-    }),
+    organisations: many(organisation),
 }));
 
 // ###################### ORGANISATION TABLE ######################
@@ -36,6 +31,7 @@ export const organisation = pgTable('organisation', {
         ()`)
         .primaryKey(),
     name: text('name').notNull(),
+    authId: text('auth_id').notNull(),
     logoUrl: text('logo_url'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -47,6 +43,23 @@ export type NewOrganisation = InferInsertModel<typeof organisation>;
 const organisationRelations = relations(organisation, ({one, many}) => ({
     users: many(user),
 }));
+
+export const userOrganisation = pgTable('user_organisation', {
+    id: uuid('id')
+        .default(sql`gen_random_uuid
+        ()`)
+        .primaryKey(),
+    userId: uuid('user_id')
+        .references(() => user.id, {onDelete: 'cascade'})
+        .notNull(),
+    organisationId: uuid('organisation_id')
+        .references(() => organisation.id, {onDelete: 'cascade'})
+        .notNull(),
+    role: varchar('role').notNull(),
+});
+
+export type UserOrganisation = InferSelectModel<typeof userOrganisation>;
+export type NewUserOrganisation = InferInsertModel<typeof userOrganisation>;
 
 
 // ###################### JOB TABLE ######################
@@ -64,6 +77,7 @@ export const job = pgTable('job', {
     ownerId: uuid('owner_id')
         .references(() => user.id)
         .notNull(),
+    organisationId: uuid('organisation_id').notNull().references(() => organisation.id),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at')
         .default(sql`CURRENT_TIMESTAMP`)

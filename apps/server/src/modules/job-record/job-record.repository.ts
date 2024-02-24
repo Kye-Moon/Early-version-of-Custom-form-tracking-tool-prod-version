@@ -7,10 +7,10 @@ import {
     jobCrew,
     jobRecord,
     jobRecordImage,
-    NewJobRecord,
+    NewJobRecord, organisation,
     UpdateJobRecord,
     user,
-    User,
+    User, userOrganisation,
     variationInitialData
 } from "../../drizzle/schema";
 import {and, desc, eq, inArray, or} from "drizzle-orm";
@@ -30,14 +30,16 @@ export class JobRecordRepository {
      * Find all variations that a user has access to
      * A user has access to a job-record if they are the owner of the job or a crew member on the job that the job-record belongs to
      * @param userId
+     * @param orgId
      * @param searchInput
      */
-    async search({userId, searchInput}: { userId: string, searchInput?: JobRecordSearchInput }) {
+    async search({userId, orgId, searchInput}: { userId: string, orgId: string, searchInput?: JobRecordSearchInput }) {
         return await this.db.select()
             .from(jobRecord)
             .leftJoin(job, (eq(jobRecord.jobId, job.id)))
             .leftJoin(jobCrew, (eq(job.id, jobCrew.jobId)))
             .where(and(
+                eq(job.organisationId, orgId),
                 or(
                     eq(job.ownerId, userId),
                     eq(jobCrew.crewMemberId, userId)
@@ -49,12 +51,9 @@ export class JobRecordRepository {
     async ownerSearch({orgId, jobId}: { orgId: string, jobId?: string }) {
         const sq = this.db.select({id: user.id})
             .from(user)
-            .where(
-                and(
-                    eq(user.organisationId, orgId),
-                    inArray(user.role, ['OWNER'])
-                )
-            )
+            .innerJoin(userOrganisation, (eq(user.id, userOrganisation.userId)))
+            .innerJoin(organisation, (eq(userOrganisation.organisationId, organisation.id)))
+            .where(eq(organisation.id, orgId))
             .as('sq')
 
         return this.db.select()

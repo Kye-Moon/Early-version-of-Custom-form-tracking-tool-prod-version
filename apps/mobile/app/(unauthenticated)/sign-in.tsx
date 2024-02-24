@@ -22,24 +22,15 @@ import {signInSchema} from "./signinSchema";
 import FormInputWrapper from "../../components/FormInputWrapper";
 import {accessTokenState, API_URLS, apiUrlState} from "../../state/atoms";
 import {useRecoilState, useSetRecoilState} from "recoil";
-
-export const loginMutationMobile = graphql(`
-    mutation LoginMutationMobile($input: LoginInput!) {
-        login(loginUserInput: $input) {
-            access_token
-            refresh_token
-            user {
-                id
-            }
-        }
-    }
-`);
+import {useSignIn} from "@clerk/clerk-expo";
 
 export default function SignIn() {
     const router = useRouter();
     const [logoPressCount, setLogoPressCount] = useState(0);
-    const  [apiUrl, setApi] = useRecoilState(apiUrlState);
+    const [apiUrl, setApi] = useRecoilState(apiUrlState);
     const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+
+    const {signIn, setActive, isLoaded} = useSignIn();
 
     useEffect(() => {
         if (accessToken) {
@@ -74,26 +65,24 @@ export default function SignIn() {
         }
     })
 
-    const [login,{loading}] = useMutation(loginMutationMobile, {
-        onError: (error) => {
-            console.log(error);
-            throw error;
-        },
-        onCompleted: async (data) => {
-            setAccessToken(data.login.access_token);
-        }
-    })
 
     const onSubmit = async (data: any) => {
-        await login({
-            variables: {
-                input: {
-                    email: data.email.toLowerCase(),
-                    password: data.password,
-                },
-            }
-        })
-        router.push('/(app)/(tabs)')
+        if (!isLoaded) {
+            return;
+        }
+
+        try {
+            const completeSignIn = await signIn.create({
+                identifier: data.email.toLowerCase(),
+                password: data.password,
+            });
+            await setActive({session: completeSignIn.createdSessionId});
+            router.push('/(app)/(tabs)')
+        } catch (err: any) {
+            console.log(err);
+            Alert.alert('Error', err.message);
+        }
+
     }
 
     return (
@@ -141,7 +130,7 @@ export default function SignIn() {
                         )}
                     />
                     <Button w={'100%'} mx={'$8'} onPress={form.handleSubmit(onSubmit)}>
-                        {loading ? <ButtonSpinner/> : <ButtonText>Sign in</ButtonText>}
+                        {!isLoaded ? <ButtonSpinner/> : <ButtonText>Sign in</ButtonText>}
                     </Button>
                     <Pressable onPress={() => router.push('/reset-password')}>
                         <Text size={'sm'}>Forgot password?</Text>

@@ -7,11 +7,12 @@ import {config} from "../config/gluestack-ui.config";
 import {loadDevMessages, loadErrorMessages} from "@apollo/client/dev";
 
 import {registerRootComponent} from "expo";
+import {ClerkProvider} from "@clerk/clerk-expo";
+import {tokenCache} from "../lib/tokenCache";
+import ErrorBoundary from 'react-native-error-boundary'
+import {GlobalFallback} from "../components/Error/GlobalErrorBoundary";
 
-export {
-    // Catch any errors thrown by the Layout component.
-    ErrorBoundary,
-} from 'expo-router';
+
 export const unstable_settings = {
     // Ensure that reloading on `/modal` keeps a back button present.
     initialRouteName: '(tabs)',
@@ -30,7 +31,6 @@ if (__DEV__) {  // Adds messages only in a dev environment
 SplashScreen.preventAutoHideAsync();
 export default function Root() {
 
-
     useEffect(() => {
         SplashScreen.hideAsync();
     }, []);
@@ -38,13 +38,18 @@ export default function Root() {
 
     return (
         <GluestackUIProvider config={config}>
-            <RecoilRoot>
-                <Suspense fallback={<Text>Loading...</Text>}>
-                    <ApolloWrapper>
-                            <Slot/>
-                    </ApolloWrapper>
-                </Suspense>
-            </RecoilRoot>
+            {/*@ts-ignore*/}
+            <ClerkProvider tokenCache={tokenCache} publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+                <RecoilRoot>
+                    <Suspense fallback={<Text>Loading...</Text>}>
+                        <ErrorBoundary FallbackComponent={GlobalFallback}>
+                            <ApolloWrapper>
+                                <Slot/>
+                            </ApolloWrapper>
+                        </ErrorBoundary>
+                    </Suspense>
+                </RecoilRoot>
+            </ClerkProvider>
         </GluestackUIProvider>
     )
 }

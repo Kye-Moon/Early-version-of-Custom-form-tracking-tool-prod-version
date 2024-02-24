@@ -43,7 +43,6 @@ const query = graphql(`
 
 export default function JobRecordCell({variationId}: { variationId: string }) {
     const {data} = useSuspenseQuery(query, {variables: {variationId: variationId}})
-    console.log(data)
     return (
         <ScreenSection>
             <ScrollView>
@@ -51,7 +50,7 @@ export default function JobRecordCell({variationId}: { variationId: string }) {
                     <View style={styles.details}>
                         <LabelAndValue label={'Job'} value={data.jobRecord.title}/>
                         <LabelAndValue label={'Scope Reference'}
-                                       value={`[${data.jobRecord.scopeItem?.reference}] - ${data.jobRecord.scopeItem?.title}`}/>
+                                       value={data.jobRecord.scopeItem ? `[${data.jobRecord.scopeItem?.reference}] - ${data.jobRecord.scopeItem?.title}` : '-'}/>
                         <LabelAndValue label={'Customer'} value={data.jobRecord.job.customerName}/>
                         <LabelAndValue label={'Submitted by'} value={data.jobRecord.submittedBy.name}/>
                         <LabelAndValue label={'Description'} value={data.jobRecord.description}/>

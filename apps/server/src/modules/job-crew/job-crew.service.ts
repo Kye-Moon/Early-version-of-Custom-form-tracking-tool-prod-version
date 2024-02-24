@@ -2,6 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {JobCrewMember} from "./entities/job-crew.entity";
 import {JobCrewRepository} from "./job-crew.repository";
 import {NewJobCrew} from "../../drizzle/schema";
+import {UserRepository} from "../user/user.repository";
 
 @Injectable()
 export class JobCrewService {
@@ -22,7 +23,6 @@ export class JobCrewService {
 
     /**
      * Find all crew members for a job
-     *
      * @param id
      */
     async findAll(id: string): Promise<JobCrewMember[]> {
@@ -32,19 +32,15 @@ export class JobCrewService {
                 id: jobCrew.crewMember.id,
                 name: jobCrew.crewMember.name,
                 phone: jobCrew.crewMember.phone,
-                role: jobCrew.crewMember.role,
             }
         });
     }
 
     async update(jobId: string, crewIds: string[]) {
-        console.log('update job crew', jobId, crewIds);
         const existingCrew = await this.jobCrewRepository.findJobCrewByJobId(jobId);
         const existingCrewMemberIds = existingCrew.map((jobCrew) => jobCrew.crewMemberId);
-
         const removeCrewIds = existingCrewMemberIds.filter((id) => !crewIds.includes(id));
         const addCrewIds = crewIds.filter((id) => !existingCrewMemberIds.includes(id));
-
         if (removeCrewIds.length > 0) {
             await this.deleteManyByJobIdAndCrewIds(jobId, removeCrewIds);
         }
@@ -56,9 +52,9 @@ export class JobCrewService {
     /**
      * Delete many crew members for a job
      * @param jobId - job id
-     * @param crewMemberIds - crew member ids
+     * @param crewIds - crew member ids
      */
-    async deleteManyByJobIdAndCrewIds(jobId: string, crewMemberIds: string[]) {
-        return this.jobCrewRepository.deleteManyByJobIdAndCrewIds(jobId, crewMemberIds);
+    async deleteManyByJobIdAndCrewIds(jobId: string, crewIds: string[]) {
+        return this.jobCrewRepository.deleteManyByJobIdAndCrewIds(jobId, crewIds);
     }
 }

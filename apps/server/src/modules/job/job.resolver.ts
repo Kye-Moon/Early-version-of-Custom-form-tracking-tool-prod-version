@@ -3,7 +3,6 @@ import {JobService} from './job.service';
 import {Job} from './entities/job.entity';
 import {CreateJobInput} from './dto/create-job.input';
 import {UpdateJobInput} from './dto/update-job.input';
-import {JwtAuthGuard} from '../auth/jwt-auth.guards';
 import {UseGuards} from '@nestjs/common';
 import {JobSearchInput} from './dto/search-job.input';
 import {JobRecord} from "../job-record/entities/job-record.entity";
@@ -12,6 +11,7 @@ import {JobScopeItem} from "../job-scope-item/entities/job-scope-item.entity";
 import {JobScopeItemService} from "../job-scope-item/job-scope-item.service";
 import {JobAttachment} from "../job-attachment/entities/job-attachment.entity";
 import {JobAttachmentService} from "../job-attachment/job-attachment.service";
+import {AuthGuard} from "../../guards/auth.guard";
 
 @Resolver(() => Job)
 export class JobResolver {
@@ -23,29 +23,31 @@ export class JobResolver {
     ) {
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Mutation(() => Job)
     createJob(@Args('createJobInput') createJobInput: CreateJobInput) {
         return this.jobService.create(createJobInput);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Query(() => [Job])
     searchJobs(@Args('jobSearchInput') searchInput: JobSearchInput) {
         return this.jobService.search(searchInput);
     }
 
+    @UseGuards(AuthGuard)
     @Query(() => Job, {name: 'job'})
     job(@Args('id', {type: () => String}) id: string) {
         return this.jobService.findOne(id);
     }
-    @UseGuards(JwtAuthGuard)
+
+    @UseGuards(AuthGuard)
     @Mutation(() => Job)
     updateJob(@Args('updateJobInput') updateJobInput: UpdateJobInput) {
         return this.jobService.update(updateJobInput.id, updateJobInput);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
     deleteJob(@Args('id', {type: () => String}) id: string) {
         return this.jobService.delete(id);

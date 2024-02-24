@@ -29,12 +29,12 @@ export const JobStatusSelectOptions: DropSelectOption[] = [
 
 export const roleSelectOptions: DropSelectOption[] = [
     {
-        label: "Supervisor",
-        value: "SUPERVISOR",
+        label: "Manager",
+        value: "org:manager",
     },
     {
-        label: "Crew member",
-        value: "CREW_MEMBER",
+        label: "Member",
+        value: "org:member",
     },
 ];
 
