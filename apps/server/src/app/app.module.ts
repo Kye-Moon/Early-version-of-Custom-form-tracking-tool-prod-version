@@ -2,7 +2,6 @@ import {Module} from '@nestjs/common';
 import {AppResolver} from './app.resolver';
 import {AppService} from './app.service';
 import {YogaDriver, YogaDriverConfig} from '@graphql-yoga/nestjs';
-import {AuthModule} from '../modules/auth/auth.module';
 import {LoggerModule} from 'nestjs-pino';
 import {GraphQLModule} from '@nestjs/graphql';
 import {UserModule} from '../modules/user/user.module';
@@ -11,7 +10,6 @@ import {JobModule} from '../modules/job/job.module';
 import {RequestModule} from '../modules/request/request.module';
 import {JobCrewModule} from "../modules/job-crew/job-crew.module";
 import {JobRecordModule} from "../modules/job-record/job-record.module";
-import {EmailModule} from "../modules/email/email.module";
 import {SmsModule} from "../modules/sms/sms.module";
 import {S3Module} from "../modules/s3/s3.module";
 import {ConfigModule} from "@nestjs/config";
@@ -28,6 +26,7 @@ import {CrewLogModule} from "../modules/crew-log/crew-log.module";
         LoggerModule.forRoot({
             pinoHttp: {
                 enabled: false,
+                level: 'info',
                 transport: {
                     target: 'pino-pretty',
                     options: {
@@ -40,7 +39,6 @@ import {CrewLogModule} from "../modules/crew-log/crew-log.module";
             driver: YogaDriver,
             autoSchemaFile: 'schema.graphql',
         }),
-        AuthModule,
         SmsModule,
         UserModule,
         JobModule,
@@ -51,7 +49,6 @@ import {CrewLogModule} from "../modules/crew-log/crew-log.module";
         VariationResourceModule,
         DrizzleModule,
         RequestModule,
-        EmailModule,
         S3Module,
         JobScopeItemModule,
         JobAttachmentModule,

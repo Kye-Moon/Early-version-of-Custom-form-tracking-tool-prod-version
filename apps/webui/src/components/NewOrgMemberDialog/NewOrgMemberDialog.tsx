@@ -33,7 +33,7 @@ export default function NewOrgMemberDialog({
                     <DialogTitle>{dialogTitle || "Add new member"}</DialogTitle>
                 </DialogHeader>
                 <p className={'text-sm text-primary/50'}>If they do not have an account, they will
-                    receive a text to create one</p>
+                    receive an email to create one</p>
                 <NewOrgMemberForm onFormSubmitComplete={onFormSubmitComplete} defaultRole={defaultRole}/>
             </DialogContent>
         </Dialog>

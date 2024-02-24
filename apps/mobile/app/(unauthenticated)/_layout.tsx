@@ -1,11 +1,12 @@
 import {Redirect, Stack} from 'expo-router';
-import {useRecoilValueLoadable} from "recoil";
-import {accessTokenState} from "../../state/atoms";
 import React from 'react';
+import {useAuth} from "@clerk/clerk-expo";
 
 export default function RootLayout() {
-    const auth = useRecoilValueLoadable(accessTokenState); // TODO: This is just crude auth, we need to check if the token is valid
-    if (auth.getValue()) {
+    const { isLoaded, userId, sessionId, getToken } = useAuth();
+    if (isLoaded && userId) {
+        console.log(isLoaded, userId, sessionId);
+        console.log('unAuthenticated to authenticated');
         return <Redirect href={'/(app)/(tabs)'}/>
     }
     return <RootLayoutNav/>;
@@ -17,9 +18,6 @@ function RootLayoutNav() {
         <Stack>
             <Stack.Screen name="sign-in" options={{headerShown: false}}/>
             <Stack.Screen name="reset-password" options={{headerShown: true, headerTitle: "Reset Password"}}/>
-            {/*<Stack.Screen name="new-job-record" options={{headerShown:false}}/>*/}
-            {/*<Stack.Screen name="job/[id]" options={{headerShown:false}}/>*/}
-            {/*<Stack.Screen name="job-record/[id]" options={{headerShown:false}}/>*/}
         </Stack>
     );
 }

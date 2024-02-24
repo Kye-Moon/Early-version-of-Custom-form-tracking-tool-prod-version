@@ -66,11 +66,6 @@ export default function NewJobForm({onFormSubmitComplete}: NewProjectFormProps) 
 		});
 	}
 
-	// helper function to set the value of a field in the form
-	const onValueChange = (fieldName: string, value: string | Date | undefined) => {
-		form.setValue(fieldName, value);
-	};
-
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 overflow-auto">
@@ -105,12 +100,12 @@ export default function NewJobForm({onFormSubmitComplete}: NewProjectFormProps) 
 									name="status"
 									render={({field}) => (
 										<FormInputWrapper label={"Status"}>
-												<DropSelect
-													options={JobStatusSelectOptions}
-													defaultValue={field.value}
-													onChange={field.onChange}
-													placeholder={"Status"}
-												/>
+											<DropSelect
+												options={JobStatusSelectOptions}
+												defaultValue={field.value}
+												onChange={field.onChange}
+												placeholder={"Status"}
+											/>
 										</FormInputWrapper>
 									)}
 								/>
@@ -136,8 +131,11 @@ export default function NewJobForm({onFormSubmitComplete}: NewProjectFormProps) 
 								render={({field}) => (
 									<FormInputWrapper label={"Select Crew"}>
 										<Suspense>
-											<CrewTableSection showSelect={true}
-															  tableCaption={"Available Crew"}/>
+											<CrewTableSection
+												showInvited={false}
+												showSelect={true}
+												tableCaption={"Available Crew"}
+											/>
 										</Suspense>
 									</FormInputWrapper>
 								)}

@@ -15,7 +15,7 @@ export class OrganisationResolver {
 
   @Query(() => [Organisation], { name: 'organisation' })
   findAll() {
-    return this.organisationService.findAll();
+    return this.organisationService.findAllByUserId();
   }
 
   @Query(() => Organisation, { name: 'organisation' })

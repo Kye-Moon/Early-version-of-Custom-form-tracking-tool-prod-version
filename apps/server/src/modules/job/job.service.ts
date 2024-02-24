@@ -6,6 +6,8 @@ import {RequestService} from '../request/request.service';
 import {Job} from '../../drizzle/schema';
 import {JobSearchInput} from './dto/search-job.input';
 import {JobCrewService} from "../job-crew/job-crew.service";
+import {UserRepository} from "../user/user.repository";
+import {OrganisationRepository} from "../organisation/organisation.repository";
 
 @Injectable()
 export class JobService {
@@ -13,16 +15,21 @@ export class JobService {
         private readonly jobRepository: JobRepository,
         private readonly request: RequestService,
         private readonly jobCrewService: JobCrewService,
+        private readonly userRepository: UserRepository,
+        private readonly organisationRepository: OrganisationRepository
     ) {
     }
 
     async create(createJobInput: CreateJobInput) {
+        const user = await this.userRepository.findOneByAuthId(this.request.userId);
+        const org = await this.organisationRepository.findByAuthId(this.request.organisationId);
         const job = await this.jobRepository.createJob({
             ...createJobInput,
-            ownerId: this.request.userId,
+            ownerId: user.id,
+            organisationId: org.id
         });
         if (createJobInput.crew.length > 0) {
-            await this.jobCrewService.update(job.id, createJobInput.crew);
+            await this.jobCrewService.createMany(job.id, createJobInput.crew);
         }
         return job;
     }
@@ -32,25 +39,19 @@ export class JobService {
      * Currently only allows you to see jobs you own
      * @param searchInput
      */
-    async search(searchInput: JobSearchInput): Promise<Job[]> {
-        const userRole = this.request.role;
-        searchInput.ownerId = this.request.userId;
-        let jobs: Job[] = [];
-        if (userRole === 'OWNER') {
-            jobs = await this.jobRepository.ownerSearch({
-                orgId: this.request.organisationId,
-                limit: searchInput.limit,
-                offset: searchInput.offset
-            });
-        } else {
-            const result = await this.jobRepository.search(searchInput);
-            jobs = result.map((job) => {
-                return {
-                    ...job.job,
-                }
-            })
-        }
-        return jobs;
+    async search(searchInput: JobSearchInput) {
+        const user = await this.userRepository.findOneByAuthId(this.request.userId);
+        const org = await this.organisationRepository.findByAuthId(this.request.organisationId);
+        const results = await this.jobRepository.search({
+            ...searchInput,
+            userId: user.id,
+            organisationId: org.id
+        });
+        return results.map((result) => {
+            return {
+                ...result.job
+            }
+        });
     }
 
     async findOne(id: string) {
@@ -62,9 +63,8 @@ export class JobService {
         const existingJob = await this.jobRepository.findOne(id);
         if (!existingJob) throw new Error('Job not found');
         const job = await this.jobRepository.update(id, updateJobInput);
-        if (updateJobInput.crew?.length > 0) {
-            await this.jobCrewService.update(job.id, updateJobInput.crew);
-        }
+        console.log('updateJobInput', updateJobInput);
+        await this.jobCrewService.update(job.id, updateJobInput.crew);
         return job;
     }
 

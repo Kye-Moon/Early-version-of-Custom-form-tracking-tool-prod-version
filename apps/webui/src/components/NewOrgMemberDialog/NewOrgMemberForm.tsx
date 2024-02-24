@@ -8,27 +8,13 @@ import {Form, FormField} from "@/Primitives/Form";
 import FormInputWrapper from "@/Components/FormInputWrapper/FormInputWrapper";
 import {Input} from "@/Primitives/Input";
 import * as React from "react";
-import LoadingButton from "@/Components/Loading/LoadingButton/LoadingButton";
-import {useMutation} from "@apollo/client";
-import toast from "react-hot-toast";
 import DropSelect from "@/Components/DropSelect/DropSelect";
 import {roleSelectOptions} from "@/Constants/constants";
-import {graphql} from "../../../../../packages/gql-types";
-import {formatPhoneNumber, hasRole} from "@/Lib/utils";
-import {useRecoilValue} from "recoil";
-import {userState} from "@/State/state";
-import {de} from "date-fns/locale";
+import {hasRole} from "@/Lib/utils";
+import {useAuth, useOrganization} from "@clerk/clerk-react";
+import toast from "react-hot-toast";
+import LoadingButton from "@/Components/Loading/LoadingButton/LoadingButton";
 
-const createOrganisationUser = graphql(`
-	mutation CreateOrgUser($input: CreateUserInput!) {
-		createUser(createUserInput: $input) {
-			id
-			name
-			phone
-			email
-		}
-	}
-`)
 
 /**
  * Props for the NewProjectForm component
@@ -45,64 +31,41 @@ export default function NewOrgMemberForm({
 											 onFormSubmitComplete,
 											 defaultRole
 										 }: NewCrewMemberFormProps) {
-	const userInfo = useRecoilValue(userState);
-	// The form hook for the NewProjectForm
+	const {orgRole} = useAuth();
+	const {organization} = useOrganization();
+	const [loading, setLoading] = React.useState(false);
 	const form = useForm<NewOrgMemberFormType>({
 		resolver: zodResolver(newOrgMemberFormSchema),
 		defaultValues: {
-			name: '',
-			phone: '',
 			email: '',
 			role: defaultRole || "",
 		},
 	});
 
-	const [createOrgMember,{loading}] = useMutation(createOrganisationUser, {
-		onCompleted: () => {
-			toast.success("New crew member invited");
-			onFormSubmitComplete?.();
-		},
-		onError: (error) => {
-			toast.error(`Error: ${error.message}, please try again`);
-			onFormSubmitComplete?.();
-		},
-		refetchQueries: ["SupervisorPageTableSection", "CrewPageTableSection"],
-		awaitRefetchQueries: true,
-	})
-
 	async function onSubmit(values: NewOrgMemberFormType) {
-		values.phone = formatPhoneNumber(values.phone)
-		await createOrgMember({variables: {input: {...values}}})
-	}
+		setLoading(true)
+		try {
+			await organization?.inviteMember({
+				emailAddress: values.email,
+				role: values.role
+			})
+		} catch (e) {
+			toast.error('Error sending invitation')
+			setLoading(false)
+			return
+		}
 
+		if (onFormSubmitComplete) {
+			onFormSubmitComplete();
+		}
+		setLoading(false)
+		toast.success('Invitation sent')
+	}
 
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 overflow-auto">
 				<div className=" px-1 mt-4 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-3">
-					<div className="sm:col-span-3">
-						<FormField
-							control={form.control}
-							name="name"
-							render={({field}) => (
-								<FormInputWrapper label={"Name"}>
-									<Input {...field} />
-								</FormInputWrapper>
-							)}
-						/>
-					</div>
-					<div className="sm:col-span-3">
-						<FormField
-							control={form.control}
-							name="phone"
-							render={({field}) => (
-								<FormInputWrapper label={"Phone Number"}
-												  description={"eg. 0412345678: Please ensure this is correct as we will send them a temporary password via SMS"}>
-									<Input type={'text'} {...field} />
-								</FormInputWrapper>
-							)}
-						/>
-					</div>
 					<div className="sm:col-span-3">
 						<FormField
 							control={form.control}
@@ -122,7 +85,10 @@ export default function NewOrgMemberForm({
 								<FormInputWrapper label={"Role"}
 												  description={"The role you want the user to have"}>
 									<DropSelect
-										options={[...roleSelectOptions, ...(hasRole(userInfo, 'OWNER') ? [{label: "Admin", value: "ADMIN"},{label: "Owner", value: "OWNER"}] : [])]}
+										options={[...roleSelectOptions, ...(hasRole(orgRole, 'org:admin') ? [{
+											label: "Admin",
+											value: "org:admin"
+										}] : [])]}
 										defaultValue={field.value}
 										onChange={field.onChange}
 										placeholder={"Role"}

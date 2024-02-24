@@ -1,5 +1,4 @@
 import React, {Suspense} from "react";
-import {Text} from "@gluestack-ui/themed";
 import {useLocalSearchParams} from "expo-router";
 import Header from "../../../components/Header";
 import JobRecordCell from "../../../components/JobRecordCell";

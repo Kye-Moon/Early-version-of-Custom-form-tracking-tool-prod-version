@@ -19,6 +19,11 @@ export function enumToSentenceCase(enumValue: string) {
 	return sentenceCaseWords.join(" ");
 }
 
+export const formatClerkRole = (role: string) => {
+	const roleArray = role.split(":");
+	return roleArray[roleArray.length - 1];
+}
+
 export const getJobStatusBadgeVariant = (status?: string | null) => {
 	switch (status) {
 		case "IN_PROGRESS":
@@ -91,11 +96,11 @@ export const getJobRecordFlagBadgeVariant = (status?: string | null) => {
 
 export const getUserTypeBadgeVariant = (status?: string | null) => {
 	switch (status) {
-		case "CREW_MEMBER":
+		case "org:admin":
 			return "blue";
-		case "SUPERVISOR":
+		case "org:member":
 			return "green";
-		case "ADMIN":
+		case "x":
 			return "red";
 		case "OWNER":
 			return "yellow";
@@ -121,15 +126,8 @@ export function formatPhoneNumber(phoneNumber: string) {
 	return cleanedNumber;
 }
 
-interface hasRoleProps {
-	userInfo: UserInfo;
-	role: string;
-}
-
-export const hasRole = (userInfo: UserInfo | null, role: string) => {
-	if (!userInfo) return false;
-	if (userInfo.role === role) return true;
-	if (userInfo.role === "ADMIN") return true;
+export const hasRole = (orgRole: any, role: string) => {
+	return orgRole === role;
 }
 
 export function isEmptyObject(obj: {} | null) {

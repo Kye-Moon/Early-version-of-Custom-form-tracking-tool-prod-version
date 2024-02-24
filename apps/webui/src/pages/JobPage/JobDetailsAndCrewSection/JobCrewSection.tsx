@@ -11,12 +11,14 @@ export const jobCrewQuery = graphql(`
 			id
 			name
 			phone
-			role
+			userOrganisation {
+				role
+			}
 		},
 	}
 `);
 
-interface  JobCrewSectionProps {
+interface JobCrewSectionProps {
 	jobId: string;
 }
 
@@ -25,11 +27,14 @@ export default function JobCrewSection({jobId}: JobCrewSectionProps) {
 	const jobCrew: OrgMemberTableRowsProps[] = data?.jobCrew.map((jobCrew) => ({
 		name: jobCrew.name,
 		id: jobCrew.id,
-		phone: jobCrew.phone,
-		role: jobCrew.role
+		role: jobCrew.userOrganisation?.role,
+		status: 'active'
 	})) ?? []
 	return (
-		<OrganisationMemberTable members={jobCrew} showSelect={false}
-								 tableCaption={"Current Job Crew"}/>
+		<OrganisationMemberTable
+			members={jobCrew}
+			showSelect={false}
+			tableCaption={"Current Job Crew"}
+		/>
 	)
 }

@@ -6,6 +6,8 @@ import {JobRecordRepository} from "./job-record.repository";
 import {JobRecordImageService} from "../job-record-image/job-record-image.service";
 import {JobRecordSearchInput} from "./dto/search-job-record";
 import {VariationInitialDataService} from "../variation-initial-data/variation-initial-data.service";
+import {UserRepository} from "../user/user.repository";
+import {OrganisationRepository} from "../organisation/organisation.repository";
 
 @Injectable()
 export class JobRecordService {
@@ -15,14 +17,22 @@ export class JobRecordService {
         private readonly request: RequestService,
         private readonly variationImageService: JobRecordImageService,
         private readonly variationInitialDataService: VariationInitialDataService,
+        private readonly userRepository: UserRepository,
+        private readonly organisationRepository: OrganisationRepository
     ) {
     }
 
     async create(createJobRecordInput: CreateJobRecordInput) {
+        console.log('createJobRecordInput', createJobRecordInput)
+
+        const user = await this.userRepository.findOneByAuthId(this.request.userId);
+        console.log('user', user)
+
         const record = await this.jobRecordRepository.create({
             ...createJobRecordInput,
-            submittedBy: this.request.userId,
+            submittedBy: user.id,
         })
+        console.log('record', record)
         if (createJobRecordInput.type === 'VARIATION') {
             await this.variationInitialDataService.create({
                 hours: createJobRecordInput.hours,
@@ -36,30 +46,20 @@ export class JobRecordService {
     }
 
     async search(searchInput: JobRecordSearchInput) {
-        const userRole = this.request.role
-        if (userRole === 'OWNER') {
-            const ownerResult = await this.jobRecordRepository.ownerSearch({
-                orgId: this.request.organisationId,
-                jobId: searchInput.jobId,
-            })
-            return ownerResult.map((record) => {
-                return {
-                    ...record.job_record,
-                }
-            })
-        } else {
-            const result = await this.jobRecordRepository.search({
-                searchInput: searchInput,
-                userId: this.request.userId,
-            })
-            return result.map((record) => {
-                return {
-                    ...record.job_record,
-                }
-            })
-        }
+        const user = await this.userRepository.findOneByAuthId(this.request.userId);
+        const org = await this.organisationRepository.findByAuthId(this.request.organisationId);
 
+        const result = await this.jobRecordRepository.search({
+            searchInput: searchInput,
+            userId: user.id,
+            orgId: org.id
+        })
 
+        return result.map((record) => {
+            return {
+                ...record.job_record,
+            }
+        })
     }
 
     findOne(id: string) {

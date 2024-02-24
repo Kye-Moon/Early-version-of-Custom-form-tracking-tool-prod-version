@@ -1,33 +1,51 @@
-import {Resolver, Query, Mutation, Args, Int, ResolveField, Parent} from '@nestjs/graphql';
+import {Args, Int, Mutation, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 import {UserService} from './user.service';
 import {User} from './entities/user.entity';
-import {CreateUserInput} from './dto/create-user.input';
 import {UpdateUserInput} from './dto/update-user.input';
 import {SearchUserInput} from "./dto/search-user.input";
 import {UseGuards} from "@nestjs/common";
-import {JwtAuthGuard} from "../auth/jwt-auth.guards";
-
-import {Organisation} from "../organisation/entities/organisation.entity";
+import {AuthGuard} from "../../guards/auth.guard";
 import {OrganisationService} from "../organisation/organisation.service";
+import {UserRepository} from "./user.repository";
+import {UserOrganisation} from "../user-organisation/entities/user-organisation.entity";
+import {UserOrganisationService} from "../user-organisation/user-organisation.service";
 
 @Resolver(() => User)
 export class UserResolver {
     constructor(
         private readonly userService: UserService,
+        private readonly userRepository: UserRepository,
         private readonly organisationService: OrganisationService,
+        private readonly userOrganisationService: UserOrganisationService,
     ) {
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Mutation(() => User)
-    createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-        return this.userService.inviteUser(createUserInput);
+    initialiseUser() {
+        try {
+            return this.userService.initialise();
+        } catch (e) {
+            console.error(e);
+        }
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Query(() => [User], {name: 'searchUsers'})
     searchUsers(@Args('userSearchInput') searchInput: SearchUserInput) {
         return this.userService.search(searchInput);
+    }
+
+    @UseGuards(AuthGuard)
+    @Query(() => Boolean)
+    async checkUserExists(@Args('authId', {type: () => String}) authId: string) {
+        try {
+            const user = await this.userRepository.findOneByAuthId(authId);
+            return !!user;
+        } catch (e) {
+            console.error(e);
+            throw new Error(e);
+        }
     }
 
     @Query(() => User, {name: 'user'})
@@ -35,7 +53,7 @@ export class UserResolver {
         return this.userService.findOne(id);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Query(() => User, {name: 'currentUser'})
     currentUser() {
         return this.userService.currentUser();
@@ -52,9 +70,8 @@ export class UserResolver {
         return this.userService.remove(id);
     }
 
-    @ResolveField(() => [Organisation])
-    organisation(@Parent() user: User) {
-        const {organisationId} = user;
-        return this.organisationService.findOne(organisationId);
+    @ResolveField(() => UserOrganisation)
+    async userOrganisation(@Parent() user: User) {
+        return await this.userOrganisationService.getCurrentUserOrganisation();
     }
 }

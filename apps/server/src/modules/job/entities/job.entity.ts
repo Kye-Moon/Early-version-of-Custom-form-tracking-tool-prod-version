@@ -22,6 +22,9 @@ export class Job {
     @Field(() => String)
     ownerId: string;
 
+    @Field(() => String)
+    organisationId: string;
+
     @Field(() => Date, {nullable: true})
     dueDate: Date;
 

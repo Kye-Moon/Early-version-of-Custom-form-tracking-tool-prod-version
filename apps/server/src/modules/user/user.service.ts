@@ -7,46 +7,71 @@ import {RequestService} from '../request/request.service';
 import {SearchUserInput} from "./dto/search-user.input";
 import {SmsService} from "../sms/sms.service";
 import * as bcrypt from "bcrypt";
+import {OrganisationService} from "../organisation/organisation.service";
+import clerkClient from '@clerk/clerk-sdk-node'
+import {OrganisationRepository} from "../organisation/organisation.repository";
+import {UserOrganisationService} from "../user-organisation/user-organisation.service";
+import {Organisation} from "../../drizzle/schema";
 
 @Injectable()
 export class UserService {
     constructor(
         private readonly request: RequestService,
         private readonly userRepository: UserRepository,
-        private readonly smsService: SmsService
+        private readonly organisationService: OrganisationService,
+        private readonly organisationRepository: OrganisationRepository,
+        private readonly userOrganisationService: UserOrganisationService,
     ) {
     }
 
-    async create(createUserInput: CreateUserInput): Promise<User> {
-        createUserInput.email = createUserInput.email.toLowerCase();
-        try {
-            return await this.userRepository.createUser({
-                ...createUserInput,
-                organisationId: this.request.organisationId,
-                status: createUserInput.status || "ACTIVE"
-            });
-        }catch(e) {
-            if (e.code === '23505') {
-                throw new Error('Email already exists');
+    async initialise(): Promise<User> {
+        const organisation = await this.organisationService.findOrCreateByAuthId(this.request.organisationId);
+        const authUser = await clerkClient.users.getUser(this.request.userId)
+        let user = await this.userRepository.findOneByAuthId(authUser.id);
+        if (user) {
+            const userOrgs = await this.userOrganisationService.getAllByUserId(user.id);
+            const userOrg = userOrgs.find((userOrg) => userOrg.organisationId === organisation.id);
+            if (!userOrg) {
+                const userOrgRole = await this.getUserRoleFromCurrentOrg(organisation);
+                await this.userOrganisationService.create({
+                    userId: user.id,
+                    organisationId: organisation.id,
+                    role: userOrgRole
+                });
             }
-            throw e;
+        } else {
+            // User is signing up for the first time and was not invited
+            user = await this.userRepository.createUser({
+                name: authUser.firstName + ' ' + authUser.lastName,
+                email: authUser.emailAddresses[0].emailAddress,
+                authId: authUser.id,
+                status: "ACTIVE",
+            });
+            const userOrgRole = await this.getUserRoleFromCurrentOrg(organisation);
+            await this.userOrganisationService.create({
+                userId: user.id,
+                organisationId: organisation.id,
+                role: userOrgRole
+            });
+            await clerkClient.users.updateUserMetadata(user.authId, {
+                publicMetadata: {
+                    ...authUser.publicMetadata,
+                    varify_initialised: true
+                }
+            })
         }
-    }
-
-    async inviteUser(createUserInput: CreateUserInput): Promise<User> {
-        createUserInput.status = "INVITED";
-        const inviter = await this.userRepository.findOneByIdWithOrganisation(this.request.userId);
-        const user = await this.create(createUserInput)
-        const password = this.generatePassword();
-        await this.smsService.SendInviteSMS({phoneNumber: user.phone, tempPassword: password, email: user.email, inviterOrgName: inviter.organisation.name, inviterName: inviter.name})
-        const hash = await bcrypt.hash(password, 10);
-        await this.userRepository.updateUser(user.id, {password: hash});
         return user;
     }
 
-    async search(searchInput: SearchUserInput): Promise<User[]> {
-        searchInput.organisationId = this.request.organisationId;
-        return await this.userRepository.search(searchInput);
+    async search(searchInput: SearchUserInput) {
+        const org = await this.organisationRepository.findByAuthId(this.request.organisationId);
+        searchInput.organisationId = org.id;
+        const results = await this.userRepository.search(searchInput);
+        return results.map((result) => {
+            return {
+                ...result.user
+            }
+        });
     }
 
     async findOne(id: string) {
@@ -68,27 +93,10 @@ export class UserService {
     remove(id: number) {
         return `This action removes a #${id} user`;
     }
-    generatePassword(): string {
-        const uppercaseChars: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const lowercaseChars: string = 'abcdefghijklmnopqrstuvwxyz';
-        const specialChars: string = '!@#$%';
 
-        let password: string = '';
-
-        // Generate random characters
-        const randomUppercase = uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
-        const randomLowercase = lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
-        const randomSpecialChar = specialChars[Math.floor(Math.random() * specialChars.length)];
-        const randomDigit1 = Math.floor(Math.random() * 10).toString();
-        const randomDigit2 = Math.floor(Math.random() * 10).toString();
-        const randomDigit3 = Math.floor(Math.random() * 10).toString();
-
-        // Form the password with at least one uppercase, one lowercase, and one special character
-        password = `${randomUppercase}${randomLowercase}${randomSpecialChar}${randomDigit1}${randomDigit2}${randomDigit3}`;
-
-        // Shuffle the password characters to randomize
-        password = password.split('').sort(() => Math.random() - 0.5).join('');
-
-        return password;
+    getUserRoleFromCurrentOrg = async (organisation: Organisation) => {
+        const authOrgMemberships = await clerkClient.users.getOrganizationMembershipList({userId: this.request.userId});
+        const userOrg = authOrgMemberships.find((membership) => membership.organization.id === organisation.authId);
+        return userOrg.role;
     }
 }

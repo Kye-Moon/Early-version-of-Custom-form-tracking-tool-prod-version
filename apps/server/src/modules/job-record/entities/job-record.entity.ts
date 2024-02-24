@@ -25,11 +25,14 @@ export class JobRecord {
     @Field(() => String, {nullable: true})
     status?: JobRecordStatus
 
-    @Field(() => Job)
-    job: Job
+    @Field(() => String)
+    jobId: string
 
     @Field(() => String, {nullable: true})
     flag?: JobRecordFlag
+
+    @Field(() => Job)
+    job: Job
 
     @Field(() => User)
     submittedBy: User

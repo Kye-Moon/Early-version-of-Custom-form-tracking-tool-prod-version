@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 import React, {Suspense} from 'react';
 import {Button, ButtonText, Text, View} from "@gluestack-ui/themed";
 import VariationsCell from "../../../components/home/VariationsCell/VariationsCell";
-import {Link} from "expo-router";
+import { Link} from "expo-router";
 import LoadingSkeletonRows from "../../../components/Loading/SkeletonRows";
 
 export default function VariationsScreen() {
@@ -14,7 +14,6 @@ export default function VariationsScreen() {
                     <VariationsCell/>
                 </Suspense>
             </View>
-
             <View style={styles.buttonContainer}>
                 <Link asChild={true} href={{pathname: '/new-job-record/NewJobRecordForm'}}>
                     <Button

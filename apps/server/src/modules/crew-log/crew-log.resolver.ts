@@ -4,14 +4,14 @@ import {CrewLog} from './entities/crew-log.entity';
 import {CreateCrewLogInput} from './dto/create-crew-log.input';
 import {UpdateCrewLogInput} from './dto/update-crew-log.input';
 import {UseGuards} from "@nestjs/common";
-import {JwtAuthGuard} from "../auth/jwt-auth.guards";
+import {AuthGuard} from "../../guards/auth.guard";
 
 @Resolver(() => CrewLog)
 export class CrewLogResolver {
     constructor(private readonly crewLogService: CrewLogService) {
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Mutation(() => CrewLog)
     createCrewLog(@Args('createCrewLogInput') createCrewLogInput: CreateCrewLogInput) {
         return this.crewLogService.create(createCrewLogInput);
@@ -27,7 +27,7 @@ export class CrewLogResolver {
         return this.crewLogService.findOne(id);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard)
     @Mutation(() => CrewLog)
     async updateCrewLog(@Args('updateCrewLogInput') updateCrewLogInput: UpdateCrewLogInput) {
         console.log(`updateCrewLogInput`, updateCrewLogInput)

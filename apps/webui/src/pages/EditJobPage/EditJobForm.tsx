@@ -6,7 +6,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {editJobFormSchema, EditJobFormType} from "@/Pages/EditJobPage/EditJobFormSchema";
 import EditJobDetails
 	from "@/Pages/EditJobPage/EditJobFormComponents/EditJobDetails/EditJobDetails";
-import {Suspense} from "react";
+import {Suspense, useEffect} from "react";
 import {updateJob} from "@/Services/jobService";
 import {useMutation} from "@apollo/client";
 import toast from "react-hot-toast";
@@ -39,7 +39,7 @@ export default function EditJobForm({jobDetails, jobCrew}: EditJobFormProps) {
 	const [update, {loading}] = useMutation(updateJob, {
 		onCompleted: async () => {
 			toast.success("Job updated successfully");
-			await navigate({to: '/jobs/$jobId', params: {jobId: jobDetails.id}})
+			// await navigate({to: '/jobs/$jobId', params: {jobId: jobDetails.id}})
 		},
 		onError: () => {
 			toast.error("Error updating job");
@@ -49,6 +49,7 @@ export default function EditJobForm({jobDetails, jobCrew}: EditJobFormProps) {
 	});
 
 	async function onSubmit(values: EditJobFormType) {
+
 		if (!form.formState.isDirty) {
 			await navigate({to: '/jobs/$jobId', params: {jobId: jobDetails.id}})
 			return
@@ -76,7 +77,7 @@ export default function EditJobForm({jobDetails, jobCrew}: EditJobFormProps) {
 					<div className={'col-span-1 space-y-6 xl:pl-12'}>
 						<h1 className={'text-xl font-semibold'}>Crew</h1>
 						<Suspense fallback={<div>Loading...</div>}>
-							<CrewTableSection initialSelected={jobCrew}/>
+							<CrewTableSection showInvited={false} initialSelected={jobCrew}/>
 						</Suspense>
 					</div>
 

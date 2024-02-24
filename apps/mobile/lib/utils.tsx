@@ -15,16 +15,10 @@ export function enumToSentenceCase(enumValue: string) {
     return sentenceCaseWords.join(" ");
 }
 
-export const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-        case "IN_PROGRESS":
-            return "blue";
-        case "FINISHED":
-            return "green";
-        case "NOT_STARTED":
-            return "yellow";
-    }
-};
+export const formatClerkRole = (role: string) => {
+    const roleArray = role.split(":");
+    return roleArray[roleArray.length - 1];
+}
 
 export const stripEmptyValues = (obj: any) => {
     const newObj: any = {};
