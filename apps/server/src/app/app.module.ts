@@ -10,7 +10,6 @@ import {JobModule} from '../modules/job/job.module';
 import {RequestModule} from '../modules/request/request.module';
 import {JobCrewModule} from "../modules/job-crew/job-crew.module";
 import {JobRecordModule} from "../modules/job-record/job-record.module";
-import {SmsModule} from "../modules/sms/sms.module";
 import {S3Module} from "../modules/s3/s3.module";
 import {ConfigModule} from "@nestjs/config";
 import {JobRecordImageModule} from "../modules/job-record-image/job-record-image.module";
@@ -39,7 +38,6 @@ import {CrewLogModule} from "../modules/crew-log/crew-log.module";
             driver: YogaDriver,
             autoSchemaFile: 'schema.graphql',
         }),
-        SmsModule,
         UserModule,
         JobModule,
         JobCrewModule,

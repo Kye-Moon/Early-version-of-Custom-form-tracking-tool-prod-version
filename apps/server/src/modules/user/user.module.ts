@@ -5,7 +5,6 @@ import {ConfigModule} from '@nestjs/config';
 import {DrizzleModule} from '../../drizzle/drizzle.module';
 import {UserRepository} from './user.repository';
 import {RequestModule} from '../request/request.module';
-import {SmsModule} from "../sms/sms.module";
 import {OrganisationModule} from "../organisation/organisation.module";
 import {UserOrganisationModule} from "../user-organisation/user-organisation.module";
 
@@ -19,7 +18,6 @@ import {UserOrganisationModule} from "../user-organisation/user-organisation.mod
         RequestModule,
         OrganisationModule,
         UserOrganisationModule,
-        SmsModule
     ],
     exports: [UserService, UserRepository],
 })

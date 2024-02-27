@@ -39,8 +39,6 @@ function Index() {
 }
 
 function UnAuthenticatedIndex() {
-
-
 	return (
 		<>
 			<Toaster/>
