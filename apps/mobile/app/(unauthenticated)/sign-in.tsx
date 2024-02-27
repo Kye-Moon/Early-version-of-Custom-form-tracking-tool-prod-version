@@ -13,30 +13,30 @@ import {
     Text
 } from "@gluestack-ui/themed";
 import {Alert, Platform, StyleSheet} from "react-native";
-import {useMutation} from "@apollo/client";
-import {graphql} from "gql-types";
 import {useRouter} from "expo-router";
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {signInSchema} from "./signinSchema";
 import FormInputWrapper from "../../components/FormInputWrapper";
-import {accessTokenState, API_URLS, apiUrlState} from "../../state/atoms";
-import {useRecoilState, useSetRecoilState} from "recoil";
-import {useSignIn} from "@clerk/clerk-expo";
+import {API_URLS, apiUrlState} from "../../state/atoms";
+import {useRecoilState} from "recoil";
+import {useAuth, useSignIn} from "@clerk/clerk-expo";
 
 export default function SignIn() {
     const router = useRouter();
     const [logoPressCount, setLogoPressCount] = useState(0);
     const [apiUrl, setApi] = useRecoilState(apiUrlState);
-    const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
-
+    const {isSignedIn, isLoaded: isAuthLoaded, getToken} = useAuth();
     const {signIn, setActive, isLoaded} = useSignIn();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (accessToken) {
+        if (isAuthLoaded && isSignedIn) {
+            console.log('isSignedIn', isSignedIn);
+            setLoading(false)
             router.push('/(app)/(tabs)')
         }
-    }, [accessToken]);
+    }, [isSignedIn, isAuthLoaded]);
 
     const handlePressLogo = () => {
         if (logoPressCount === 4) {
@@ -67,20 +67,20 @@ export default function SignIn() {
 
 
     const onSubmit = async (data: any) => {
+        setLoading(true);
         if (!isLoaded) {
             return;
         }
-
         try {
             const completeSignIn = await signIn.create({
                 identifier: data.email.toLowerCase(),
                 password: data.password,
             });
             await setActive({session: completeSignIn.createdSessionId});
-            router.push('/(app)/(tabs)')
         } catch (err: any) {
-            console.log(err);
-            Alert.alert('Error', err.message);
+            setLoading(false);
+            console.error(err.errors[0].message);
+            Alert.alert('Error', err.errors[0].message);
         }
 
     }
@@ -130,7 +130,7 @@ export default function SignIn() {
                         )}
                     />
                     <Button w={'100%'} mx={'$8'} onPress={form.handleSubmit(onSubmit)}>
-                        {!isLoaded ? <ButtonSpinner/> : <ButtonText>Sign in</ButtonText>}
+                        {loading ? <ButtonSpinner/> : <ButtonText>Sign in</ButtonText>}
                     </Button>
                     <Pressable onPress={() => router.push('/reset-password')}>
                         <Text size={'sm'}>Forgot password?</Text>

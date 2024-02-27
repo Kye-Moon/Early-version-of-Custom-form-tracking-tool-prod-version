@@ -19,7 +19,7 @@ export const accessTokenState = atom({
 export const API_URLS = {
     local: 'http://localhost:4000/graphql',
     dev: 'https://varify-server.onrender.com/graphql',
-    production: 'https://production-varify-server.onrender.com/graphql'
+    production: 'https://production-v2-varify-server.onrender.com/graphql'
 };
 
 export const apiUrlState = atom({

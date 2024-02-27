@@ -6,9 +6,10 @@ import {Linking, StyleSheet} from "react-native";
 import ScreenSection from "../../../components/ScreenSection";
 import AccountDetailsCell from "../../../components/AccountDetailsCell";
 import LoadingSkeletonRows from "../../../components/Loading/SkeletonRows";
+import {useAuth} from "@clerk/clerk-expo";
 
 export default function Settings() {
-    const setToken = useSetRecoilState(accessTokenState)
+    const {signOut} = useAuth();
     return (
         <ScreenSection>
             <View style={styles.content}>
@@ -19,7 +20,7 @@ export default function Settings() {
                     <Text color={'$blue500'}>Privacy Policy</Text>
                 </Pressable>
                 <View style={styles.bottom}>
-                    <Button variant={'outline'} onPress={() => setToken('')}>
+                    <Button variant={'outline'} onPress={() => signOut()}>
                         <ButtonText>Logout</ButtonText>
                     </Button>
                 </View>
