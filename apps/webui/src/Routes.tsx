@@ -33,6 +33,7 @@ function Index() {
 	if (!isSignedIn && isLoaded) {
 		router.navigate({to: "/login"});
 	} else {
+		console.log('Redirecting to dashboard')
 		router.navigate({to: "/dashboard"});
 	}
 	return <div>Redirecting...</div>;
