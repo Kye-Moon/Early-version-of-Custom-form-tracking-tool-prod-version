@@ -2,17 +2,16 @@ import {SideBarPrimaryMenuItem} from "@/Components/Navigation/SideBar/SideBarPri
 import {adminMenuItems, sideBarMenuItems} from "@/Components/Navigation/Navigation";
 import React from "react";
 import {Separator} from "@/Primitives/Seperator";
-import {useRecoilValue, useSetRecoilState} from "recoil";
-import {tokenState, userInitialisedState, userState} from "../../../state/state";
+import {useSetRecoilState} from "recoil";
+import {userInitialisedState} from "@/State/state";
 import {hasRole} from "@/Lib/utils";
 import {LogOutIcon, SettingsIcon} from "lucide-react";
-import {useRouter} from "@tanstack/react-router";
 import Logo from "@/Assets/Logo.png";
 import {OrganizationSwitcher, useAuth} from "@clerk/clerk-react";
 
 export default function SideBar() {
-	const userInfo = useRecoilValue(userState);
 	const {signOut} = useAuth();
+	const {orgRole} = useAuth();
 	const setUserInitialised = useSetRecoilState(userInitialisedState);
 	const handleLogout = async () => {
 		setUserInitialised(false)
@@ -38,7 +37,7 @@ export default function SideBar() {
 								<SideBarPrimaryMenuItem key={item.label} item={item}/>
 							))}
 						</ul>
-						{hasRole(userInfo, 'OWNER') && (
+						{hasRole(orgRole, 'org:admin') && (
 							<>
 								<Separator className={'my-2'}/>
 								<ul role="list" className="-mx-2 space-y-6">

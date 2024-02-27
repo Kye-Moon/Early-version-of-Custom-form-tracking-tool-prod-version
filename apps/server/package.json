@@ -18,7 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:push": "drizzle-kit push:pg"
+    "db:push": "drizzle-kit push:pg",
+    "migrate": "tsx src/drizzle/migrate.ts",
+    "generate:migration": "drizzle-kit generate:pg"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.451.0",
@@ -39,7 +41,6 @@
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.0.0",
     "@react-pdf/renderer": "^3.1.14",
-    "@types/passport-local": "^1.0.38",
     "@types/pg": "^8.10.7",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
@@ -63,6 +64,7 @@
     "postgres": "^3.4.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "tsx": "^4.7.1",
     "twilio": "^4.19.3",
     "uuidv4": "^6.2.13"
   },

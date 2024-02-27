@@ -1,12 +1,9 @@
 import {Injectable} from '@nestjs/common';
-import {CreateUserInput} from './dto/create-user.input';
 import {UpdateUserInput} from './dto/update-user.input';
 import {User} from './entities/user.entity';
 import {UserRepository} from './user.repository';
 import {RequestService} from '../request/request.service';
 import {SearchUserInput} from "./dto/search-user.input";
-import {SmsService} from "../sms/sms.service";
-import * as bcrypt from "bcrypt";
 import {OrganisationService} from "../organisation/organisation.service";
 import clerkClient from '@clerk/clerk-sdk-node'
 import {OrganisationRepository} from "../organisation/organisation.repository";

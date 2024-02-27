@@ -47,7 +47,7 @@ export default function NewOrgMemberForm({
 		try {
 			await organization?.inviteMember({
 				emailAddress: values.email,
-				role: values.role
+				role: values.role,
 			})
 		} catch (e) {
 			toast.error('Error sending invitation')

@@ -22,9 +22,7 @@ export default function AppLayout() {
 	const {user} = useUser();
 	const {initialiseUser} = useInitialiseUser();
 	useEffect(() => {
-		console.log('running')
 		if (isLoaded && (!user?.publicMetadata.varify_initialised || !isUserInitialized)) {
-			console.log('initialising user')
 			initialiseUser()
 		}
 	}, [userId, isLoaded, organization, user?.publicMetadata.varify_initialised, isUserInitialized])
