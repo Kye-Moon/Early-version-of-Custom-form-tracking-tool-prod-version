@@ -58,8 +58,9 @@ export class UserService {
                 role: userOrgRole
             });
             console.log('created user org')
-            const invitationList = await clerkClient.invitations.getInvitationList({
-                status: 'accepted',
+            const invitationList = await clerkClient.organizations.getOrganizationInvitationList({
+                organizationId: this.request.organisationId,
+                status: ['accepted']
             })
             console.log(invitationList.length)
             const userInvitation = invitationList.find((invitation) => invitation.emailAddress === authUser.emailAddresses[0].emailAddress);
