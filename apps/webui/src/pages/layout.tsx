@@ -22,10 +22,13 @@ export default function AppLayout() {
 
     useEffect(() => {
         const initUser = async () => {
+            console.log('initialising user')
             const {data} = await isInitialised()
             if (data?.isUserInitialised === false) {
+                console.log('initialising user')
                 await initialiseUser()
                 await user?.reload()
+                console.log('user initialised and reloaded')
             }
         }
         if (isLoaded && !user?.publicMetadata.varify_initialised) {

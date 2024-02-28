@@ -15,6 +15,7 @@ export default function Login() {
 			<img src={Logo} alt={'Synex Logo'} className={'h-24'}/>
 			<SignIn path="/login"
 					signUpUrl={''}
+					afterSignInUrl={window.origin.toString() + "/dashboard"}
 			/>
 		</div>
 	);
