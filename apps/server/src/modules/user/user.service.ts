@@ -65,10 +65,11 @@ export class UserService {
             console.log(invitationList.length)
             const userInvitation = invitationList.find((invitation) => invitation.emailAddress === authUser.emailAddresses[0].emailAddress);
             console.log(userInvitation)
+            const appRole = userOrgRole === 'org:admin' ? "ADMIN" : userInvitation?.publicMetadata['varify_role'] ?? "MEMBER";
             await clerkClient.users.updateUserMetadata(user.authId, {
                 publicMetadata: {
                     ...authUser.publicMetadata,
-                    ...userInvitation.publicMetadata,
+                    varify_role: appRole,
                     varify_initialised: true
                 }
             })
