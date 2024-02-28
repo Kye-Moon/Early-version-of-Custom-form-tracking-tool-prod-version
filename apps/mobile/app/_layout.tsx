@@ -43,9 +43,7 @@ export default function Root() {
                 <RecoilRoot>
                     <Suspense fallback={<Text>Loading...</Text>}>
                         <ErrorBoundary FallbackComponent={GlobalFallback}>
-                            <ApolloWrapper>
                                 <Slot/>
-                            </ApolloWrapper>
                         </ErrorBoundary>
                     </Suspense>
                 </RecoilRoot>

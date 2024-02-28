@@ -3,8 +3,8 @@ import React from 'react';
 import {useAuth} from "@clerk/clerk-expo";
 
 export default function RootLayout() {
-    const {isLoaded, userId} = useAuth();
-    if (isLoaded && userId) {
+    const {isLoaded, isSignedIn} = useAuth();
+    if (isLoaded && isSignedIn) {
         return <Redirect href={'/(app)/(tabs)'}/>
     }
     return <RootLayoutNav/>;
@@ -16,6 +16,7 @@ function RootLayoutNav() {
         <Stack>
             <Stack.Screen name="sign-in" options={{headerShown: false}}/>
             <Stack.Screen
+                name="reset-password"
                 options={{headerShown: true, headerTitle: "Reset Password"}}/>
         </Stack>
     );

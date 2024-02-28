@@ -16,7 +16,7 @@
       "**/*"
     ],
     "ios": {
-      "buildNumber": "11",
+      "buildNumber": "14",
       "supportsTablet": true,
       "bundleIdentifier": "com.synex.varify",
       "config": {
@@ -24,7 +24,7 @@
       }
     },
     "android": {
-      "versionCode": "4",
+      "versionCode": "7",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

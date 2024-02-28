@@ -7,7 +7,7 @@ import {useAuth} from "@clerk/clerk-expo";
 import {setContext} from "@apollo/client/link/context";
 
 export function ApolloWrapper({children}: React.PropsWithChildren) {
-    const {getToken, signOut} = useAuth();
+    const {getToken, signOut,sessionId} = useAuth();
     const apiUrl = useRecoilValueLoadable(apiUrlState)
 
     const errorLink = onError(({graphQLErrors, networkError}) => {
@@ -41,7 +41,7 @@ export function ApolloWrapper({children}: React.PropsWithChildren) {
             link: from([authMiddleware, errorLink, httpLink]),
             cache: new InMemoryCache(),
         })
-    }, [getToken])
+    }, [getToken,sessionId])
 
 
     return <ApolloProvider client={client}>{children}</ApolloProvider>

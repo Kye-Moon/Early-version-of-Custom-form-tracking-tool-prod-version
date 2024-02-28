@@ -28,7 +28,7 @@ export class JobService {
             ownerId: user.id,
             organisationId: org.id
         });
-        if (createJobInput.crew.length > 0) {
+        if (createJobInput.crew && createJobInput.crew.length > 0) {
             await this.jobCrewService.createMany(job.id, createJobInput.crew);
         }
         return job;

@@ -138,6 +138,5 @@ export default function EditableTable({
 				</Button>
 			</div>
 		</>
-
 	);
 };

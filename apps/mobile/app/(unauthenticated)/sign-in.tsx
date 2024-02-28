@@ -26,17 +26,8 @@ export default function SignIn() {
     const router = useRouter();
     const [logoPressCount, setLogoPressCount] = useState(0);
     const [apiUrl, setApi] = useRecoilState(apiUrlState);
-    const {isSignedIn, isLoaded: isAuthLoaded, getToken} = useAuth();
     const {signIn, setActive, isLoaded} = useSignIn();
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (isAuthLoaded && isSignedIn) {
-            console.log('isSignedIn', isSignedIn);
-            setLoading(false)
-            router.push('/(app)/(tabs)')
-        }
-    }, [isSignedIn, isAuthLoaded]);
 
     const handlePressLogo = () => {
         if (logoPressCount === 4) {
