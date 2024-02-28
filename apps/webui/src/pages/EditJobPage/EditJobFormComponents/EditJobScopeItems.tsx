@@ -67,7 +67,16 @@ export default function EditJobScopeItems({jobId}: { jobId: string }) {
 	})
 
 	const addScopeItem = async (scopeItem: CreateJobScopeItemInput) => {
-		await create({variables: {input: {...scopeItem, jobId: jobId}}})
+		await create({
+			variables: {
+				input: {
+					id: scopeItem.id,
+					title: scopeItem.title,
+					reference: scopeItem.reference,
+					jobId: jobId
+				}
+			}
+		})
 	}
 
 	const updateScopeItem = async (id: string, scopeItem: UpdateJobScopeItemInput) => {

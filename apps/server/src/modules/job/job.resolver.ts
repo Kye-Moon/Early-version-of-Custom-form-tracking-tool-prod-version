@@ -53,19 +53,21 @@ export class JobResolver {
         return this.jobService.delete(id);
     }
 
-
+    @UseGuards(AuthGuard)
     @ResolveField(() => [JobRecord])
     variations(@Parent() job: Job) {
         const {id} = job;
         return this.jobRecordService.findJobRecords(id);
     }
 
+    @UseGuards(AuthGuard)
     @ResolveField(() => [JobScopeItem])
     scopeItems(@Parent() job: Job) {
         const {id} = job;
         return this.jobScopeItemService.findByJobId(id);
     }
 
+    @UseGuards(AuthGuard)
     @ResolveField(() => [JobAttachment])
     attachments(@Parent() job: Job) {
         const {id} = job;

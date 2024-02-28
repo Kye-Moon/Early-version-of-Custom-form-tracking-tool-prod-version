@@ -23,16 +23,11 @@ export class JobRecordService {
     }
 
     async create(createJobRecordInput: CreateJobRecordInput) {
-        console.log('createJobRecordInput', createJobRecordInput)
-
         const user = await this.userRepository.findOneByAuthId(this.request.userId);
-        console.log('user', user)
-
         const record = await this.jobRecordRepository.create({
             ...createJobRecordInput,
             submittedBy: user.id,
         })
-        console.log('record', record)
         if (createJobRecordInput.type === 'VARIATION') {
             await this.variationInitialDataService.create({
                 hours: createJobRecordInput.hours,

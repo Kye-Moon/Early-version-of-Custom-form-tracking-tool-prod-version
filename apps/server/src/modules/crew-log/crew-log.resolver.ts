@@ -1,4 +1,4 @@
-import {Resolver, Query, Mutation, Args, Int} from '@nestjs/graphql';
+import {Args, Int, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {CrewLogService} from './crew-log.service';
 import {CrewLog} from './entities/crew-log.entity';
 import {CreateCrewLogInput} from './dto/create-crew-log.input';
@@ -30,10 +30,7 @@ export class CrewLogResolver {
     @UseGuards(AuthGuard)
     @Mutation(() => CrewLog)
     async updateCrewLog(@Args('updateCrewLogInput') updateCrewLogInput: UpdateCrewLogInput) {
-        console.log(`updateCrewLogInput`, updateCrewLogInput)
-        const response = await this.crewLogService.update(updateCrewLogInput.id, updateCrewLogInput);
-        console.log(`response`, response)
-        return response;
+        return await this.crewLogService.update(updateCrewLogInput.id, updateCrewLogInput);
     }
 
     @Mutation(() => CrewLog)

@@ -30,6 +30,7 @@ export class VariationResourceResolver {
         return this.variationResourceService.getVariationResourceSummary(variationId);
     }
 
+    @UseGuards(AuthGuard)
     @Query(() => VariationResource, {name: 'variationResource'})
     findOne(@Args('id', {type: () => String}) id: string) {
         return this.variationResourceService.findOne(id);

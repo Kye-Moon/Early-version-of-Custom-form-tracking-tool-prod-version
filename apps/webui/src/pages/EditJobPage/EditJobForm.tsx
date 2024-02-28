@@ -49,20 +49,14 @@ export default function EditJobForm({jobDetails, jobCrew}: EditJobFormProps) {
 	});
 
 	async function onSubmit(values: EditJobFormType) {
-
-		if (!form.formState.isDirty) {
-			await navigate({to: '/jobs/$jobId', params: {jobId: jobDetails.id}})
-			return
-		} else {
-			await update({
-				variables: {
-					input: {
-						...values,
-						id: jobDetails.id,
-					},
-				}
-			})
-		}
+		await update({
+			variables: {
+				input: {
+					...values,
+					id: jobDetails.id,
+				},
+			}
+		})
 	}
 
 	return (

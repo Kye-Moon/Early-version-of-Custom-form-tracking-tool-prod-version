@@ -21,7 +21,9 @@ export default function AppLayout() {
 	const [isUserInitialized, setIsUserInitialized] = useRecoilState(userInitialisedState);
 	const {user} = useUser();
 	const {initialiseUser} = useInitialiseUser();
+
 	useEffect(() => {
+		setIsUserInitialized(user?.publicMetadata.varify_initialised as boolean)
 		if (isLoaded && (!user?.publicMetadata.varify_initialised || !isUserInitialized)) {
 			initialiseUser()
 		}

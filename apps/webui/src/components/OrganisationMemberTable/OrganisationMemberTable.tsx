@@ -39,12 +39,6 @@ export default function OrganisationMemberTable({
 	const [memberRows, setMembers] = useState<OrgMemberTableRowsProps[]>(members || [])
 	const context = useFormContext<EditJobFormType>()
 
-
-	if (context !== null) {
-		console.log(context.formState.isDirty)
-		console.log(context.formState.dirtyFields)
-	}
-
 	useEffect(() => {
 		setMembers(members || [])
 	}, [members])

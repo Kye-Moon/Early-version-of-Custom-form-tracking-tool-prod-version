@@ -48,41 +48,48 @@ export class JobRecordResolver {
         return await this.jobRecordService.update(updateJobRecordInput.id, updateJobRecordInput);
     }
 
+    @UseGuards(AuthGuard)
     @Mutation(() => JobRecord)
     removeVariation(@Args('id', {type: () => Int}) id: number) {
         return this.jobRecordService.remove(id);
     }
 
+    @UseGuards(AuthGuard)
     @ResolveField(() => Job)
     async job(@Parent() variation: JobRecord) {
         const {id} = variation;
         return this.jobRecordService.getVariationJob(id);
     }
 
+    @UseGuards(AuthGuard)
     @ResolveField(() => User)
     async submittedBy(@Parent() user: User) {
         const {id} = user;
         return this.jobRecordService.getVariationSubmittedBy(id);
     }
 
+    @UseGuards(AuthGuard)
     @ResolveField(() => VariationInitialData)
     async initialData(@Parent() variation: JobRecord) {
         const {id} = variation;
         return await this.jobRecordService.getVariationInitialData(id);
     }
 
+    @UseGuards(AuthGuard)
     @ResolveField(() => [JobRecordImage])
     async images(@Parent() variation: JobRecord) {
         const {id} = variation;
         return await this.jobRecordService.getVariationImages(id);
     }
 
+    @UseGuards(AuthGuard)
     @ResolveField(() => [VariationResource])
     async resources(@Parent() variation: JobRecord) {
         const {id} = variation;
         return await this.jobRecordService.getVariationResources(id);
     }
 
+    @UseGuards(AuthGuard)
     @ResolveField(() => JobScopeItem)
     async scopeItem(@Parent() variation: JobRecord) {
         const {scopeRef} = variation;

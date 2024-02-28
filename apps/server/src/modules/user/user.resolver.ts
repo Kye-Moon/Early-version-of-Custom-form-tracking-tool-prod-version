@@ -48,6 +48,7 @@ export class UserResolver {
         }
     }
 
+    @UseGuards(AuthGuard)
     @Query(() => User, {name: 'user'})
     findOne(@Args('id', {type: () => String}) id: string) {
         return this.userService.findOne(id);
@@ -59,17 +60,19 @@ export class UserResolver {
         return this.userService.currentUser();
     }
 
-
+    @UseGuards(AuthGuard)
     @Mutation(() => User)
     updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
         return this.userService.update(updateUserInput.id, updateUserInput);
     }
 
+    @UseGuards(AuthGuard)
     @Mutation(() => User)
     removeUser(@Args('id', {type: () => Int}) id: number) {
         return this.userService.remove(id);
     }
 
+    @UseGuards(AuthGuard)
     @ResolveField(() => UserOrganisation)
     async userOrganisation(@Parent() user: User) {
         return await this.userOrganisationService.getCurrentUserOrganisation();

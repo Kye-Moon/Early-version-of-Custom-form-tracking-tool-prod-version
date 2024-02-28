@@ -65,6 +65,7 @@ export type CreateJobRecordInput = {
 
 export type CreateJobScopeItemInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
   jobId: Scalars['String']['input'];
   reference?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;

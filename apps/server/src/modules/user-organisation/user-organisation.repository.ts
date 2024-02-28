@@ -26,7 +26,6 @@ export class UserOrganisationRepository {
                     eq(userOrganisation.organisationId, organisationId)
                 )
             )
-        console.log('userOrganisation', _userOrganisation);
         return _userOrganisation[0]
     }
 

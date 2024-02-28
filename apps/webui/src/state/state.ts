@@ -11,7 +11,7 @@ export interface UserInfo {
 
 const localStorageEffect = (key: string) => ({setSelf, onSet}: { setSelf: any, onSet: any }) => {
 	const savedValue = localStorage.getItem(key)
-	if (savedValue != null) {
+	if (savedValue != null && savedValue !== "undefined") {
 		setSelf(JSON.parse(savedValue));
 	}
 
