@@ -12,5 +12,8 @@ export class CreateUserInput {
     phone: string;
 
     @Field(() => String)
+    role: string;
+
+    @Field(() => String)
     authId: string;
 }

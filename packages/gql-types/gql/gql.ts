@@ -26,9 +26,7 @@ const documents = {
     "\n    mutation CreateJobRecord($input: CreateJobRecordInput!) {\n        createJobRecord(createJobRecordInput: $input) {\n            id\n        }\n    }\n": types.CreateJobRecordDocument,
     "\n    mutation UpdateJobRecord($input: UpdateJobRecordInput!) {\n        updateJobRecord(updateJobRecordInput: $input) {\n            id\n        }\n    }\n": types.UpdateJobRecordDocument,
     "\n    mutation CreateVariationInitialData($input: CreateVariationInitialDataInput!) {\n        createVariationInitialData(createVariationInitialDataInput: $input) {\n            id\n        }\n    }\n": types.CreateVariationInitialDataDocument,
-    "\n    mutation InitialiseUser {\n\t\tinitialiseUser {\n            id\n        }\n    }\n": types.InitialiseUserDocument,
     "\n\tquery PreSignedUrlWeb($key: String!) {\n\t\tpresignedUrl(key: $key)\n\t}\n": types.PreSignedUrlWebDocument,
-    "\n\tquery AdminPageTableSection($input: SearchUserInput!) {\n\t\tsearchUsers(userSearchInput: $input) {\n\t\t\tid\n\t\t\tname\n\t\t\tphone\n\t\t}\n\t}\n": types.AdminPageTableSectionDocument,
     "\n\tquery CrewPageTableSection($input: SearchUserInput!) {\n\t\tsearchUsers(userSearchInput: $input) {\n\t\t\tid\n\t\t\tname\n\t\t\tuserOrganisation {\n\t\t\t\trole\n\t\t\t}\n\t\t}\n\t}\n": types.CrewPageTableSectionDocument,
     "\n\tmutation CreateJobAttachments($input: CreateJobAttachmentsInput !) {\n\t\tcreateJobAttachments(createJobAttachmentInput: $input) {\n\t\t\tid\n\t\t\tjobId\n\t\t\turl\n\t\t}\n\t}\n": types.CreateJobAttachmentsDocument,
     "\n\tquery JobAttachments($jobId: String!) {\n\t\tjobAttachments(jobId: $jobId) {\n\t\t\tid\n\t\t\turl\n\t\t\tname\n\t\t\ttype\n\t\t}\n\t}\n": types.JobAttachmentsDocument,
@@ -52,6 +50,9 @@ const documents = {
     "\n\tquery JobsTableSearchJobs($input: JobSearchInput!) {\n\t\tsearchJobs(jobSearchInput: $input) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tstatus\n\t\t\tcustomerName\n\t\t\tdueDate\n\t\t\tvariations {\n\t\t\t\tid\n\t\t\t\ttype\n\t\t\t\tflag\n\t\t\t}\n\t\t}\n\t}\n": types.JobsTableSearchJobsDocument,
     "\n\tquery JobWithCrew($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tdescription\n\t\t\townerId\n\t\t\tstatus\n\t\t\tcustomerName\n\t\t\tcreatedAt\n\t\t\tdueDate\n\t\t},\n\t\tjobCrew(jobId: $jobId) {\n\t\t\tid\n\t\t\tname\n\t\t}\n\t}\n": types.JobWithCrewDocument,
     "\n\tquery JobPage($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t},\n\t}\n": types.JobPageDocument,
+    "\n    mutation InviteUser($input: InviteUserInput!) {\n        inviteUser(inviteInput: $input)\n    }\n": types.InviteUserDocument,
+    "\n    mutation InitialiseUser {\n        initialiseUser {\n            id\n        }\n    }\n": types.InitialiseUserDocument,
+    "\n    query IsUserInitialised {\n        isUserInitialised\n    }\n": types.IsUserInitialisedDocument,
     "\n    mutation CreateVariationResource($input: CreateVariationResourceInput!) {\n        createVariationResource(createVariationResourceInput: $input) {\n            id\n            jobRecordId\n            createdAt\n        }\n    }\n": types.CreateVariationResourceDocument,
     "\n    mutation UpdateVariationResource($input: UpdateVariationResourceInput!) {\n        updateVariationResource(updateVariationResourceInput: $input) {\n            id\n            jobRecordId\n        }\n    }\n": types.UpdateVariationResourceDocument,
     " \n    query VariationResources($variationId: String!) {\n        variationResources(variationId: $variationId) {\n            id\n            description\n            type\n            quantity\n            unit\n            unitPrice\n            hours\n            rate\n            numPeople\n            createdAt\n        }\n    }\n": types.VariationResourcesDocument,
@@ -131,15 +132,7 @@ export function graphql(source: "\n    mutation CreateVariationInitialData($inpu
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    mutation InitialiseUser {\n\t\tinitialiseUser {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation InitialiseUser {\n\t\tinitialiseUser {\n            id\n        }\n    }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function graphql(source: "\n\tquery PreSignedUrlWeb($key: String!) {\n\t\tpresignedUrl(key: $key)\n\t}\n"): (typeof documents)["\n\tquery PreSignedUrlWeb($key: String!) {\n\t\tpresignedUrl(key: $key)\n\t}\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n\tquery AdminPageTableSection($input: SearchUserInput!) {\n\t\tsearchUsers(userSearchInput: $input) {\n\t\t\tid\n\t\t\tname\n\t\t\tphone\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery AdminPageTableSection($input: SearchUserInput!) {\n\t\tsearchUsers(userSearchInput: $input) {\n\t\t\tid\n\t\t\tname\n\t\t\tphone\n\t\t}\n\t}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -232,6 +225,18 @@ export function graphql(source: "\n\tquery JobWithCrew($jobId: String!) {\n\t\tj
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n\tquery JobPage($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t},\n\t}\n"): (typeof documents)["\n\tquery JobPage($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t},\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation InviteUser($input: InviteUserInput!) {\n        inviteUser(inviteInput: $input)\n    }\n"): (typeof documents)["\n    mutation InviteUser($input: InviteUserInput!) {\n        inviteUser(inviteInput: $input)\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation InitialiseUser {\n        initialiseUser {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation InitialiseUser {\n        initialiseUser {\n            id\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query IsUserInitialised {\n        isUserInitialised\n    }\n"): (typeof documents)["\n    query IsUserInitialised {\n        isUserInitialised\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

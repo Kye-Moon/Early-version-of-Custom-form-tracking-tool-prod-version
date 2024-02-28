@@ -1,6 +1,5 @@
-import {clsx, type ClassValue} from "clsx";
+import {type ClassValue, clsx} from "clsx";
 import {twMerge} from "tailwind-merge";
-import {UserInfo} from "@/Lib/src/state/state";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -126,8 +125,13 @@ export function formatPhoneNumber(phoneNumber: string) {
 	return cleanedNumber;
 }
 
-export const hasRole = (orgRole: any, role: string) => {
+export const hasOrgRole = (orgRole: any, role: string) => {
 	return orgRole === role;
+}
+
+// Find the key "varify_role" and check if it is the same as the role
+export const hasAppRole = (metadata: any, role:string) => {
+	return metadata['varify_role'] === role;
 }
 
 export function isEmptyObject(obj: {} | null) {

@@ -3,7 +3,7 @@ import {InferType} from "prop-types";
 
 export const newOrgMemberFormSchema = z.object({
 	email: z.string().email({message: "Please enter a valid email address"}),
-	role: z.enum(["org:admin", "org:member"], {
+	role: z.enum(["ADMIN", "MEMBER"], {
 		errorMap: (issue, _ctx) => {
 			return {
 				message: "Please select a role",

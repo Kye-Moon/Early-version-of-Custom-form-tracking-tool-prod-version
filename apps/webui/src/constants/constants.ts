@@ -30,7 +30,7 @@ export const JobStatusSelectOptions: DropSelectOption[] = [
 export const roleSelectOptions: DropSelectOption[] = [
     {
         label: "Member",
-        value: "org:member",
+        value: "MEMBER",
     },
 ];
 

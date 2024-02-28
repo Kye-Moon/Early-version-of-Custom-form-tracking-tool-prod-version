@@ -19,6 +19,10 @@ export interface PageHeadingWithMetaAndActionsProps {
 	 */
 	pageHeading: string;
 	/**
+	 * The sub heading text
+	 */
+	subHeading?: string;
+	/**
 	 * The meta data items to display
 	 */
 	metaDataItems?: MetaDataItemProps[];
@@ -39,6 +43,7 @@ const PageHeadingWithMetaAndActions = ({
 	pageHeading,
 	metaDataItems,
 	actions,
+	subHeading,
 }: PageHeadingWithMetaAndActionsProps) => {
 	return (
 		<div className="lg:flex lg:items-center lg:justify-between ">
@@ -46,6 +51,9 @@ const PageHeadingWithMetaAndActions = ({
 				<h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
 					{pageHeading}
 				</h2>
+				{subHeading && (
+					<p className="mt-1 text-sm text-gray-500">{subHeading}</p>
+				)}
 				{metaDataItems && (
 					<div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
 						{metaDataItems.map((item, index) => (

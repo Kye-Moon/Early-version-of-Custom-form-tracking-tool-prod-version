@@ -150,8 +150,8 @@ type CrewLog {
 }
 
 type Query {
+  isUserInitialised: Boolean!
   searchUsers(userSearchInput: SearchUserInput!): [User!]!
-  checkUserExists(authId: String!): Boolean!
   user(id: String!): User!
   currentUser: User!
   organisation(id: String!): Organisation!
@@ -195,6 +195,7 @@ input JobRecordSearchInput {
 
 type Mutation {
   initialiseUser: User!
+  inviteUser(inviteInput: InviteUserInput!): Boolean!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
   createOrganisation(createOrganisationInput: CreateOrganisationInput!): Organisation!
@@ -220,10 +221,16 @@ type Mutation {
   removeCrewLog(id: Int!): CrewLog!
 }
 
+input InviteUserInput {
+  email: String!
+  role: String!
+}
+
 input UpdateUserInput {
   name: String
   email: String
   phone: String
+  role: String
   authId: String
   id: String!
 }

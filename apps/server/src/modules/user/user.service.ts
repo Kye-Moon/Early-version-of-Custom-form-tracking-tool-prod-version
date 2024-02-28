@@ -9,6 +9,8 @@ import clerkClient from '@clerk/clerk-sdk-node'
 import {OrganisationRepository} from "../organisation/organisation.repository";
 import {UserOrganisationService} from "../user-organisation/user-organisation.service";
 import {Organisation} from "../../drizzle/schema";
+import {InviteUserInput} from "./dto/invite-user.input";
+import {UserOrganisationRepository} from "../user-organisation/user-organisation.repository";
 
 @Injectable()
 export class UserService {
@@ -18,6 +20,7 @@ export class UserService {
         private readonly organisationService: OrganisationService,
         private readonly organisationRepository: OrganisationRepository,
         private readonly userOrganisationService: UserOrganisationService,
+        private readonly userOrganisationRepository: UserOrganisationRepository,
     ) {
     }
 
@@ -25,6 +28,7 @@ export class UserService {
         const organisation = await this.organisationService.findOrCreateByAuthId(this.request.organisationId);
         const authUser = await clerkClient.users.getUser(this.request.userId)
         let user = await this.userRepository.findOneByAuthId(authUser.id);
+        // If user exists, check if they are part of the current organisation, if not, add them
         if (user) {
             const userOrgs = await this.userOrganisationService.getAllByUserId(user.id);
             const userOrg = userOrgs.find((userOrg) => userOrg.organisationId === organisation.id);
@@ -37,7 +41,8 @@ export class UserService {
                 });
             }
         } else {
-            // User is signing up for the first time and was not invited
+            // User has signed In for the first time and does not exist in the database yet. Create a new user
+            // and add them to the current organisation, with the role they have in the organisation. Also update their metadata to show they have been initialised
             user = await this.userRepository.createUser({
                 name: authUser.firstName + ' ' + authUser.lastName,
                 email: authUser.emailAddresses[0].emailAddress,
@@ -50,14 +55,52 @@ export class UserService {
                 organisationId: organisation.id,
                 role: userOrgRole
             });
+            const invitationList = await clerkClient.invitations.getInvitationList({
+                status: 'accepted',
+            })
+            const userInvitation = invitationList.find((invitation) => invitation.emailAddress === authUser.emailAddresses[0].emailAddress);
             await clerkClient.users.updateUserMetadata(user.authId, {
                 publicMetadata: {
                     ...authUser.publicMetadata,
+                    ...userInvitation.publicMetadata,
                     varify_initialised: true
                 }
             })
         }
         return user;
+    }
+
+    /**
+     * Check if the user has been initialised
+     * The user is initialised if their organisation exists, and they are part of it.
+     */
+    async isUserInitialised(): Promise<boolean> {
+        const [organisation, user] = await Promise.all([
+            this.organisationRepository.findByAuthId(this.request.organisationId),
+            this.userRepository.findOneByAuthId(this.request.userId),
+        ]);
+        if (!organisation || !user) {
+            return false;
+        }
+        const userOrg = await this.userOrganisationRepository.findOneByUserAndOrganisation(user.id, organisation.id);
+        return !!userOrg;
+    }
+
+    async invite(input: InviteUserInput) {
+        try {
+            await clerkClient.organizations.createOrganizationInvitation({
+                inviterUserId: this.request.userId,
+                organizationId: this.request.organisationId,
+                role: 'org:member',
+                emailAddress: input.email,
+                publicMetadata: {
+                    'varify_role': input.role
+                }
+            })
+        } catch (e) {
+            console.log(e)
+            throw new Error(e.errors[0].message);
+        }
     }
 
     async search(searchInput: SearchUserInput) {

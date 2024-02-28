@@ -13,7 +13,6 @@ import OrganisationUsersPage from "@/Pages/CrewPage/OrganisationUsersPage";
 import JobRecordPage from "@/Pages/JobRecordPage.tsx/JobRecordPage";
 import ScrollToTop from "./ScrollToTop";
 import Login from "@/Pages/LoginPage/LoginPage";
-import AdminPage from "@/Pages/AdminPage/AdminPage";
 import SettingsPage from "@/Pages/SettingsPage/SettingsPage";
 import {useAuth} from "@clerk/clerk-react";
 
@@ -127,11 +126,6 @@ const crewRoute = new Route({
 	component: OrganisationUsersPage,
 });
 
-const adminRoute = new Route({
-	getParentRoute: () => layoutRoute,
-	path: "/admins",
-	component: AdminPage,
-});
 export const settingsRoute = new Route({
 	getParentRoute: () => layoutRoute,
 	path: "/settings",
@@ -149,7 +143,6 @@ const routeTree = rootRoute.addChildren([
 		jobsRoute.addChildren([jobIndexRoute, jobRoute, editJobRoute]),
 		jobRecordsRoute.addChildren([variationIndexRoute, editVariationRoute]),
 		crewRoute,
-		adminRoute,
 		settingsRoute
 	]),
 ]);
