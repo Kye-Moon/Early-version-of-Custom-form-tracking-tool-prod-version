@@ -34,7 +34,7 @@ export default function AppLayout() {
     }, [user?.publicMetadata.varify_initialised, isSignedIn])
 
     useEffect(() => {
-        if (isSignedIn && !hasAppRole(user?.publicMetadata, 'ADMIN')) {
+        if (isSignedIn && !hasAppRole(user?.publicMetadata, 'ADMIN') && user?.publicMetadata.varify_initialised) {
             toast.error('You do not have permissions to view the dashboard. Please contact your organisation admin', {duration: 10000})
             signOut()
         }
