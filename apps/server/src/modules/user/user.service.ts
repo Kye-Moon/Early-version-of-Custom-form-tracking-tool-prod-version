@@ -49,16 +49,21 @@ export class UserService {
                 authId: authUser.id,
                 status: "ACTIVE",
             });
+            console.log(user)
             const userOrgRole = await this.getUserRoleFromCurrentOrg(organisation);
+            console.log(userOrgRole)
             await this.userOrganisationService.create({
                 userId: user.id,
                 organisationId: organisation.id,
                 role: userOrgRole
             });
+            console.log('created user org')
             const invitationList = await clerkClient.invitations.getInvitationList({
                 status: 'accepted',
             })
+            console.log(invitationList.length)
             const userInvitation = invitationList.find((invitation) => invitation.emailAddress === authUser.emailAddresses[0].emailAddress);
+            console.log(userInvitation)
             await clerkClient.users.updateUserMetadata(user.authId, {
                 publicMetadata: {
                     ...authUser.publicMetadata,
@@ -66,6 +71,7 @@ export class UserService {
                     varify_initialised: true
                 }
             })
+            console.log('updated user metadata')
         }
         return user;
     }
