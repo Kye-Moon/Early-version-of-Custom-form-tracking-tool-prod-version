@@ -72,6 +72,7 @@ export class UserResolver {
     @UseGuards(AuthGuard)
     @ResolveField(() => UserOrganisation)
     async userOrganisation(@Parent() user: User) {
-        return await this.userOrganisationService.getCurrentUserOrganisation();
+        const {id} = user;
+        return await this.userOrganisationService.getCurrentUserOrganisationByUserId(id);
     }
 }

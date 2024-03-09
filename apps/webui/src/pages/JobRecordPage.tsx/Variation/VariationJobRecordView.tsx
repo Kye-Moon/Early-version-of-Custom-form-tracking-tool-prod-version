@@ -9,7 +9,6 @@ import {MyDocument} from "@/Assets/pdfTemplate";
 import useVariationResources from "@/Hooks/useVariationResources";
 import {graphql, VariationQuery} from "gql-types";
 import {Button} from "@/Primitives/Button/Button";
-import {EditableTableV2} from "@/Components/EditableTableV2/EditableTableV2";
 import React from "react";
 
 

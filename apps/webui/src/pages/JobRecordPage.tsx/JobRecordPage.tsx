@@ -13,7 +13,10 @@ export default function JobRecordPage() {
 	return (
 		<>
 			<PageHeadingWithMetaAndActions pageHeading={"Job Record"}/>
-			<BreadCrumb pages={getJobPageBreadCrumb(params.jobRecordId)}/>
+			<BreadCrumb pages={getJobPageBreadCrumb({
+				jobRecordId: params.jobRecordId,
+				jobId: params.jobId
+			})}/>
 			<PageContentSection>
 				<Suspense fallback={<JobRecordLoadingSkeleton/>}>
 					<JobRecordCell jobRecordId={params.jobRecordId}/>
