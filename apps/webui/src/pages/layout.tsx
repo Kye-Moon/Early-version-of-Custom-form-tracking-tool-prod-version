@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import SideBar from "@/Components/Navigation/SideBar/SideBar";
-import StickyTopMobileSideBar from "@/Components/Navigation/StickyTopMobileSideBar/StickyTopMobileSideBar";
+import StickyTopMobileSideBar
+	from "@/Components/Navigation/StickyTopMobileSideBar/StickyTopMobileSideBar";
 import SidebarDialog from "@/Components/Navigation/SidebarDialog/SidebarDialog";
 import {Outlet, useRouter} from "@tanstack/react-router";
 import {OrganizationSwitcher, useAuth, useOrganization, useUser} from "@clerk/clerk-react";
@@ -8,84 +9,77 @@ import Logo from '@/Assets/Logo.png'
 import {Spinner} from "@/Components/Loading/Spinner";
 import {hasAppRole} from "@/Lib/utils";
 import toast from "react-hot-toast";
-import {useLazyQuery, useMutation} from "@apollo/client";
-import {checkUserInitialisedQuery, initialiseUserMutation} from "@/Services/userService";
+import {useMutation} from "@apollo/client";
+import {initialiseUserMutation} from "@/Services/userService";
 
 export default function AppLayout() {
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const {isSignedIn, isLoaded, userId, signOut} = useAuth();
-    const {organization, membership} = useOrganization()
-    const router = useRouter();
-    const {user} = useUser();
-    const [initialiseUser] = useMutation(initialiseUserMutation)
-    const [isInitialised, {data}] = useLazyQuery(checkUserInitialisedQuery, {fetchPolicy: 'cache-first'})
+	const [sidebarOpen, setSidebarOpen] = useState(false);
+	const {isSignedIn, isLoaded, userId, signOut} = useAuth();
+	const {organization, membership} = useOrganization()
+	const router = useRouter();
+	const {user} = useUser();
+	const [initialiseUser] = useMutation(initialiseUserMutation)
 
-    useEffect(() => {
-        const initUser = async () => {
-            console.log('initialising user')
-            const {data} = await isInitialised()
-            if (data?.isUserInitialised === false) {
-                console.log('initialising user')
-                await initialiseUser()
-                await user?.reload()
-                console.log('user initialised and reloaded')
-            }
-        }
-        if (isLoaded && !user?.publicMetadata.varify_initialised) {
-            initUser()
-        }
-    }, [user?.publicMetadata.varify_initialised, isSignedIn])
+	useEffect(() => {
+		const initUser = async () => {
+			await initialiseUser()
+			await user?.reload()
+		}
+		if (isLoaded && !user?.publicMetadata.varify_initialised) {
+			initUser()
+		}
+	}, [user?.publicMetadata.varify_initialised, isSignedIn])
 
-    useEffect(() => {
-        if (isSignedIn && !hasAppRole(user?.publicMetadata, 'ADMIN') && user?.publicMetadata.varify_initialised) {
-            toast.error('You do not have permissions to view the dashboard. Please contact your organisation admin', {duration: 10000})
-            signOut()
-        }
-    }, [organization, membership]);
+	useEffect(() => {
+		if (isSignedIn && !hasAppRole(user?.publicMetadata, 'ADMIN') && user?.publicMetadata.varify_initialised) {
+			toast.error('You do not have permissions to view the dashboard. Please contact your organisation admin', {duration: 10000})
+			signOut()
+		}
+	}, [organization, membership]);
 
-    useEffect(() => {
-        if (!isSignedIn && isLoaded) {
-            router.navigate({to: "/login"});
-        }
-    }, [isSignedIn]);
+	useEffect(() => {
+		if (!isSignedIn && isLoaded) {
+			router.navigate({to: "/login"});
+		}
+	}, [isSignedIn]);
 
-    if (isSignedIn && !organization?.publicMetadata.varify_access) {
-        return (
-            <div className="flex bg-white justify-center items-center h-screen flex-col space-y-6">
-                <img src={Logo} alt={''} className={'h-16'}/>
-                <OrganizationSwitcher/>
-                <h1 className="text-xl font-semibold text-primary">You or your current
-                    organisation does not have access to this product</h1>
-                <p className="text-primary">Please contact your organisation's admin or the owner of
-                    this product to get access</p>
-                <p>Or purchase a subscription at <a className={'text-indigo-600 font-semibold'}
-                                                    href="https://synex.one">Synex.com</a></p>
-            </div>
-        )
-    }
+	if (isSignedIn && !organization?.publicMetadata.varify_access) {
+		return (
+			<div className="flex bg-white justify-center items-center h-screen flex-col space-y-6">
+				<img src={Logo} alt={''} className={'h-16'}/>
+				<OrganizationSwitcher/>
+				<h1 className="text-xl font-semibold text-primary">You or your current
+					organisation does not have access to this product</h1>
+				<p className="text-primary">Please contact your organisation's admin or the owner of
+					this product to get access</p>
+				<p>Or purchase a subscription at <a className={'text-indigo-600 font-semibold'}
+													href="https://synex.one">Synex.com</a></p>
+			</div>
+		)
+	}
 
 
-    if (!user?.publicMetadata.varify_initialised) {
-        return (
-            <div className="flex bg-white justify-center items-center h-screen flex-col space-y-6">
-                <img src={Logo} alt={''} className={'h-16'}/>
-                <Spinner/>
-            </div>
-        )
-    }
+	if (!user?.publicMetadata.varify_initialised) {
+		return (
+			<div className="flex bg-white justify-center items-center h-screen flex-col space-y-6">
+				<img src={Logo} alt={''} className={'h-16'}/>
+				<Spinner/>
+			</div>
+		)
+	}
 
-    return (
-        <>
-            <StickyTopMobileSideBar setOpen={setSidebarOpen}/>
-            <SidebarDialog sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
-            <div className={`hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:flex-col w-60`}>
-                <SideBar/>
-            </div>
-            <main className={"lg:ml-60 flex-grow flex flex-col"}>
-                <div className="p-10 flex flex-col min-h-screen bg-primary-foreground">
-                    <Outlet/>
-                </div>
-            </main>
-        </>
-    );
+	return (
+		<>
+			<StickyTopMobileSideBar setOpen={setSidebarOpen}/>
+			<SidebarDialog sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
+			<div className={`hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:flex-col w-60`}>
+				<SideBar/>
+			</div>
+			<main className={"lg:ml-60 flex-grow flex flex-col"}>
+				<div className="p-10 flex flex-col min-h-screen bg-primary-foreground">
+					<Outlet/>
+				</div>
+			</main>
+		</>
+	);
 }

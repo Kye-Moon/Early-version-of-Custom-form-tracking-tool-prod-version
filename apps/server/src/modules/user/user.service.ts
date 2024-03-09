@@ -24,10 +24,23 @@ export class UserService {
     ) {
     }
 
+    /**
+     * Initialise the user
+     * This function is called when the user logs in for the first time
+     * It checks if the user exists in the database, if not, it creates a new user
+     * It then checks if the user is part of the current organisation, if not, it adds them
+     */
     async initialise(): Promise<User> {
         const organisation = await this.organisationService.findOrCreateByAuthId(this.request.organisationId);
         const authUser = await clerkClient.users.getUser(this.request.userId)
         let user = await this.userRepository.findOneByAuthId(authUser.id);
+        const userOrgRole = await this.getUserRoleFromCurrentOrg(organisation);
+        const invitationList = await clerkClient.organizations.getOrganizationInvitationList({
+            organizationId: this.request.organisationId,
+            status: ['accepted']
+        })
+        const userInvitation = invitationList.find((invitation) => invitation.emailAddress === authUser.emailAddresses[0].emailAddress);
+        const appRole = userOrgRole === 'org:admin' ? "ADMIN" : userInvitation?.publicMetadata['varify_role'] ?? "MEMBER";
         // If user exists, check if they are part of the current organisation, if not, add them
         if (user) {
             const userOrgs = await this.userOrganisationService.getAllByUserId(user.id);
@@ -41,7 +54,7 @@ export class UserService {
                 });
             }
         } else {
-            // User has signed In for the first time and does not exist in the database yet. Create a new user
+            // Used has signed In for the first time and does not exist in the database yet. Create a new user
             // and add them to the current organisation, with the role they have in the organisation. Also update their metadata to show they have been initialised
             user = await this.userRepository.createUser({
                 name: authUser.firstName + ' ' + authUser.lastName,
@@ -49,32 +62,19 @@ export class UserService {
                 authId: authUser.id,
                 status: "ACTIVE",
             });
-            console.log(user)
-            const userOrgRole = await this.getUserRoleFromCurrentOrg(organisation);
-            console.log(userOrgRole)
             await this.userOrganisationService.create({
                 userId: user.id,
                 organisationId: organisation.id,
                 role: userOrgRole
             });
-            console.log('created user org')
-            const invitationList = await clerkClient.organizations.getOrganizationInvitationList({
-                organizationId: this.request.organisationId,
-                status: ['accepted']
-            })
-            console.log(invitationList.length)
-            const userInvitation = invitationList.find((invitation) => invitation.emailAddress === authUser.emailAddresses[0].emailAddress);
-            console.log(userInvitation)
-            const appRole = userOrgRole === 'org:admin' ? "ADMIN" : userInvitation?.publicMetadata['varify_role'] ?? "MEMBER";
-            await clerkClient.users.updateUserMetadata(user.authId, {
-                publicMetadata: {
-                    ...authUser.publicMetadata,
-                    varify_role: appRole,
-                    varify_initialised: true
-                }
-            })
-            console.log('updated user metadata')
         }
+        await clerkClient.users.updateUserMetadata(user.authId, {
+            publicMetadata: {
+                ...authUser.publicMetadata,
+                varify_role: appRole,
+                varify_initialised: true
+            }
+        })
         return user;
     }
 

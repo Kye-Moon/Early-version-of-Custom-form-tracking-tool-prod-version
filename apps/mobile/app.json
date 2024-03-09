@@ -5,7 +5,7 @@
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "synex-varify",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
