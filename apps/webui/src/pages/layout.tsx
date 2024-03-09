@@ -9,26 +9,13 @@ import Logo from '@/Assets/Logo.png'
 import {Spinner} from "@/Components/Loading/Spinner";
 import {hasAppRole} from "@/Lib/utils";
 import toast from "react-hot-toast";
-import {useMutation} from "@apollo/client";
-import {initialiseUserMutation} from "@/Services/userService";
 
 export default function AppLayout() {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const {isSignedIn, isLoaded, userId, signOut} = useAuth();
+	const {isSignedIn, isLoaded, signOut} = useAuth();
 	const {organization, membership} = useOrganization()
-	const router = useRouter();
-	const {user} = useUser();
-	const [initialiseUser] = useMutation(initialiseUserMutation)
+	const router = useRouter();const {user} = useUser();
 
-	useEffect(() => {
-		const initUser = async () => {
-			await initialiseUser()
-			await user?.reload()
-		}
-		if (isLoaded && !user?.publicMetadata.varify_initialised) {
-			initUser()
-		}
-	}, [user?.publicMetadata.varify_initialised, isSignedIn])
 
 	useEffect(() => {
 		if (isSignedIn && !hasAppRole(user?.publicMetadata, 'ADMIN') && user?.publicMetadata.varify_initialised) {

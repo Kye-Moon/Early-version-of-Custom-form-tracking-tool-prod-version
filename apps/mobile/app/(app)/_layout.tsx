@@ -1,13 +1,21 @@
-import {Redirect, Stack, useRouter} from 'expo-router';
+import {Stack, useRouter} from 'expo-router';
 import React, {useEffect, useState} from 'react';
-import {useAuth} from "@clerk/clerk-expo";
+import {useAuth, useUser} from "@clerk/clerk-expo";
 import {setContext} from "@apollo/client/link/context";
-import {ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache} from "@apollo/client";
+import {ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache, useMutation} from "@apollo/client";
 import {useRecoilValueLoadable} from "recoil";
 import {apiUrlState} from "../../state/atoms";
 import {onError} from "@apollo/client/link/error";
-import {Spinner, View} from "@gluestack-ui/themed";
+import {Image, Spinner, View} from "@gluestack-ui/themed";
+import {graphql} from "gql-types";
 
+export const initialiseUserMutation = graphql(`
+    mutation InitialiseUser {
+        initialiseUser {
+            id
+        }
+    }
+`)
 export default function RootLayout() {
     const {isLoaded, isSignedIn, userId, sessionId, getToken, signOut} = useAuth();
     const [clientReady, setClientReady] = useState(false);
@@ -57,9 +65,11 @@ export default function RootLayout() {
         }
     }, [isLoaded, userId, sessionId, getToken]);
 
+
     if (!isLoaded || !clientReady || !client) {
         return (
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Image alt={'logo'} source={require('../../assets/images/icon.png')} style={{width: 100, height: 100}}/>
                 <Spinner/>
             </View>
         ) // Show loading indicator while client is not ready
@@ -74,6 +84,29 @@ export default function RootLayout() {
 
 
 function RootLayoutNav() {
+    const [initialiseUser] = useMutation(initialiseUserMutation)
+    const {user} = useUser();
+    const {isLoaded, isSignedIn} = useAuth();
+
+    useEffect(() => {
+        const initUser = async () => {
+            await initialiseUser()
+            await user?.reload()
+        }
+        if (isLoaded && !user?.publicMetadata.varify_initialised) {
+            initUser()
+        }
+    }, [user?.publicMetadata.varify_initialised, isSignedIn])
+
+    if (!user?.publicMetadata.varify_initialised) {
+        return (
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Image alt={'logo'} source={require('../../assets/images/icon.png')} style={{width: 100, height: 100}}/>
+                <Spinner/>
+            </View>
+        )
+    }
+
     return (
         <Stack>
             <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
