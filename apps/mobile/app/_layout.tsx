@@ -2,7 +2,6 @@ import {Slot, SplashScreen} from "expo-router";
 import {GluestackUIProvider, Text} from "@gluestack-ui/themed"
 import {RecoilRoot} from "recoil";
 import React, {Suspense, useEffect} from "react";
-import {ApolloWrapper} from "../context/ApolloWrapper";
 import {config} from "../config/gluestack-ui.config";
 import {loadDevMessages, loadErrorMessages} from "@apollo/client/dev";
 
@@ -42,9 +41,7 @@ export default function Root() {
             <ClerkProvider tokenCache={tokenCache} publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}>
                 <RecoilRoot>
                     <Suspense fallback={<Text>Loading...</Text>}>
-                        <ErrorBoundary FallbackComponent={GlobalFallback}>
-                                <Slot/>
-                        </ErrorBoundary>
+                        <Slot/>
                     </Suspense>
                 </RecoilRoot>
             </ClerkProvider>
