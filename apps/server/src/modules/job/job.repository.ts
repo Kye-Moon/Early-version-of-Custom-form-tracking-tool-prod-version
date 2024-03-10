@@ -17,7 +17,7 @@ export class JobRepository {
     }
 
     async search(searchInput: JobSearchInput & { userId: string, organisationId: string }) {
-        return await this.db.select()
+        return await this.db.select({job: job})
             .from(job)
             .leftJoin(jobCrew, (eq(job.id, jobCrew.jobId)))
             .where(
@@ -29,9 +29,10 @@ export class JobRepository {
                     )
                 )
             )
+            .groupBy(job.id)
             .offset(searchInput.offset)
             .limit(searchInput.limit)
-            .orderBy(asc(job.createdAt))
+            .orderBy(asc(job.createdAt));
     }
 
     // async ownerSearch({orgId, limit, offset}: { orgId: string, limit: number, offset: number }): Promise<Job[]> {
