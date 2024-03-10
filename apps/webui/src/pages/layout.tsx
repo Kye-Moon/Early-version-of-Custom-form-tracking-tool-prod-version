@@ -25,9 +25,7 @@ export default function AppLayout() {
 			await initialiseUser()
 			await user?.reload()
 		}
-		if (isLoaded && !user?.publicMetadata.varify_initialised) {
-			initUser()
-		}
+		initUser()
 	}, [user?.publicMetadata.varify_initialised, isSignedIn])
 
 	useEffect(() => {
