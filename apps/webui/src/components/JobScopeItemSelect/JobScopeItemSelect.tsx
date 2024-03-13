@@ -25,7 +25,7 @@ export default function JobScopeItemSelect({value, setValue, jobId}: JobSelectPr
 	const [open, setOpen] = useState(false);
 	const {data} = useSuspenseQuery(getJobScopeItems, {
 		variables: {jobId: jobId},
-		skip: !jobId
+		skip: !jobId,
 	});
 	const items = data?.jobScopeItems?.map((item: GetJobScopeItemsQuery['jobScopeItems'][0]) => ({
 		value: item.id,

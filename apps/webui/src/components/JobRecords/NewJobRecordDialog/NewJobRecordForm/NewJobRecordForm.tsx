@@ -25,6 +25,7 @@ import {stripEmptyValues} from "@/Lib/utils";
 import {preSignedUrlQuery,} from "@/Lib/s3";
 import {uploadImages} from "@/Lib/s3";
 import SelectLoading from "@/Components/Loading/SelectLoading";
+import {Checkbox} from "@/Primitives/Checkbox";
 
 /**
  * Props for the NewProjectForm component
@@ -44,6 +45,7 @@ interface NewProjectFormProps {
 export default function NewJobRecordForm({onFormSubmitComplete}: NewProjectFormProps) {
 	const [files, setFiles] = useState<File[]>([]);
 	const [getPresignedUrl] = useLazyQuery(preSignedUrlQuery)
+	const [createAnother, setCreateAnother] = useState(false)
 
 	const [saveDetails, {loading}] = useMutation(createMutation, {
 		onError: (error) => toast.error("There was an error saving the job record"),
@@ -102,9 +104,16 @@ export default function NewJobRecordForm({onFormSubmitComplete}: NewProjectFormP
 				}
 			})
 		}
-		form.reset()
-		if (onFormSubmitComplete) {
-			onFormSubmitComplete();
+		if (!createAnother) {
+			if (onFormSubmitComplete) {
+				onFormSubmitComplete();
+			}
+			form.reset()
+		}else {
+			// reset the form and set the job id to the current job id
+			form.reset({
+				jobId: form.watch('jobId')
+			})
 		}
 	}
 
@@ -217,7 +226,20 @@ export default function NewJobRecordForm({onFormSubmitComplete}: NewProjectFormP
 					</div>
 					}
 				</div>
-				<div className={"flex justify-end"}>
+				<div className={"flex justify-end space-x-8"}>
+					<div className={"flex items-center space-x-2"}>
+						<div className="flex items-center space-x-2">
+							<label
+								htmlFor="another"
+								className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+							>
+								Create another
+							</label>
+							<Checkbox id="another" checked={createAnother}
+									  onCheckedChange={() => setCreateAnother(!createAnother)}/>
+						</div>
+					</div>
+
 					<LoadingButton label={"Submit"} loadingStatus={loading || updateLoading}
 								   type={"submit"}/>
 				</div>
