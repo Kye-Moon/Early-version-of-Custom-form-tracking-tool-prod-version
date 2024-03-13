@@ -2,8 +2,8 @@ import ComboBox from "@/Components/ComboBox/ComboBox";
 import {useState} from "react";
 import {Label} from "@/Primitives/Label";
 import {useSuspenseQuery} from "@apollo/client";
-import {jobSelectSearchJobs} from "@/Services/jobService";
-import {JobSelectSearchQuery} from "gql-types";
+import {GetJobScopeItemsQuery} from "gql-types";
+import {getJobScopeItems} from "@/Services/jobScopeItemService";
 
 /*
  * CustomerSelect Props
@@ -18,25 +18,29 @@ interface JobSelectProps {
 	 * @param value
 	 */
 	setValue: (value: string) => void;
+	jobId: string;
 }
 
-export default function JobSelect({value, setValue}: JobSelectProps) {
+export default function JobScopeItemSelect({value, setValue, jobId}: JobSelectProps) {
 	const [open, setOpen] = useState(false);
-	const {data} = useSuspenseQuery(jobSelectSearchJobs, {variables: {input: {}}});
-	const jobs = data?.searchJobs?.map((job: JobSelectSearchQuery['searchJobs'][0]) => ({
-		value: job.id,
-		label: job.title,
+	const {data} = useSuspenseQuery(getJobScopeItems, {
+		variables: {jobId: jobId},
+		skip: !jobId
+	});
+	const items = data?.jobScopeItems?.map((item: GetJobScopeItemsQuery['jobScopeItems'][0]) => ({
+		value: item.id,
+		label: `[${item.reference}] - ${item.title}`
 	})) || [];
 
 	return (
 		<div className={"flex flex-col space-y-1"}>
-			<Label>Select Job</Label>
+			<Label>Select Scope Item</Label>
 			<ComboBox
 				open={open}
 				setOpen={setOpen}
 				value={value}
 				setValue={setValue}
-				options={jobs}
+				options={items}
 			/>
 		</div>
 	);

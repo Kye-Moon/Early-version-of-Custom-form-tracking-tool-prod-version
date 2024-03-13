@@ -112,17 +112,6 @@ export default function NewJobRecordForm() {
         onCompleted: (data) => showSuccessToast({toast, message: 'Job record images saved'}),
     })
 
-    // const [saveCrewLog, {loading: crewLogLoading}] = useMutation(createCrewLogMutation, {
-    //     onError: (error) => showErrorToast({error, toast}),
-    //     onCompleted: (data) => showSuccessToast({toast, message: 'Crew log saved'}),
-    //     refetchQueries: [{query: variationsCellQuery, variables: {input: {}}}],
-    //     awaitRefetchQueries: true
-    // })
-    // const [updateCrewLog, {loading: updateCrewLogLoading}] = useMutation(updateCrewLogMutation, {
-    //     onError: (error) => showErrorToast({toast, error}),
-    // })
-
-
     const onSubmit = async (data: any) => {
         const strippedData = stripEmptyValues(data)
 
@@ -160,25 +149,6 @@ export default function NewJobRecordForm() {
         router.push('/')
     };
 
-    // const setStartTime = (event: DateTimePickerEvent, date: Date | undefined) => {
-    //     const {
-    //         type,
-    //         nativeEvent: {timestamp},
-    //     } = event;
-    //     if (date) {
-    //         form.setValue('startTime', date)
-    //     }
-    // };
-    //
-    // const setEndTime = (event: DateTimePickerEvent, date: Date | undefined) => {
-    //     const {
-    //         type,
-    //         nativeEvent: {timestamp},
-    //     } = event;
-    //     if (date) {
-    //         form.setValue('endTime', date)
-    //     }
-    // };
 
     return (
         <>
@@ -262,34 +232,6 @@ export default function NewJobRecordForm() {
                                 )}
                             />
                         )}
-                        {/*{recordType === 'CREW_LOG' && (*/}
-                        {/*    <>*/}
-                        {/*        <Controller*/}
-                        {/*            control={form.control}*/}
-                        {/*            name="startTime"*/}
-                        {/*            render={({field, formState, fieldState}) => (*/}
-                        {/*                <FormInputWrapper title={'Start time'} formState={formState}*/}
-                        {/*                                  field={field}>*/}
-                        {/*                    <RNDateTimePicker mode="time"*/}
-                        {/*                                      value={dayjs(field.value).toDate()}*/}
-                        {/*                                      onChange={(event, date) => setStartTime(event, date)}/>*/}
-                        {/*                </FormInputWrapper>*/}
-                        {/*            )}*/}
-                        {/*        />*/}
-                        {/*        <Controller*/}
-                        {/*            control={form.control}*/}
-                        {/*            name="endTime"*/}
-                        {/*            render={({field, formState, fieldState}) => (*/}
-                        {/*                <FormInputWrapper title={'Finish time'} formState={formState}*/}
-                        {/*                                  field={field}>*/}
-                        {/*                    <RNDateTimePicker mode="time"*/}
-                        {/*                                      value={dayjs(field.value).toDate()}*/}
-                        {/*                                      onChange={(event, date) => setEndTime(event, date)}/>*/}
-                        {/*                </FormInputWrapper>*/}
-                        {/*            )}*/}
-                        {/*        />*/}
-                        {/*    </>*/}
-                        {/*)}*/}
                         <Box>
                             <HStack marginTop={12} width={'$full'} gap={'$4'} justifyContent='space-between'
                                     alignItems={'center'}>

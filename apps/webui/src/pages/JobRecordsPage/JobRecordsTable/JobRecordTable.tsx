@@ -29,7 +29,7 @@ export default function JobRecordTable({jobId}: VariationTableProps) {
 				createdAt: record.createdAt,
 			}
 		})
-	}, [])
+	}, [data?.searchJobRecords])
 
 
 	//Empty state

@@ -26,6 +26,40 @@ export const JobStatusSelectOptions: DropSelectOption[] = [
     },
 ];
 
+export const jobRecordTypeSelectOptions: DropSelectOption[] = [
+	{
+		label: "Variation",
+		value: "VARIATION",
+	},
+	{
+		label: "Note",
+		value: "NOTE",
+	},
+	{
+		label: "QA",
+		value: "QA",
+	},
+	{
+		label: "Safety",
+		value: "SAFETY",
+	},
+];
+
+export const riskLevelSelectOptions: DropSelectOption[] = [
+	{
+		label: "High",
+		value: "HIGH_RISK",
+	},
+	{
+		label: "Medium",
+		value: "MEDIUM_RISK",
+	},
+	{
+		label: "Low",
+		value: "LOW_RISK",
+	},
+];
+
 
 export const roleSelectOptions: DropSelectOption[] = [
     {

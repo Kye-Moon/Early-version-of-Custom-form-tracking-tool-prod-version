@@ -1,5 +1,5 @@
-import { graphql, Job, JobsTableSearchJobsQuery } from "gql-types";
-import { JobsTableColumn } from "@/Components/Jobs/JobsTable/JobsTableColumns";
+import {graphql, JobsTableSearchJobsQuery} from "gql-types";
+import {JobsTableColumn} from "@/Components/Jobs/JobsTable/JobsTableColumns";
 
 export const createNewJob = graphql(`
 	mutation CreateJobMutation($input: CreateJobInput!) {
@@ -46,6 +46,15 @@ export const jobTableSearchJobs = graphql(`
 			}
 		}
 	}
+`);
+
+export const jobSelectSearchJobs = graphql(`
+    query JobSelectSearch($input: JobSearchInput!) {
+        searchJobs(jobSearchInput: $input) {
+            id
+            title
+        }
+    }
 `);
 
 export const jobWithCrewQuery = graphql(`

@@ -172,3 +172,14 @@ export const convertFileTypeNameToReadable = (fileType: string) => {
 			return 'Unknown';
 	}
 };
+
+
+export const stripEmptyValues = (obj: any) => {
+	const newObj: any = {};
+	Object.entries(obj).forEach(([key, value]) => {
+		if (value) {
+			newObj[key] = value;
+		}
+	});
+	return newObj;
+}

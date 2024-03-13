@@ -19,7 +19,7 @@ export const initialiseUserMutation = graphql(`
     }
 `)
 export default function RootLayout() {
-    const {isLoaded, isSignedIn, userId, sessionId, getToken, signOut} = useAuth();
+    const {isLoaded, getToken, signOut} = useAuth();
     const [client, setClient] = useState<ApolloClient<any> | null>(null);
     const apiUrl = useRecoilValueLoadable(apiUrlState)
     const router = useRouter();
@@ -94,7 +94,9 @@ function RootLayoutNav() {
             await initialiseUser()
             await user?.reload()
         }
+        // if (isSignedIn && !user?.publicMetadata.varify_initialised){
         initUser()
+        // }
     }, [user?.publicMetadata.varify_initialised, isSignedIn])
 
     if (!user?.publicMetadata.varify_initialised) {
