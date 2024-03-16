@@ -18,10 +18,28 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type Attachment = {
+  __typename?: 'Attachment';
+  createdAt: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  referenceId: Scalars['String']['output'];
+  referenceType: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
+  url: Scalars['String']['output'];
+};
+
 export type AttachmentsInput = {
   name: Scalars['String']['input'];
   type: Scalars['String']['input'];
   url: Scalars['String']['input'];
+};
+
+export type CreateAttachmentsInput = {
+  attachments: Array<AttachmentsInput>;
+  referenceId: Scalars['String']['input'];
+  referenceType: Scalars['String']['input'];
 };
 
 export type CreateCrewLogInput = {
@@ -32,16 +50,12 @@ export type CreateCrewLogInput = {
   startTime?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type CreateJobAttachmentsInput = {
-  attachments: Array<AttachmentsInput>;
-  jobId: Scalars['String']['input'];
-};
-
 export type CreateJobInput = {
   crew?: InputMaybe<Array<Scalars['String']['input']>>;
   customerName?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   dueDate?: InputMaybe<Scalars['DateTime']['input']>;
+  projectId?: InputMaybe<Scalars['String']['input']>;
   scopeItems?: InputMaybe<Array<CreateJobScopeItemViaJobInput>>;
   status?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
@@ -81,6 +95,13 @@ export type CreateOrganisationInput = {
   authId: Scalars['String']['input'];
   logoUrl?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+};
+
+export type CreateProjectInput = {
+  customer: Scalars['String']['input'];
+  description: Scalars['String']['input'];
+  status: Scalars['String']['input'];
+  title: Scalars['String']['input'];
 };
 
 export type CreateVariationInitialDataInput = {
@@ -123,30 +144,19 @@ export type InviteUserInput = {
 
 export type Job = {
   __typename?: 'Job';
-  attachments: Array<JobAttachment>;
+  attachments: Array<Attachment>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   customerName?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   dueDate?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['String']['output'];
-  organisationId: Scalars['String']['output'];
-  ownerId: Scalars['String']['output'];
+  organisationId?: Maybe<Scalars['String']['output']>;
+  ownerId?: Maybe<Scalars['String']['output']>;
   scopeItems?: Maybe<Array<JobScopeItem>>;
   status?: Maybe<Scalars['String']['output']>;
-  title: Scalars['String']['output'];
+  title?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   variations?: Maybe<Array<JobRecord>>;
-};
-
-export type JobAttachment = {
-  __typename?: 'JobAttachment';
-  createdAt: Scalars['String']['output'];
-  id: Scalars['String']['output'];
-  jobId: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  type: Scalars['String']['output'];
-  updatedAt: Scalars['String']['output'];
-  url: Scalars['String']['output'];
 };
 
 export type JobCrewMember = {
@@ -207,17 +217,19 @@ export type JobSearchInput = {
   includeOwner?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  projectId?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createAttachments: Array<Attachment>;
   createCrewLog: CrewLog;
   createJob: Job;
-  createJobAttachments: Array<JobAttachment>;
   createJobRecord: JobRecord;
   createJobScopeItem: JobScopeItem;
   createOrganisation: Organisation;
+  createProject: Project;
   createVariationInitialData: VariationInitialData;
   createVariationResource: VariationResource;
   deleteJob: Scalars['Boolean']['output'];
@@ -227,6 +239,7 @@ export type Mutation = {
   removeJobAttachment: Scalars['Boolean']['output'];
   removeJobScopeItem: JobScopeItem;
   removeOrganisation: Organisation;
+  removeProject: Project;
   removeUser: User;
   removeVariation: JobRecord;
   removeVariationResource: VariationResource;
@@ -235,8 +248,14 @@ export type Mutation = {
   updateJobRecord: JobRecord;
   updateJobScopeItem: JobScopeItem;
   updateOrganisation: Organisation;
+  updateProject: Project;
   updateUser: User;
   updateVariationResource: VariationResource;
+};
+
+
+export type MutationCreateAttachmentsArgs = {
+  createAttachmentInput: CreateAttachmentsInput;
 };
 
 
@@ -247,11 +266,6 @@ export type MutationCreateCrewLogArgs = {
 
 export type MutationCreateJobArgs = {
   createJobInput: CreateJobInput;
-};
-
-
-export type MutationCreateJobAttachmentsArgs = {
-  createJobAttachmentInput: CreateJobAttachmentsInput;
 };
 
 
@@ -267,6 +281,11 @@ export type MutationCreateJobScopeItemArgs = {
 
 export type MutationCreateOrganisationArgs = {
   createOrganisationInput: CreateOrganisationInput;
+};
+
+
+export type MutationCreateProjectArgs = {
+  createProjectInput: CreateProjectInput;
 };
 
 
@@ -310,6 +329,11 @@ export type MutationRemoveOrganisationArgs = {
 };
 
 
+export type MutationRemoveProjectArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationRemoveUserArgs = {
   id: Scalars['Int']['input'];
 };
@@ -350,6 +374,11 @@ export type MutationUpdateOrganisationArgs = {
 };
 
 
+export type MutationUpdateProjectArgs = {
+  updateProjectInput: UpdateProjectInput;
+};
+
+
 export type MutationUpdateUserArgs = {
   updateUserInput: UpdateUserInput;
 };
@@ -366,19 +395,34 @@ export type Organisation = {
   name: Scalars['String']['output'];
 };
 
+export type Project = {
+  __typename?: 'Project';
+  createdAt: Scalars['String']['output'];
+  customer: Scalars['String']['output'];
+  description: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  jobs?: Maybe<Array<Job>>;
+  organisationId: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  attachments: Array<Attachment>;
   crewLog: CrewLog;
   currentUser: User;
   isUserInitialised: Scalars['Boolean']['output'];
   job: Job;
-  jobAttachment: JobAttachment;
-  jobAttachments: Array<JobAttachment>;
+  jobAttachment: Attachment;
   jobCrew: Array<JobCrewMember>;
   jobRecord: JobRecord;
   jobScopeItems: Array<JobScopeItem>;
   organisation: Organisation;
   presignedUrl: Scalars['String']['output'];
+  project: Project;
+  projects: Array<Project>;
   searchJobRecords: Array<JobRecord>;
   searchJobs: Array<Job>;
   searchUsers: Array<User>;
@@ -386,6 +430,11 @@ export type Query = {
   variationResource: VariationResource;
   variationResourceSummary: VariationResourceSummary;
   variationResources: Array<VariationResource>;
+};
+
+
+export type QueryAttachmentsArgs = {
+  referenceId: Scalars['String']['input'];
 };
 
 
@@ -401,11 +450,6 @@ export type QueryJobArgs = {
 
 export type QueryJobAttachmentArgs = {
   id: Scalars['Int']['input'];
-};
-
-
-export type QueryJobAttachmentsArgs = {
-  jobId: Scalars['String']['input'];
 };
 
 
@@ -431,6 +475,11 @@ export type QueryOrganisationArgs = {
 
 export type QueryPresignedUrlArgs = {
   key: Scalars['String']['input'];
+};
+
+
+export type QueryProjectArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -492,6 +541,7 @@ export type UpdateJobInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   dueDate?: InputMaybe<Scalars['DateTime']['input']>;
   id: Scalars['String']['input'];
+  projectId?: InputMaybe<Scalars['String']['input']>;
   scopeItems?: InputMaybe<Array<CreateJobScopeItemViaJobInput>>;
   status?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
@@ -527,6 +577,14 @@ export type UpdateOrganisationInput = {
   id: Scalars['String']['input'];
   logoUrl?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateProjectInput = {
+  customer?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  status?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateUserInput = {
@@ -635,21 +693,21 @@ export type JobCellQueryVariables = Exact<{
 }>;
 
 
-export type JobCellQuery = { __typename?: 'Query', job: { __typename?: 'Job', id: string, title: string, description?: string | null, status?: string | null, customerName?: string | null, dueDate?: any | null, variations?: Array<{ __typename?: 'JobRecord', id: string, title: string, description?: string | null }> | null, attachments: Array<{ __typename?: 'JobAttachment', id: string, name: string, url: string }> } };
+export type JobCellQuery = { __typename?: 'Query', job: { __typename?: 'Job', id: string, title?: string | null, description?: string | null, status?: string | null, customerName?: string | null, dueDate?: any | null, variations?: Array<{ __typename?: 'JobRecord', id: string, title: string, description?: string | null }> | null, attachments: Array<{ __typename?: 'Attachment', id: string, name: string, url: string }> } };
 
 export type VariationCellQueryVariables = Exact<{
   variationId: Scalars['String']['input'];
 }>;
 
 
-export type VariationCellQuery = { __typename?: 'Query', jobRecord: { __typename?: 'JobRecord', id: string, title: string, description?: string | null, job: { __typename?: 'Job', title: string, customerName?: string | null }, submittedBy: { __typename?: 'User', name: string }, initialData?: { __typename?: 'VariationInitialData', hours?: string | null, numPeople?: string | null, who?: string | null, materials?: string | null, equipment?: string | null } | null, images: Array<{ __typename?: 'JobRecordImage', id: string, url: string }>, scopeItem?: { __typename?: 'JobScopeItem', title?: string | null, reference?: string | null, description?: string | null } | null } };
+export type VariationCellQuery = { __typename?: 'Query', jobRecord: { __typename?: 'JobRecord', id: string, title: string, description?: string | null, job: { __typename?: 'Job', title?: string | null, customerName?: string | null }, submittedBy: { __typename?: 'User', name: string }, initialData?: { __typename?: 'VariationInitialData', hours?: string | null, numPeople?: string | null, who?: string | null, materials?: string | null, equipment?: string | null } | null, images: Array<{ __typename?: 'JobRecordImage', id: string, url: string }>, scopeItem?: { __typename?: 'JobScopeItem', title?: string | null, reference?: string | null, description?: string | null } | null } };
 
 export type JobSelectQueryVariables = Exact<{
   input: JobSearchInput;
 }>;
 
 
-export type JobSelectQuery = { __typename?: 'Query', searchJobs: Array<{ __typename?: 'Job', id: string, title: string }> };
+export type JobSelectQuery = { __typename?: 'Query', searchJobs: Array<{ __typename?: 'Job', id: string, title?: string | null }> };
 
 export type GetScopeItemsQueryVariables = Exact<{
   jobId: Scalars['String']['input'];
@@ -663,14 +721,14 @@ export type JobsCellQueryVariables = Exact<{
 }>;
 
 
-export type JobsCellQuery = { __typename?: 'Query', searchJobs: Array<{ __typename?: 'Job', id: string, title: string, customerName?: string | null, status?: string | null, dueDate?: any | null, description?: string | null }> };
+export type JobsCellQuery = { __typename?: 'Query', searchJobs: Array<{ __typename?: 'Job', id: string, title?: string | null, customerName?: string | null, status?: string | null, dueDate?: any | null, description?: string | null }> };
 
 export type VariationsCellQueryVariables = Exact<{
   input: JobRecordSearchInput;
 }>;
 
 
-export type VariationsCellQuery = { __typename?: 'Query', searchJobRecords: Array<{ __typename?: 'JobRecord', id: string, title: string, description?: string | null, type: string, job: { __typename?: 'Job', title: string }, submittedBy: { __typename?: 'User', name: string } }> };
+export type VariationsCellQuery = { __typename?: 'Query', searchJobRecords: Array<{ __typename?: 'JobRecord', id: string, title: string, description?: string | null, type: string, job: { __typename?: 'Job', title?: string | null }, submittedBy: { __typename?: 'User', name: string } }> };
 
 export type CreateCrewLogMutationVariables = Exact<{
   input: CreateCrewLogInput;
@@ -722,18 +780,18 @@ export type CrewPageTableSectionQueryVariables = Exact<{
 export type CrewPageTableSectionQuery = { __typename?: 'Query', searchUsers: Array<{ __typename?: 'User', id: string, name: string, userOrganisation?: { __typename?: 'UserOrganisation', role: string } | null }> };
 
 export type CreateJobAttachmentsMutationVariables = Exact<{
-  input: CreateJobAttachmentsInput;
+  input: CreateAttachmentsInput;
 }>;
 
 
-export type CreateJobAttachmentsMutation = { __typename?: 'Mutation', createJobAttachments: Array<{ __typename?: 'JobAttachment', id: string, jobId: string, url: string }> };
+export type CreateJobAttachmentsMutation = { __typename?: 'Mutation', createAttachments: Array<{ __typename?: 'Attachment', id: string, referenceId: string, url: string }> };
 
 export type JobAttachmentsQueryVariables = Exact<{
-  jobId: Scalars['String']['input'];
+  referenceId: Scalars['String']['input'];
 }>;
 
 
-export type JobAttachmentsQuery = { __typename?: 'Query', jobAttachments: Array<{ __typename?: 'JobAttachment', id: string, url: string, name: string, type: string }> };
+export type JobAttachmentsQuery = { __typename?: 'Query', attachments: Array<{ __typename?: 'Attachment', id: string, url: string, name: string, type: string }> };
 
 export type DeleteJobAttachmentMutationVariables = Exact<{
   input: Scalars['String']['input'];
@@ -754,7 +812,7 @@ export type JobDetailsQueryVariables = Exact<{
 }>;
 
 
-export type JobDetailsQuery = { __typename?: 'Query', job: { __typename?: 'Job', id: string, title: string, description?: string | null, ownerId: string, status?: string | null, customerName?: string | null, createdAt?: any | null, dueDate?: any | null } };
+export type JobDetailsQuery = { __typename?: 'Query', job: { __typename?: 'Job', id: string, title?: string | null, description?: string | null, ownerId?: string | null, status?: string | null, customerName?: string | null, createdAt?: any | null, dueDate?: any | null } };
 
 export type DeleteJobMutationVariables = Exact<{
   input: Scalars['String']['input'];
@@ -832,7 +890,7 @@ export type CreateJobMutationMutationVariables = Exact<{
 }>;
 
 
-export type CreateJobMutationMutation = { __typename?: 'Mutation', createJob: { __typename?: 'Job', id: string, title: string } };
+export type CreateJobMutationMutation = { __typename?: 'Mutation', createJob: { __typename?: 'Job', id: string, title?: string | null } };
 
 export type UpdateJobMutationVariables = Exact<{
   input: UpdateJobInput;
@@ -846,35 +904,68 @@ export type DashboardSearchJobsQueryVariables = Exact<{
 }>;
 
 
-export type DashboardSearchJobsQuery = { __typename?: 'Query', searchJobs: Array<{ __typename?: 'Job', id: string, title: string, customerName?: string | null, status?: string | null, dueDate?: any | null, description?: string | null }> };
+export type DashboardSearchJobsQuery = { __typename?: 'Query', searchJobs: Array<{ __typename?: 'Job', id: string, title?: string | null, customerName?: string | null, status?: string | null, dueDate?: any | null, description?: string | null }> };
 
 export type JobsTableSearchJobsQueryVariables = Exact<{
   input: JobSearchInput;
 }>;
 
 
-export type JobsTableSearchJobsQuery = { __typename?: 'Query', searchJobs: Array<{ __typename?: 'Job', id: string, title: string, status?: string | null, customerName?: string | null, dueDate?: any | null, variations?: Array<{ __typename?: 'JobRecord', id: string, type: string, flag?: string | null }> | null }> };
+export type JobsTableSearchJobsQuery = { __typename?: 'Query', searchJobs: Array<{ __typename?: 'Job', id: string, title?: string | null, status?: string | null, customerName?: string | null, dueDate?: any | null, variations?: Array<{ __typename?: 'JobRecord', id: string, type: string, flag?: string | null }> | null }> };
 
 export type JobSelectSearchQueryVariables = Exact<{
   input: JobSearchInput;
 }>;
 
 
-export type JobSelectSearchQuery = { __typename?: 'Query', searchJobs: Array<{ __typename?: 'Job', id: string, title: string }> };
+export type JobSelectSearchQuery = { __typename?: 'Query', searchJobs: Array<{ __typename?: 'Job', id: string, title?: string | null }> };
 
 export type JobWithCrewQueryVariables = Exact<{
   jobId: Scalars['String']['input'];
 }>;
 
 
-export type JobWithCrewQuery = { __typename?: 'Query', job: { __typename?: 'Job', id: string, title: string, description?: string | null, ownerId: string, status?: string | null, customerName?: string | null, createdAt?: any | null, dueDate?: any | null }, jobCrew: Array<{ __typename?: 'JobCrewMember', id: string, name: string }> };
+export type JobWithCrewQuery = { __typename?: 'Query', job: { __typename?: 'Job', id: string, title?: string | null, description?: string | null, ownerId?: string | null, status?: string | null, customerName?: string | null, createdAt?: any | null, dueDate?: any | null }, jobCrew: Array<{ __typename?: 'JobCrewMember', id: string, name: string }> };
 
 export type JobPageQueryVariables = Exact<{
   jobId: Scalars['String']['input'];
 }>;
 
 
-export type JobPageQuery = { __typename?: 'Query', job: { __typename?: 'Job', id: string, title: string } };
+export type JobPageQuery = { __typename?: 'Query', job: { __typename?: 'Job', id: string, title?: string | null } };
+
+export type CreateProjectMutationMutationVariables = Exact<{
+  input: CreateProjectInput;
+}>;
+
+
+export type CreateProjectMutationMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', id: string, title: string } };
+
+export type UpdateProjectMutationVariables = Exact<{
+  input: UpdateProjectInput;
+}>;
+
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', id: string } };
+
+export type FindAllProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindAllProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: string, title: string, status: string, customer: string, description: string, jobs?: Array<{ __typename?: 'Job', id: string }> | null }> };
+
+export type FindProjectQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type FindProjectQuery = { __typename?: 'Query', project: { __typename?: 'Project', id: string, title: string, customer: string, status: string, description: string } };
+
+export type RemoveProjectMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type RemoveProjectMutation = { __typename?: 'Mutation', removeProject: { __typename?: 'Project', id: string } };
 
 export type InviteUserMutationVariables = Exact<{
   input: InviteUserInput;
@@ -928,21 +1019,21 @@ export type VariationTableSearchVariationsQueryVariables = Exact<{
 }>;
 
 
-export type VariationTableSearchVariationsQuery = { __typename?: 'Query', searchJobRecords: Array<{ __typename?: 'JobRecord', id: string, title: string, description?: string | null, createdAt: any, status?: string | null, type: string, flag?: string | null, initialData?: { __typename?: 'VariationInitialData', id: string, numPeople?: string | null, hours?: string | null, materials?: string | null, equipment?: string | null } | null, job: { __typename?: 'Job', title: string }, submittedBy: { __typename?: 'User', name: string } }> };
+export type VariationTableSearchVariationsQuery = { __typename?: 'Query', searchJobRecords: Array<{ __typename?: 'JobRecord', id: string, title: string, description?: string | null, createdAt: any, status?: string | null, type: string, flag?: string | null, initialData?: { __typename?: 'VariationInitialData', id: string, numPeople?: string | null, hours?: string | null, materials?: string | null, equipment?: string | null } | null, job: { __typename?: 'Job', title?: string | null }, submittedBy: { __typename?: 'User', name: string } }> };
 
 export type DashboardSearchVariationsQueryVariables = Exact<{
   input: JobRecordSearchInput;
 }>;
 
 
-export type DashboardSearchVariationsQuery = { __typename?: 'Query', searchJobRecords: Array<{ __typename?: 'JobRecord', id: string, title: string, description?: string | null, status?: string | null, flag?: string | null, type: string, job: { __typename?: 'Job', title: string }, submittedBy: { __typename?: 'User', name: string } }> };
+export type DashboardSearchVariationsQuery = { __typename?: 'Query', searchJobRecords: Array<{ __typename?: 'JobRecord', id: string, title: string, description?: string | null, status?: string | null, flag?: string | null, type: string, job: { __typename?: 'Job', title?: string | null }, submittedBy: { __typename?: 'User', name: string } }> };
 
 export type VariationQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type VariationQuery = { __typename?: 'Query', jobRecord: { __typename?: 'JobRecord', id: string, title: string, description?: string | null, status?: string | null, type: string, flag?: string | null, createdAt: any, initialData?: { __typename?: 'VariationInitialData', id: string, numPeople?: string | null, hours?: string | null, materials?: string | null, equipment?: string | null, who?: string | null } | null, job: { __typename?: 'Job', id: string, title: string, customerName?: string | null }, submittedBy: { __typename?: 'User', name: string }, images: Array<{ __typename?: 'JobRecordImage', id: string, url: string }> } };
+export type VariationQuery = { __typename?: 'Query', jobRecord: { __typename?: 'JobRecord', id: string, title: string, description?: string | null, status?: string | null, type: string, flag?: string | null, createdAt: any, initialData?: { __typename?: 'VariationInitialData', id: string, numPeople?: string | null, hours?: string | null, materials?: string | null, equipment?: string | null, who?: string | null } | null, job: { __typename?: 'Job', id: string, title?: string | null, customerName?: string | null }, submittedBy: { __typename?: 'User', name: string }, images: Array<{ __typename?: 'JobRecordImage', id: string, url: string }> } };
 
 
 export const InitialiseUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InitialiseUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"initialiseUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<InitialiseUserMutation, InitialiseUserMutationVariables>;
@@ -961,8 +1052,8 @@ export const UpdateJobRecordDocument = {"kind":"Document","definitions":[{"kind"
 export const CreateVariationInitialDataDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateVariationInitialData"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateVariationInitialDataInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createVariationInitialData"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createVariationInitialDataInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateVariationInitialDataMutation, CreateVariationInitialDataMutationVariables>;
 export const PreSignedUrlWebDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PreSignedUrlWeb"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"presignedUrl"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}]}]}}]} as unknown as DocumentNode<PreSignedUrlWebQuery, PreSignedUrlWebQueryVariables>;
 export const CrewPageTableSectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CrewPageTableSection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SearchUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchUsers"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userSearchInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"userOrganisation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"}}]}}]}}]}}]} as unknown as DocumentNode<CrewPageTableSectionQuery, CrewPageTableSectionQueryVariables>;
-export const CreateJobAttachmentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateJobAttachments"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateJobAttachmentsInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createJobAttachments"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createJobAttachmentInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"jobId"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]} as unknown as DocumentNode<CreateJobAttachmentsMutation, CreateJobAttachmentsMutationVariables>;
-export const JobAttachmentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"JobAttachments"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"jobId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"jobAttachments"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"jobId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"jobId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<JobAttachmentsQuery, JobAttachmentsQueryVariables>;
+export const CreateJobAttachmentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateJobAttachments"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateAttachmentsInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createAttachments"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createAttachmentInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"referenceId"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]} as unknown as DocumentNode<CreateJobAttachmentsMutation, CreateJobAttachmentsMutationVariables>;
+export const JobAttachmentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"JobAttachments"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"referenceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"attachments"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"referenceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"referenceId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<JobAttachmentsQuery, JobAttachmentsQueryVariables>;
 export const DeleteJobAttachmentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteJobAttachment"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeJobAttachment"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode<DeleteJobAttachmentMutation, DeleteJobAttachmentMutationVariables>;
 export const JobCrewDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"JobCrew"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"jobId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"jobCrew"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"jobId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"jobId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"userOrganisation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"}}]}}]}}]}}]} as unknown as DocumentNode<JobCrewQuery, JobCrewQueryVariables>;
 export const JobDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"JobDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"jobId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"job"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"jobId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"ownerId"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"customerName"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"dueDate"}}]}}]}}]} as unknown as DocumentNode<JobDetailsQuery, JobDetailsQueryVariables>;
@@ -984,6 +1075,11 @@ export const JobsTableSearchJobsDocument = {"kind":"Document","definitions":[{"k
 export const JobSelectSearchDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"JobSelectSearch"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"JobSearchInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchJobs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"jobSearchInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]} as unknown as DocumentNode<JobSelectSearchQuery, JobSelectSearchQueryVariables>;
 export const JobWithCrewDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"JobWithCrew"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"jobId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"job"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"jobId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"ownerId"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"customerName"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"dueDate"}}]}},{"kind":"Field","name":{"kind":"Name","value":"jobCrew"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"jobId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"jobId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<JobWithCrewQuery, JobWithCrewQueryVariables>;
 export const JobPageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"JobPage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"jobId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"job"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"jobId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]} as unknown as DocumentNode<JobPageQuery, JobPageQueryVariables>;
+export const CreateProjectMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateProjectMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateProjectInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createProject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createProjectInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]} as unknown as DocumentNode<CreateProjectMutationMutation, CreateProjectMutationMutationVariables>;
+export const UpdateProjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateProject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateProjectInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateProject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updateProjectInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpdateProjectMutation, UpdateProjectMutationVariables>;
+export const FindAllProjectsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindAllProjects"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"projects"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"customer"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"jobs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<FindAllProjectsQuery, FindAllProjectsQueryVariables>;
+export const FindProjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindProject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"project"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"customer"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}}]} as unknown as DocumentNode<FindProjectQuery, FindProjectQueryVariables>;
+export const RemoveProjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RemoveProject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeProject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<RemoveProjectMutation, RemoveProjectMutationVariables>;
 export const InviteUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InviteUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"InviteUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"inviteUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"inviteInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode<InviteUserMutation, InviteUserMutationVariables>;
 export const IsUserInitialisedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"IsUserInitialised"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isUserInitialised"}}]}}]} as unknown as DocumentNode<IsUserInitialisedQuery, IsUserInitialisedQueryVariables>;
 export const CreateVariationResourceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateVariationResource"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateVariationResourceInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createVariationResource"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createVariationResourceInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"jobRecordId"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<CreateVariationResourceMutation, CreateVariationResourceMutationVariables>;

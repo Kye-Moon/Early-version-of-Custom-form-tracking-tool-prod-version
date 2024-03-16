@@ -1,9 +1,6 @@
-import {InputType, Field} from '@nestjs/graphql';
+import {Field, InputType} from '@nestjs/graphql';
 import {JobStatus} from '../entities/job.entity';
-import {
-    CreateJobScopeItemInput,
-    CreateJobScopeItemViaJobInput
-} from "../../job-scope-item/dto/create-job-scope-item.input";
+import {CreateJobScopeItemViaJobInput} from "../../job-scope-item/dto/create-job-scope-item.input";
 
 @InputType()
 export class CreateJobInput {
@@ -24,6 +21,9 @@ export class CreateJobInput {
 
     @Field(() => [String], {nullable: true})
     crew: string[];
+
+    @Field(() => String, {nullable: true})
+    projectId: string;
 
     @Field(() => [CreateJobScopeItemViaJobInput], {nullable: true})
     scopeItems: CreateJobScopeItemViaJobInput[];

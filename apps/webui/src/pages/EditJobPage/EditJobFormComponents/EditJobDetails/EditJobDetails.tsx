@@ -8,6 +8,7 @@ import DatePicker from "@/Components/DatePicker/DatePicker";
 import DropSelect from "@/Components/DropSelect/DropSelect";
 import {JobStatusSelectOptions} from "@/Constants/constants";
 import {Textarea} from "@/Primitives/TextArea";
+import ProjectSelect from "@/Components/ProjectSelect/ProjectSelect";
 
 export default function EditJobDetails(){
 	const {setValue, control} = useFormContext<EditJobFormType>()
@@ -35,7 +36,17 @@ export default function EditJobDetails(){
 					)}
 				/>
 			</div>
-
+			<div className="sm:col-span-6">
+				<FormField
+					control={control}
+					name="projectId"
+					render={({ field }) => (
+						<FormInputWrapper>
+							<ProjectSelect value={field.value} setValue={field.onChange}/>
+						</FormInputWrapper>
+					)}
+				/>
+			</div>
 			<div className="sm:col-span-3">
 				<FormField
 					control={control}

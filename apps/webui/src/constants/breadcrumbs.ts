@@ -8,8 +8,27 @@ export const getJobPageBreadCrumb = ({jobRecordId}: {
 }
 
 
-export const getJobPageBreadCrumbWithJobName = (jobRecordId?: string, jobName?: string) => {
+export const getJobPageBreadCrumbWithJobName = () => {
 	return [
 		{name: 'Jobs', href: '/job-records', current: false},
+	]
+}
+
+export const getEditProjectPageBreadCrumb = ({projectId}: {
+	projectId?: string
+}) => {
+	return [
+		{name: 'Projects', href: '/projects', current: false},
+		{name: "Project", href: `/projects/${projectId}`, current: false},
+		{name: "Edit", href: `/projects/${projectId}/edit`, current: true},
+	]
+}
+
+export const getViewProjectPageBreadCrumb = ({projectId}: {
+	projectId?: string
+}) => {
+	return [
+		{name: 'Projects', href: '/projects', current: false},
+		{name: "Project", href: `/projects/${projectId}`, current: true},
 	]
 }

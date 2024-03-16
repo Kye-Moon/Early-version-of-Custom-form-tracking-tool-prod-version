@@ -7,6 +7,7 @@ export const editJobFormSchema = z.object({
 	status: z.enum(["UPCOMING", "IN_PROGRESS", "COMPLETED","ARCHIVED"]).optional(),
 	description: z.string().optional().nullable(),
 	dueDate: z.date().optional().nullable(),
+	projectId: z.string().optional().nullable(),
 	crew: z.array(z.string()).optional().nullable(),
 });
 

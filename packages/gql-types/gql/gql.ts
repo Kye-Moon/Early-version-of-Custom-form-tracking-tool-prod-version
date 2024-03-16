@@ -29,12 +29,12 @@ const documents = {
     "\n    mutation CreateVariationInitialData($input: CreateVariationInitialDataInput!) {\n        createVariationInitialData(createVariationInitialDataInput: $input) {\n            id\n        }\n    }\n": types.CreateVariationInitialDataDocument,
     "\n\tquery PreSignedUrlWeb($key: String!) {\n\t\tpresignedUrl(key: $key)\n\t}\n": types.PreSignedUrlWebDocument,
     "\n\tquery CrewPageTableSection($input: SearchUserInput!) {\n\t\tsearchUsers(userSearchInput: $input) {\n\t\t\tid\n\t\t\tname\n\t\t\tuserOrganisation {\n\t\t\t\trole\n\t\t\t}\n\t\t}\n\t}\n": types.CrewPageTableSectionDocument,
-    "\n\tmutation CreateJobAttachments($input: CreateJobAttachmentsInput !) {\n\t\tcreateJobAttachments(createJobAttachmentInput: $input) {\n\t\t\tid\n\t\t\tjobId\n\t\t\turl\n\t\t}\n\t}\n": types.CreateJobAttachmentsDocument,
-    "\n\tquery JobAttachments($jobId: String!) {\n\t\tjobAttachments(jobId: $jobId) {\n\t\t\tid\n\t\t\turl\n\t\t\tname\n\t\t\ttype\n\t\t}\n\t}\n": types.JobAttachmentsDocument,
-    "\n\tmutation DeleteJobAttachment($input: String!) {\n\t\tremoveJobAttachment(id: $input)\n\t}\n": types.DeleteJobAttachmentDocument,
+    "\n    mutation CreateJobAttachments($input: CreateAttachmentsInput !) {\n        createAttachments(createAttachmentInput: $input) {\n            id\n            referenceId\n            url\n        }\n    }\n": types.CreateJobAttachmentsDocument,
+    "\n    query JobAttachments($referenceId: String!) {\n        attachments(referenceId: $referenceId) {\n            id\n            url\n            name\n            type\n        }\n    }\n": types.JobAttachmentsDocument,
+    "\n    mutation DeleteJobAttachment($input: String!) {\n        removeJobAttachment(id: $input)\n    }\n": types.DeleteJobAttachmentDocument,
     "\n\tquery JobCrew($jobId: String!) {\n\t\tjobCrew(jobId: $jobId) {\n\t\t\tid\n\t\t\tname\n\t\t\tphone\n\t\t\tuserOrganisation {\n\t\t\t\trole\n\t\t\t}\n\t\t},\n\t}\n": types.JobCrewDocument,
     "\n\tquery JobDetails($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tdescription\n\t\t\townerId\n\t\t\tstatus\n\t\t\tcustomerName\n\t\t\tcreatedAt\n\t\t\tdueDate\n\t\t},\n\t}\n": types.JobDetailsDocument,
-    "\n\tmutation DeleteJob($input: String!) {\n\t\tdeleteJob(id: $input)\n\t}\n": types.DeleteJobDocument,
+    "\n    mutation DeleteJob($input: String!) {\n        deleteJob(id: $input)\n    }\n": types.DeleteJobDocument,
     "\n\tquery JobScopeItems($input: String!) {\n\t\tjobScopeItems(jobId: $input) {\n\t\t\tid\n\t\t\treference\n\t\t\ttitle\n\t\t}\n\t}\n": types.JobScopeItemsDocument,
     "\n\tquery UserOrgExport{\n\t\tcurrentUser {\n\t\t\tid\n\t\t\torganisation {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tlogoUrl\n\t\t\t}\n\t\t}\n\t}\n": types.UserOrgExportDocument,
     "\n\tquery UserAccount {\n\t\tcurrentUser {\n\t\t\tid\n\t\t\tname\n\t\t\temail\n\t\t\tphone\n\t\t\torganisation {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t}\n\t\t}\n\t}\n": types.UserAccountDocument,
@@ -47,13 +47,18 @@ const documents = {
     "\n\tmutation updateJobScopeItem($input: UpdateJobScopeItemInput!) {\n\t\tupdateJobScopeItem(updateJobScopeItemInput: $input) {\n\t\t\tid\n\t\t\tjobId\n\t\t\ttitle\n\t\t\tdescription\n\t\t\treference\n\t\t}\n\t}\n": types.UpdateJobScopeItemDocument,
     "\n\tmutation deleteJobScopeItem($id: String!) {\n\t\tremoveJobScopeItem(id: $id) {\n\t\t\tid\n\t\t\tjobId\n\t\t\ttitle\n\t\t\tdescription\n\t\t\treference\n\t\t}\n\t}\n": types.DeleteJobScopeItemDocument,
     "\n\tquery getJobScopeItems($jobId: String!) {\n\t\tjobScopeItems(jobId: $jobId) {\n\t\t\tid\n\t\t\tjobId\n\t\t\ttitle\n\t\t\tdescription\n\t\t\treference\n\t\t}\n\t}\n": types.GetJobScopeItemsDocument,
-    "\n\tmutation CreateJobMutation($input: CreateJobInput!) {\n\t\tcreateJob(createJobInput: $input) {\n\t\t\tid\n\t\t\ttitle\n\t\t}\n\t}\n": types.CreateJobMutationDocument,
-    "\n    mutation UpdateJob($input: UpdateJobInput!) {\n        updateJob(updateJobInput: $input){\n            id\t\n        }\n    }\n": types.UpdateJobDocument,
-    "\n\tquery DashboardSearchJobs($input: JobSearchInput!) {\n\t\tsearchJobs(jobSearchInput: $input) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tcustomerName\n\t\t\tstatus\n\t\t\tdueDate\n\t\t\tdescription\n\t\t}\n\t}\n": types.DashboardSearchJobsDocument,
-    "\n\tquery JobsTableSearchJobs($input: JobSearchInput!) {\n\t\tsearchJobs(jobSearchInput: $input) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tstatus\n\t\t\tcustomerName\n\t\t\tdueDate\n\t\t\tvariations {\n\t\t\t\tid\n\t\t\t\ttype\n\t\t\t\tflag\n\t\t\t}\n\t\t}\n\t}\n": types.JobsTableSearchJobsDocument,
+    "\n    mutation CreateJobMutation($input: CreateJobInput!) {\n        createJob(createJobInput: $input) {\n            id\n            title\n        }\n    }\n": types.CreateJobMutationDocument,
+    "\n    mutation UpdateJob($input: UpdateJobInput!) {\n        updateJob(updateJobInput: $input){\n            id\n        }\n    }\n": types.UpdateJobDocument,
+    "\n    query DashboardSearchJobs($input: JobSearchInput!) {\n        searchJobs(jobSearchInput: $input) {\n            id\n            title\n            customerName\n            status\n            dueDate\n            description\n        }\n    }\n": types.DashboardSearchJobsDocument,
+    "\n    query JobsTableSearchJobs($input: JobSearchInput!) {\n        searchJobs(jobSearchInput: $input) {\n            id\n            title\n            status\n            customerName\n            dueDate\n            variations {\n                id\n                type\n                flag\n            }\n        }\n    }\n": types.JobsTableSearchJobsDocument,
     "\n    query JobSelectSearch($input: JobSearchInput!) {\n        searchJobs(jobSearchInput: $input) {\n            id\n            title\n        }\n    }\n": types.JobSelectSearchDocument,
-    "\n\tquery JobWithCrew($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tdescription\n\t\t\townerId\n\t\t\tstatus\n\t\t\tcustomerName\n\t\t\tcreatedAt\n\t\t\tdueDate\n\t\t},\n\t\tjobCrew(jobId: $jobId) {\n\t\t\tid\n\t\t\tname\n\t\t}\n\t}\n": types.JobWithCrewDocument,
-    "\n\tquery JobPage($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t},\n\t}\n": types.JobPageDocument,
+    "\n    query JobWithCrew($jobId: String!) {\n        job(id: $jobId) {\n            id\n            title\n            description\n            ownerId\n            status\n            customerName\n            createdAt\n            dueDate\n        },\n        jobCrew(jobId: $jobId) {\n            id\n            name\n        }\n    }\n": types.JobWithCrewDocument,
+    "\n    query JobPage($jobId: String!) {\n        job(id: $jobId) {\n            id\n            title\n        },\n    }\n": types.JobPageDocument,
+    "\n    mutation CreateProjectMutation($input: CreateProjectInput!) {\n        createProject(createProjectInput: $input) {\n            id\n            title\n        }\n    }\n": types.CreateProjectMutationDocument,
+    "\n    mutation UpdateProject($input: UpdateProjectInput!) {\n        updateProject(updateProjectInput: $input){\n            id\n        }\n    }\n": types.UpdateProjectDocument,
+    "\n    query FindAllProjects {\n        projects {\n            id\n            title\n            status\n            customer\n            description\n            jobs {\n                id\n            }\n        }\n    }\n": types.FindAllProjectsDocument,
+    "\n    query FindProject($id: String!) {\n        project(id: $id) {\n            id\n            title\n            customer\n            status\n            description\n        }\n    }\n": types.FindProjectDocument,
+    "\n    mutation RemoveProject($id: String!) {\n        removeProject(id: $id){\n            id\n        }\n    }\n": types.RemoveProjectDocument,
     "\n    mutation InviteUser($input: InviteUserInput!) {\n        inviteUser(inviteInput: $input)\n    }\n": types.InviteUserDocument,
     "\n    query IsUserInitialised {\n        isUserInitialised\n    }\n": types.IsUserInitialisedDocument,
     "\n    mutation CreateVariationResource($input: CreateVariationResourceInput!) {\n        createVariationResource(createVariationResourceInput: $input) {\n            id\n            jobRecordId\n            createdAt\n        }\n    }\n": types.CreateVariationResourceDocument,
@@ -147,15 +152,15 @@ export function graphql(source: "\n\tquery CrewPageTableSection($input: SearchUs
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n\tmutation CreateJobAttachments($input: CreateJobAttachmentsInput !) {\n\t\tcreateJobAttachments(createJobAttachmentInput: $input) {\n\t\t\tid\n\t\t\tjobId\n\t\t\turl\n\t\t}\n\t}\n"): (typeof documents)["\n\tmutation CreateJobAttachments($input: CreateJobAttachmentsInput !) {\n\t\tcreateJobAttachments(createJobAttachmentInput: $input) {\n\t\t\tid\n\t\t\tjobId\n\t\t\turl\n\t\t}\n\t}\n"];
+export function graphql(source: "\n    mutation CreateJobAttachments($input: CreateAttachmentsInput !) {\n        createAttachments(createAttachmentInput: $input) {\n            id\n            referenceId\n            url\n        }\n    }\n"): (typeof documents)["\n    mutation CreateJobAttachments($input: CreateAttachmentsInput !) {\n        createAttachments(createAttachmentInput: $input) {\n            id\n            referenceId\n            url\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n\tquery JobAttachments($jobId: String!) {\n\t\tjobAttachments(jobId: $jobId) {\n\t\t\tid\n\t\t\turl\n\t\t\tname\n\t\t\ttype\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery JobAttachments($jobId: String!) {\n\t\tjobAttachments(jobId: $jobId) {\n\t\t\tid\n\t\t\turl\n\t\t\tname\n\t\t\ttype\n\t\t}\n\t}\n"];
+export function graphql(source: "\n    query JobAttachments($referenceId: String!) {\n        attachments(referenceId: $referenceId) {\n            id\n            url\n            name\n            type\n        }\n    }\n"): (typeof documents)["\n    query JobAttachments($referenceId: String!) {\n        attachments(referenceId: $referenceId) {\n            id\n            url\n            name\n            type\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n\tmutation DeleteJobAttachment($input: String!) {\n\t\tremoveJobAttachment(id: $input)\n\t}\n"): (typeof documents)["\n\tmutation DeleteJobAttachment($input: String!) {\n\t\tremoveJobAttachment(id: $input)\n\t}\n"];
+export function graphql(source: "\n    mutation DeleteJobAttachment($input: String!) {\n        removeJobAttachment(id: $input)\n    }\n"): (typeof documents)["\n    mutation DeleteJobAttachment($input: String!) {\n        removeJobAttachment(id: $input)\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -167,7 +172,7 @@ export function graphql(source: "\n\tquery JobDetails($jobId: String!) {\n\t\tjo
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n\tmutation DeleteJob($input: String!) {\n\t\tdeleteJob(id: $input)\n\t}\n"): (typeof documents)["\n\tmutation DeleteJob($input: String!) {\n\t\tdeleteJob(id: $input)\n\t}\n"];
+export function graphql(source: "\n    mutation DeleteJob($input: String!) {\n        deleteJob(id: $input)\n    }\n"): (typeof documents)["\n    mutation DeleteJob($input: String!) {\n        deleteJob(id: $input)\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -219,19 +224,19 @@ export function graphql(source: "\n\tquery getJobScopeItems($jobId: String!) {\n
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n\tmutation CreateJobMutation($input: CreateJobInput!) {\n\t\tcreateJob(createJobInput: $input) {\n\t\t\tid\n\t\t\ttitle\n\t\t}\n\t}\n"): (typeof documents)["\n\tmutation CreateJobMutation($input: CreateJobInput!) {\n\t\tcreateJob(createJobInput: $input) {\n\t\t\tid\n\t\t\ttitle\n\t\t}\n\t}\n"];
+export function graphql(source: "\n    mutation CreateJobMutation($input: CreateJobInput!) {\n        createJob(createJobInput: $input) {\n            id\n            title\n        }\n    }\n"): (typeof documents)["\n    mutation CreateJobMutation($input: CreateJobInput!) {\n        createJob(createJobInput: $input) {\n            id\n            title\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    mutation UpdateJob($input: UpdateJobInput!) {\n        updateJob(updateJobInput: $input){\n            id\t\n        }\n    }\n"): (typeof documents)["\n    mutation UpdateJob($input: UpdateJobInput!) {\n        updateJob(updateJobInput: $input){\n            id\t\n        }\n    }\n"];
+export function graphql(source: "\n    mutation UpdateJob($input: UpdateJobInput!) {\n        updateJob(updateJobInput: $input){\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation UpdateJob($input: UpdateJobInput!) {\n        updateJob(updateJobInput: $input){\n            id\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n\tquery DashboardSearchJobs($input: JobSearchInput!) {\n\t\tsearchJobs(jobSearchInput: $input) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tcustomerName\n\t\t\tstatus\n\t\t\tdueDate\n\t\t\tdescription\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery DashboardSearchJobs($input: JobSearchInput!) {\n\t\tsearchJobs(jobSearchInput: $input) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tcustomerName\n\t\t\tstatus\n\t\t\tdueDate\n\t\t\tdescription\n\t\t}\n\t}\n"];
+export function graphql(source: "\n    query DashboardSearchJobs($input: JobSearchInput!) {\n        searchJobs(jobSearchInput: $input) {\n            id\n            title\n            customerName\n            status\n            dueDate\n            description\n        }\n    }\n"): (typeof documents)["\n    query DashboardSearchJobs($input: JobSearchInput!) {\n        searchJobs(jobSearchInput: $input) {\n            id\n            title\n            customerName\n            status\n            dueDate\n            description\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n\tquery JobsTableSearchJobs($input: JobSearchInput!) {\n\t\tsearchJobs(jobSearchInput: $input) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tstatus\n\t\t\tcustomerName\n\t\t\tdueDate\n\t\t\tvariations {\n\t\t\t\tid\n\t\t\t\ttype\n\t\t\t\tflag\n\t\t\t}\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery JobsTableSearchJobs($input: JobSearchInput!) {\n\t\tsearchJobs(jobSearchInput: $input) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tstatus\n\t\t\tcustomerName\n\t\t\tdueDate\n\t\t\tvariations {\n\t\t\t\tid\n\t\t\t\ttype\n\t\t\t\tflag\n\t\t\t}\n\t\t}\n\t}\n"];
+export function graphql(source: "\n    query JobsTableSearchJobs($input: JobSearchInput!) {\n        searchJobs(jobSearchInput: $input) {\n            id\n            title\n            status\n            customerName\n            dueDate\n            variations {\n                id\n                type\n                flag\n            }\n        }\n    }\n"): (typeof documents)["\n    query JobsTableSearchJobs($input: JobSearchInput!) {\n        searchJobs(jobSearchInput: $input) {\n            id\n            title\n            status\n            customerName\n            dueDate\n            variations {\n                id\n                type\n                flag\n            }\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -239,11 +244,31 @@ export function graphql(source: "\n    query JobSelectSearch($input: JobSearchIn
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n\tquery JobWithCrew($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tdescription\n\t\t\townerId\n\t\t\tstatus\n\t\t\tcustomerName\n\t\t\tcreatedAt\n\t\t\tdueDate\n\t\t},\n\t\tjobCrew(jobId: $jobId) {\n\t\t\tid\n\t\t\tname\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery JobWithCrew($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tdescription\n\t\t\townerId\n\t\t\tstatus\n\t\t\tcustomerName\n\t\t\tcreatedAt\n\t\t\tdueDate\n\t\t},\n\t\tjobCrew(jobId: $jobId) {\n\t\t\tid\n\t\t\tname\n\t\t}\n\t}\n"];
+export function graphql(source: "\n    query JobWithCrew($jobId: String!) {\n        job(id: $jobId) {\n            id\n            title\n            description\n            ownerId\n            status\n            customerName\n            createdAt\n            dueDate\n        },\n        jobCrew(jobId: $jobId) {\n            id\n            name\n        }\n    }\n"): (typeof documents)["\n    query JobWithCrew($jobId: String!) {\n        job(id: $jobId) {\n            id\n            title\n            description\n            ownerId\n            status\n            customerName\n            createdAt\n            dueDate\n        },\n        jobCrew(jobId: $jobId) {\n            id\n            name\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n\tquery JobPage($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t},\n\t}\n"): (typeof documents)["\n\tquery JobPage($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t},\n\t}\n"];
+export function graphql(source: "\n    query JobPage($jobId: String!) {\n        job(id: $jobId) {\n            id\n            title\n        },\n    }\n"): (typeof documents)["\n    query JobPage($jobId: String!) {\n        job(id: $jobId) {\n            id\n            title\n        },\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation CreateProjectMutation($input: CreateProjectInput!) {\n        createProject(createProjectInput: $input) {\n            id\n            title\n        }\n    }\n"): (typeof documents)["\n    mutation CreateProjectMutation($input: CreateProjectInput!) {\n        createProject(createProjectInput: $input) {\n            id\n            title\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation UpdateProject($input: UpdateProjectInput!) {\n        updateProject(updateProjectInput: $input){\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation UpdateProject($input: UpdateProjectInput!) {\n        updateProject(updateProjectInput: $input){\n            id\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query FindAllProjects {\n        projects {\n            id\n            title\n            status\n            customer\n            description\n            jobs {\n                id\n            }\n        }\n    }\n"): (typeof documents)["\n    query FindAllProjects {\n        projects {\n            id\n            title\n            status\n            customer\n            description\n            jobs {\n                id\n            }\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query FindProject($id: String!) {\n        project(id: $id) {\n            id\n            title\n            customer\n            status\n            description\n        }\n    }\n"): (typeof documents)["\n    query FindProject($id: String!) {\n        project(id: $id) {\n            id\n            title\n            customer\n            status\n            description\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation RemoveProject($id: String!) {\n        removeProject(id: $id){\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation RemoveProject($id: String!) {\n        removeProject(id: $id){\n            id\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -61,6 +61,36 @@ export const userOrganisation = pgTable('user_organisation', {
 export type UserOrganisation = InferSelectModel<typeof userOrganisation>;
 export type NewUserOrganisation = InferInsertModel<typeof userOrganisation>;
 
+// ###################### PROJECT TABLE ######################
+export const project = pgTable('project', {
+    id: uuid('id')
+        .default(sql`gen_random_uuid
+        ()`)
+        .primaryKey(),
+    title: text('name').notNull(),
+    description: text('description'),
+    customer: text('customer'),
+    organisationId: uuid('organisation_id').notNull().references(() => organisation.id),
+    status: varchar('status', {
+        enum: ['UPCOMING', 'IN_PROGRESS', 'COMPLETED', 'ARCHIVED'],
+    }),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+        .default(sql`CURRENT_TIMESTAMP`)
+        .notNull(),
+});
+
+export type Project = InferSelectModel<typeof project>;
+export type NewProject = InferInsertModel<typeof project>;
+
+export const projectRelations = relations(project, ({one, many}) => ({
+    organisation: one(organisation, {
+        fields: [project.organisationId],
+        references: [organisation.id],
+    }),
+    jobs: many(job),
+}));
+
 
 // ###################### JOB TABLE ######################
 export const job = pgTable('job', {
@@ -74,6 +104,7 @@ export const job = pgTable('job', {
     status: varchar('status', {
         enum: ['UPCOMING', 'IN_PROGRESS', 'COMPLETED', 'ARCHIVED'],
     }),
+    projectId: uuid('project_id').references(() => project.id),
     ownerId: uuid('owner_id')
         .references(() => user.id)
         .notNull(),
@@ -88,14 +119,13 @@ export type Job = InferSelectModel<typeof job>;
 export type NewJob = InferInsertModel<typeof job>;
 export type UpdateJob = Partial<NewJob>
 
-export const jobAttachment = pgTable('job_attachment', {
+export const attachment = pgTable('job_attachment', {
     id: uuid('id')
         .default(sql`gen_random_uuid
         ()`)
         .primaryKey(),
-    jobId: uuid('job_id')
-        .references(() => job.id, {onDelete: 'cascade'})
-        .notNull(),
+    referenceId: uuid('reference_id').notNull(),
+    referenceType: varchar('reference_type').notNull(),
     name: text('name').notNull(),
     url: text('url').notNull(),
     type: varchar('type'),
@@ -105,15 +135,8 @@ export const jobAttachment = pgTable('job_attachment', {
         .notNull(),
 });
 
-export const jobAttachmentRelations = relations(jobAttachment, ({one}) => ({
-    job: one(job, {
-        fields: [jobAttachment.jobId],
-        references: [job.id],
-    }),
-}));
-
-export type JobAttachment = InferSelectModel<typeof jobAttachment>;
-export type NewJobAttachment = InferInsertModel<typeof jobAttachment>;
+export type Attachment = InferSelectModel<typeof attachment>;
+export type NewAttachment = InferInsertModel<typeof attachment>;
 
 export const jobScopeItem = pgTable('job_scope_item', {
     id: uuid('id')

@@ -8,6 +8,27 @@
       "when": 1708818236935,
       "tag": "0000_plain_blindfold",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1710500224569,
+      "tag": "0001_nifty_ricochet",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1710500644154,
+      "tag": "0002_slim_gideon",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1710508387450,
+      "tag": "0003_ancient_molecule_man",
+      "breakpoints": true
     }
   ]
 }

@@ -37,6 +37,7 @@ export interface PageHeadingWithMetaAndActionsProps {
  * @param pageHeading
  * @param metaDataItems
  * @param actions
+ * @param subHeading
  * @constructor
  */
 const PageHeadingWithMetaAndActions = ({

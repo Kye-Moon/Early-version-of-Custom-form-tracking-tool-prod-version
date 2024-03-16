@@ -7,7 +7,7 @@ export class Job {
     @Field(() => String)
     id: string;
 
-    @Field(() => String)
+    @Field(() => String, {nullable: true})
     title: string;
 
     @Field(() => String, {nullable: true})
@@ -19,10 +19,10 @@ export class Job {
     @Field(() => String, {nullable: true})
     status: JobStatus;
 
-    @Field(() => String)
+    @Field(() => String, {nullable: true})
     ownerId: string;
 
-    @Field(() => String)
+    @Field(() => String, {nullable: true})
     organisationId: string;
 
     @Field(() => Date, {nullable: true})

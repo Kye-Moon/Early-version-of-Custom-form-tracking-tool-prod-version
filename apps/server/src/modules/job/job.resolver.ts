@@ -9,8 +9,8 @@ import {JobRecord} from "../job-record/entities/job-record.entity";
 import {JobRecordService} from "../job-record/job-record.service";
 import {JobScopeItem} from "../job-scope-item/entities/job-scope-item.entity";
 import {JobScopeItemService} from "../job-scope-item/job-scope-item.service";
-import {JobAttachment} from "../job-attachment/entities/job-attachment.entity";
-import {JobAttachmentService} from "../job-attachment/job-attachment.service";
+import {Attachment} from "../attachment/entities/attachment.entity";
+import {AttachmentService} from "../attachment/attachment.service";
 import {AuthGuard} from "../../guards/auth.guard";
 
 @Resolver(() => Job)
@@ -19,7 +19,7 @@ export class JobResolver {
         private readonly jobService: JobService,
         private readonly jobRecordService: JobRecordService,
         private readonly jobScopeItemService: JobScopeItemService,
-        private readonly jobAttachmentService: JobAttachmentService
+        private readonly attachmentService: AttachmentService
     ) {
     }
 
@@ -68,9 +68,9 @@ export class JobResolver {
     }
 
     @UseGuards(AuthGuard)
-    @ResolveField(() => [JobAttachment])
+    @ResolveField(() => [Attachment])
     attachments(@Parent() job: Job) {
         const {id} = job;
-        return this.jobAttachmentService.findAllByJobId(id);
+        return this.attachmentService.findAllByJobId(id);
     }
 }

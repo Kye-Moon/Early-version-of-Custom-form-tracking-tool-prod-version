@@ -12,4 +12,7 @@ export class JobSearchInput extends BaseSearchInput {
 
     @Field(() => Boolean, {nullable: true})
     includeOwner: boolean;
+
+    @Field(() => String, {nullable: true})
+    projectId: string;
 }

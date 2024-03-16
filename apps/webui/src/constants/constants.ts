@@ -7,6 +7,13 @@ export enum JobStatus {
     ARCHIVED = "ARCHIVED",
 }
 
+export enum ProjectStatus {
+	UPCOMING = "UPCOMING",
+	IN_PROGRESS = "IN_PROGRESS",
+	COMPLETED = "COMPLETED",
+	ARCHIVED = "ARCHIVED",
+}
+
 export const JobStatusSelectOptions: DropSelectOption[] = [
     {
         label: "Upcoming",

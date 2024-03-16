@@ -7,13 +7,13 @@ import {RequestModule} from '../request/request.module';
 import {JobCrewModule} from "../job-crew/job-crew.module";
 import {JobRecordModule} from "../job-record/job-record.module";
 import {JobScopeItemModule} from "../job-scope-item/job-scope-item.module";
-import {JobAttachmentModule} from "../job-attachment/job-attachment.module";
+import {AttachmentModule} from "../attachment/attachment.module";
 import {UserModule} from "../user/user.module";
 import {OrganisationModule} from "../organisation/organisation.module";
 
 @Module({
     providers: [JobResolver, JobService, JobRepository],
-    imports: [DrizzleModule, RequestModule, forwardRef(() => JobCrewModule), JobRecordModule, JobScopeItemModule, JobAttachmentModule, UserModule, OrganisationModule],
+    imports: [DrizzleModule, RequestModule, forwardRef(() => JobCrewModule), JobRecordModule, JobScopeItemModule, AttachmentModule, UserModule, OrganisationModule],
     exports: [JobService, JobRepository],
 })
 export class JobModule {

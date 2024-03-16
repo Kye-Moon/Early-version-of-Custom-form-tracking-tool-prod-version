@@ -26,7 +26,8 @@ export class JobRepository {
                     or(
                         eq(job.ownerId, searchInput.userId),
                         eq(jobCrew.crewMemberId, searchInput.userId)
-                    )
+                    ),
+                    ...searchInput.projectId ? [eq(job.projectId, searchInput.projectId)] : [],
                 )
             )
             .groupBy(job.id)
@@ -56,6 +57,12 @@ export class JobRepository {
     //         .offset(offset)
     // }
 
+    async findByProjectId(projectId: string) {
+        return await this.db.query.job.findMany({
+            where: eq(job.projectId, projectId),
+        });
+    }
+
     async findOne(id: string): Promise<Job> {
         return await this.db.query.job.findFirst({
             where: eq(job.id, id),
@@ -63,11 +70,14 @@ export class JobRepository {
     }
 
     async update(id: string, updateJobInput: UpdateJob): Promise<Job> {
+
+        console.log('updateJobInput', updateJobInput);
         const _job = await this.db.update(job).set({
             title: updateJobInput.title,
             description: updateJobInput.description,
             customerName: updateJobInput.customerName,
             status: updateJobInput.status,
+            projectId: updateJobInput.projectId,
         }).where(eq(job.id, id)).returning();
         return _job[0];
     }

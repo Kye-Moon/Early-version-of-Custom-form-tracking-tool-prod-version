@@ -1,5 +1,5 @@
 import {HomeIcon} from "@heroicons/react/24/outline";
-import {BriefcaseIcon, FileTextIcon, UserCogIcon, UsersIcon} from "lucide-react";
+import {BriefcaseIcon, FileTextIcon, HardHat, UsersIcon} from "lucide-react";
 
 export interface NavigationItemProps {
 	label: string;
@@ -9,7 +9,8 @@ export interface NavigationItemProps {
 
 export const sideBarMenuItems: NavigationItemProps[] = [
 	{label: "Dashboard", route: "/dashboard", icon: HomeIcon},
-	{label: "Jobs", route: "/jobs", icon: BriefcaseIcon},
+	{label: "Projects", route: "/projects", icon: BriefcaseIcon},
+	{label: "Jobs", route: "/jobs", icon: HardHat},
 	{label: "Job Records", route: "/job-records", icon: FileTextIcon},
 ];
 

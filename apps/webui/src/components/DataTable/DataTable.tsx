@@ -1,19 +1,19 @@
 import {
     ColumnDef,
     ColumnFiltersState,
-    getFilteredRowModel,
     flexRender,
     getCoreRowModel,
+    getFilteredRowModel,
     getPaginationRowModel,
-    SortingState,
     getSortedRowModel,
-    useReactTable, Row,
+    SortingState,
+    useReactTable,
 } from "@tanstack/react-table";
 
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/Primitives/Table";
 import {Input} from "@/Primitives/Input";
 import DataTablePagination from "./DataTablePagination/DataTablePagination";
-import React, {useEffect} from "react";
+import React from "react";
 
 /**
  * The props for the DataTable component
@@ -89,12 +89,12 @@ function DataTable<TData, TValue>({
         <>
             <div className={'flex space-x-8 '}>
                 {searchColumn && (
-                    <div className="flex items-center py-4">
+                    <div className="flex items-center py-4 w-1/3">
                         <Input
                             placeholder={searchPlaceholder ?? "Search by name..."}
                             value={(table.getColumn(searchColumn)?.getFilterValue() as string) ?? ""}
                             onChange={(event) => table.getColumn(searchColumn)?.setFilterValue(event.target.value)}
-                            className="max-w-md"
+                            className="max-w-lg"
                         />
                     </div>
                 )}

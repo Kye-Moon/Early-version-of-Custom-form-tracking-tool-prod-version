@@ -3,7 +3,6 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@
 import {cn} from "@/Lib/utils";
 import {buttonVariants} from "@/Primitives/Button/Button";
 import {PlusIcon} from "lucide-react";
-import NewJobForm from "@/Components/Jobs/NewJobDialog/NewJobForm/NewJobForm";
 import NewOrgMemberForm from "@/Components/NewOrgMemberDialog/NewOrgMemberForm";
 
 interface NewOrgMemberDialogProps {

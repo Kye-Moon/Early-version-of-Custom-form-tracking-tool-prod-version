@@ -16,8 +16,9 @@ import {JobRecordImageModule} from "../modules/job-record-image/job-record-image
 import {VariationInitialDataModule} from "../modules/variation-initial-data/variation-initial-data.module";
 import {VariationResourceModule} from "../modules/variation-resource/variation-resource.module";
 import {JobScopeItemModule} from "../modules/job-scope-item/job-scope-item.module";
-import {JobAttachmentModule} from "../modules/job-attachment/job-attachment.module";
+import {AttachmentModule} from "../modules/attachment/attachment.module";
 import {CrewLogModule} from "../modules/crew-log/crew-log.module";
+import {ProjectModule} from "../modules/project/project.module";
 
 @Module({
     imports: [
@@ -49,8 +50,9 @@ import {CrewLogModule} from "../modules/crew-log/crew-log.module";
         RequestModule,
         S3Module,
         JobScopeItemModule,
-        JobAttachmentModule,
+        AttachmentModule,
         CrewLogModule,
+        ProjectModule,
     ],
     controllers: [AppResolver],
     providers: [AppService],
