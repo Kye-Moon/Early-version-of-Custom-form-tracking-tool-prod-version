@@ -16,10 +16,9 @@ import {
 interface ViewDetailsProps {
     jobRecord: VariationQuery['jobRecord']
     form: UseFormReturn<any>
-    onSubmit: (data: any) => void
 }
 
-export function EditDetails({jobRecord, form, onSubmit}: ViewDetailsProps) {
+export function EditDetails({jobRecord, form}: ViewDetailsProps) {
 
     return (
         <Form {...form}>
