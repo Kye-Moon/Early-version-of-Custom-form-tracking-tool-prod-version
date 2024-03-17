@@ -10,7 +10,7 @@ export default function ProjectsTable() {
     const projects = useMemo(() => convertProjectsToProjectsTableColumns(data), [data]);
     //Empty state
     if (projects.length === 0) {
-        return (<TableEmptyState mainText={"No jobs found"} subText={"Create a job to get started"}/>)
+        return (<TableEmptyState mainText={"No projects found"} subText={"Create a project to get started"}/>)
     }
     return (
         <div>

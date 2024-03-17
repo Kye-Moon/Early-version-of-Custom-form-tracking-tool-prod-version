@@ -9,8 +9,10 @@ import DropSelect from "@/Components/DropSelect/DropSelect";
 import {JobStatusSelectOptions} from "@/Constants/constants";
 import {Textarea} from "@/Primitives/TextArea";
 import ProjectSelect from "@/Components/ProjectSelect/ProjectSelect";
+import {Suspense} from "react";
+import SelectLoading from "@/Components/Loading/SelectLoading";
 
-export default function EditJobDetails(){
+export default function EditJobDetails() {
 	const {setValue, control} = useFormContext<EditJobFormType>()
 	return (
 		<div className=" grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-6">
@@ -18,9 +20,9 @@ export default function EditJobDetails(){
 				<FormField
 					control={control}
 					name="title"
-					render={({ field }) => (
+					render={({field}) => (
 						<FormInputWrapper label={"Title"}>
-							<Input onChange={field.onChange} value={field.value} />
+							<Input onChange={field.onChange} value={field.value}/>
 						</FormInputWrapper>
 					)}
 				/>
@@ -29,7 +31,7 @@ export default function EditJobDetails(){
 				<FormField
 					control={control}
 					name="customerName"
-					render={({ field }) => (
+					render={({field}) => (
 						<FormInputWrapper label={"Customer"}>
 							<Input {...field} />
 						</FormInputWrapper>
@@ -40,9 +42,11 @@ export default function EditJobDetails(){
 				<FormField
 					control={control}
 					name="projectId"
-					render={({ field }) => (
+					render={({field}) => (
 						<FormInputWrapper>
-							<ProjectSelect value={field.value} setValue={field.onChange}/>
+							<Suspense fallback={<SelectLoading/>}>
+								<ProjectSelect value={field.value} setValue={field.onChange}/>
+							</Suspense>
 						</FormInputWrapper>
 					)}
 				/>
@@ -51,7 +55,7 @@ export default function EditJobDetails(){
 				<FormField
 					control={control}
 					name="dueDate"
-					render={({ field }) => (
+					render={({field}) => (
 						<FormInputWrapper label={"Due date"}>
 							<DatePicker
 								onChange={(value) => setValue(field.name, value)}
@@ -65,7 +69,7 @@ export default function EditJobDetails(){
 				<FormField
 					control={control}
 					name="status"
-					render={({ field }) => (
+					render={({field}) => (
 						<FormInputWrapper label={"Status"}>
 							<DropSelect
 								options={JobStatusSelectOptions}
@@ -82,7 +86,7 @@ export default function EditJobDetails(){
 				<FormField
 					control={control}
 					name="description"
-					render={({ field }) => (
+					render={({field}) => (
 						<FormInputWrapper label={"Description / Notes"}>
 							<Textarea {...field} />
 						</FormInputWrapper>
