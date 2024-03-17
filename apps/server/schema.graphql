@@ -89,6 +89,7 @@ type Job {
   status: String
   ownerId: String
   organisationId: String
+  projectId: String
   dueDate: DateTime
   createdAt: DateTime
   updatedAt: DateTime

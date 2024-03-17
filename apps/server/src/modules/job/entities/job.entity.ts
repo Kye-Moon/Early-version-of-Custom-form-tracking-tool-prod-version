@@ -25,6 +25,9 @@ export class Job {
     @Field(() => String, {nullable: true})
     organisationId: string;
 
+    @Field(() => String, {nullable: true})
+    projectId: string;
+
     @Field(() => Date, {nullable: true})
     dueDate: Date;
 

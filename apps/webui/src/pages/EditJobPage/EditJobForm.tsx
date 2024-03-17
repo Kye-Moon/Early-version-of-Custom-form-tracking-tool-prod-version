@@ -27,7 +27,7 @@ export default function EditJobForm({jobDetails, jobCrew}: EditJobFormProps) {
             dueDate: jobDetails.dueDate ? parseISO(jobDetails.dueDate) : undefined,
             status: jobDetails.status || "",
             description: jobDetails.description || "",
-            project: jobDetails.projectId || "",
+            projectId: jobDetails.projectId || "",
             crew: jobCrew || []
         }
     });

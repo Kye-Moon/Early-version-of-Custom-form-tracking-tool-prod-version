@@ -68,6 +68,7 @@ export const jobWithCrewQuery = graphql(`
             customerName
             createdAt
             dueDate
+			projectId
         },
         jobCrew(jobId: $jobId) {
             id
