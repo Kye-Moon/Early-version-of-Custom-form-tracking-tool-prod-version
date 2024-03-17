@@ -22,9 +22,10 @@ export class ProjectRepository {
     }
 
     async findOne(id: string) {
-        return this.db.select()
+        const _project = await this.db.select()
             .from(project)
             .where(eq(project.id, id))
+        return _project[0]
     }
 
     async update(id: string, input: Partial<Project>) {

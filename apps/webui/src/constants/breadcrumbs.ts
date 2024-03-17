@@ -10,7 +10,17 @@ export const getJobPageBreadCrumb = ({jobRecordId}: {
 
 export const getJobPageBreadCrumbWithJobName = () => {
 	return [
-		{name: 'Jobs', href: '/job-records', current: false},
+		{name: 'Jobs', href: '/jobs', current: false},
+	]
+}
+
+export const getEditJobPageBreadCrumb = ({jobId}: {
+	jobId?: string
+}) => {
+	return [
+		{name: 'Jobs', href: '/jobs', current: false},
+		{name: "Job", href: `/jobs/${jobId}`, current: false},
+		{name: "Edit", href: `/jobs/${jobId}/edit`, current: true},
 	]
 }
 

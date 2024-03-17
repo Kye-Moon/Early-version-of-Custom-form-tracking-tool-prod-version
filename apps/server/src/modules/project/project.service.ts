@@ -29,8 +29,7 @@ export class ProjectService {
     }
 
     async findOne(id: string) {
-        const project = await this.projectRepository.findOne(id);
-        return project[0];
+       return await this.projectRepository.findOne(id);
     }
 
     update(id: string, updateProjectInput: UpdateProjectInput) {

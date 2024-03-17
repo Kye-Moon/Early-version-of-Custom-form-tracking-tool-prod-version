@@ -12,6 +12,8 @@ import {JobScopeItemService} from "../job-scope-item/job-scope-item.service";
 import {Attachment} from "../attachment/entities/attachment.entity";
 import {AttachmentService} from "../attachment/attachment.service";
 import {AuthGuard} from "../../guards/auth.guard";
+import {ProjectService} from "../project/project.service";
+import {Project} from "../project/entities/project.entity";
 
 @Resolver(() => Job)
 export class JobResolver {
@@ -19,7 +21,8 @@ export class JobResolver {
         private readonly jobService: JobService,
         private readonly jobRecordService: JobRecordService,
         private readonly jobScopeItemService: JobScopeItemService,
-        private readonly attachmentService: AttachmentService
+        private readonly attachmentService: AttachmentService,
+        private readonly projectService: ProjectService,
     ) {
     }
 
@@ -72,5 +75,15 @@ export class JobResolver {
     attachments(@Parent() job: Job) {
         const {id} = job;
         return this.attachmentService.findAllByJobId(id);
+    }
+
+    @UseGuards(AuthGuard)
+    @ResolveField(() => Project)
+    async project(@Parent() job: Job) {
+        const {projectId} = job;
+        console.log('projectId', projectId);
+        const project = await this.projectService.findOne(projectId);
+        console.log('project', project);
+        return project;
     }
 }

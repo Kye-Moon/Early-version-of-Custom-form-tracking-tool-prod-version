@@ -81,6 +81,18 @@ type JobRecord {
   resources: [VariationResource!]!
 }
 
+type Project {
+  id: String!
+  title: String!
+  description: String!
+  customer: String!
+  status: String!
+  organisationId: String!
+  jobs: [Job!]
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Job {
   id: String!
   title: String
@@ -95,6 +107,7 @@ type Job {
   updatedAt: DateTime
   variations: [JobRecord!]
   scopeItems: [JobScopeItem!]
+  project: Project
   attachments: [Attachment!]!
 }
 
@@ -151,18 +164,6 @@ type CrewLog {
   createdAt: DateTime!
 }
 
-type Project {
-  id: String!
-  title: String!
-  description: String!
-  customer: String!
-  status: String!
-  organisationId: String!
-  jobs: [Job!]
-  createdAt: String!
-  updatedAt: String!
-}
-
 type Query {
   isUserInitialised: Boolean!
   searchUsers(userSearchInput: SearchUserInput!): [User!]!
@@ -171,6 +172,8 @@ type Query {
   organisation(id: String!): Organisation!
   searchJobs(jobSearchInput: JobSearchInput!): [Job!]!
   job(id: String!): Job!
+  projects: [Project!]!
+  project(id: String!): Project!
   jobCrew(jobId: String!): [JobCrewMember!]!
   searchJobRecords(jobRecordSearchInput: JobRecordSearchInput!): [JobRecord!]!
   jobRecord(id: String!): JobRecord!
@@ -182,8 +185,6 @@ type Query {
   variationResource(id: String!): VariationResource!
   presignedUrl(key: String!): String!
   crewLog(id: Int!): CrewLog!
-  projects: [Project!]!
-  project(id: String!): Project!
 }
 
 input SearchUserInput {
@@ -221,6 +222,9 @@ type Mutation {
   createJob(createJobInput: CreateJobInput!): Job!
   updateJob(updateJobInput: UpdateJobInput!): Job!
   deleteJob(id: String!): Boolean!
+  createProject(createProjectInput: CreateProjectInput!): Project!
+  updateProject(updateProjectInput: UpdateProjectInput!): Project!
+  removeProject(id: String!): Project!
   createJobRecord(createJobRecordInput: CreateJobRecordInput!): JobRecord!
   updateJobRecord(updateJobRecordInput: UpdateJobRecordInput!): JobRecord!
   removeVariation(id: Int!): JobRecord!
@@ -236,9 +240,6 @@ type Mutation {
   createCrewLog(createCrewLogInput: CreateCrewLogInput!): CrewLog!
   updateCrewLog(updateCrewLogInput: UpdateCrewLogInput!): CrewLog!
   removeCrewLog(id: Int!): CrewLog!
-  createProject(createProjectInput: CreateProjectInput!): Project!
-  updateProject(updateProjectInput: UpdateProjectInput!): Project!
-  removeProject(id: String!): Project!
 }
 
 input InviteUserInput {
@@ -294,6 +295,21 @@ input UpdateJobInput {
   crew: [String!]
   projectId: String
   scopeItems: [CreateJobScopeItemViaJobInput!]
+  id: String!
+}
+
+input CreateProjectInput {
+  title: String!
+  description: String!
+  customer: String!
+  status: String!
+}
+
+input UpdateProjectInput {
+  title: String
+  description: String
+  customer: String
+  status: String
   id: String!
 }
 
@@ -408,19 +424,4 @@ input UpdateCrewLogInput {
   notes: String
   id: String!
   imageUrls: [String!]
-}
-
-input CreateProjectInput {
-  title: String!
-  description: String!
-  customer: String!
-  status: String!
-}
-
-input UpdateProjectInput {
-  title: String
-  description: String
-  customer: String
-  status: String
-  id: String!
 }

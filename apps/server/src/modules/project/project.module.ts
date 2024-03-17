@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import {ProjectService} from './project.service';
 import {ProjectResolver} from './project.resolver';
 import {ProjectRepository} from "./project.repository";
@@ -16,7 +16,7 @@ import {JobModule} from "../job/job.module";
         RequestModule,
         UserModule,
         OrganisationModule,
-        JobModule
+        forwardRef(() => JobModule)
     ]
 })
 export class ProjectModule {
