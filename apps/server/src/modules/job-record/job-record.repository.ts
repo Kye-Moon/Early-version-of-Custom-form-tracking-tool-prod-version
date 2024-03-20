@@ -34,7 +34,7 @@ export class JobRecordRepository {
      * @param searchInput
      */
     async search({userId, orgId, searchInput}: { userId: string, orgId: string, searchInput?: JobRecordSearchInput }) {
-        return await this.db.select()
+        return await this.db.selectDistinct()
             .from(jobRecord)
             .leftJoin(job, (eq(jobRecord.jobId, job.id)))
             .leftJoin(jobCrew, (eq(job.id, jobCrew.jobId)))
@@ -47,8 +47,7 @@ export class JobRecordRepository {
                 ...(searchInput.jobId ? [eq(jobRecord.jobId, searchInput.jobId)] : [])
             ))
             .limit(searchInput.limit)
-            .groupBy(jobRecord.id)
-            .orderBy(desc(jobRecord.createdAt), jobRecord.id)
+            .orderBy(desc(jobRecord.createdAt))
     }
 
     async ownerSearch({orgId, jobId}: { orgId: string, jobId?: string }) {
