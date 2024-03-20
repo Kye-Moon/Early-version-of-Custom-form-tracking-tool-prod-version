@@ -45,7 +45,10 @@ export class JobRecordRepository {
                     eq(jobCrew.crewMemberId, userId)
                 ),
                 ...(searchInput.jobId ? [eq(jobRecord.jobId, searchInput.jobId)] : [])
-            )).limit(searchInput.limit).orderBy(desc(jobRecord.createdAt))
+            ))
+            .limit(searchInput.limit)
+            .orderBy((jobRecord.id))
+            .orderBy(desc(jobRecord.createdAt))
     }
 
     async ownerSearch({orgId, jobId}: { orgId: string, jobId?: string }) {
