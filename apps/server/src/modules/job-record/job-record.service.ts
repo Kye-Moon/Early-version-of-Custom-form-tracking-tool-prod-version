@@ -52,7 +52,7 @@ export class JobRecordService {
 
         return result.map((record) => {
             return {
-                ...record.job_record,
+                ...record.jobRecord,
             }
         })
     }
@@ -64,7 +64,6 @@ export class JobRecordService {
     async update(id: string, updateVariationInput: UpdateJobRecordInput) {
         const {imageUrls, ...newVariation} = updateVariationInput
         const jobRecord = await this.jobRecordRepository.update(id, newVariation)
-        console.log('jobRecord', jobRecord)
         if (updateVariationInput.imageUrls?.length > 0) {
             updateVariationInput.imageUrls.map(async (url) => {
                 await this.variationImageService.create({
@@ -73,7 +72,6 @@ export class JobRecordService {
                 })
             })
         }
-        console.log('jobRecord', jobRecord)
         return jobRecord
     }
 
