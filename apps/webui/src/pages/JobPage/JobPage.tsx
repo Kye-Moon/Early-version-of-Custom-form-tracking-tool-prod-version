@@ -41,10 +41,9 @@ export default function JobPage(): JSX.Element {
         onError: () => {
             toast.error("Error deleting job");
         },
-        refetchQueries: [{
-            query: jobTableSearchJobs,
-            variables: {input: {}}
-        }, {query: dashboardSearchJobs, variables: {input: {}}}],
+        refetchQueries: [
+			{query: jobTableSearchJobs, variables: {input: {}}},
+			{query: dashboardSearchJobs, variables: {input: {}}}],
         awaitRefetchQueries: true,
     });
 

@@ -208,7 +208,7 @@ export const jobRecord = pgTable('job_record', {
         ()`)
         .primaryKey(),
     jobId: uuid('job_id')
-        .references(() => job.id)
+        .references(() => job.id, {onDelete: 'cascade'})
         .notNull(),
     scopeRef: text('scope_ref'),
     title: text('title').notNull(),

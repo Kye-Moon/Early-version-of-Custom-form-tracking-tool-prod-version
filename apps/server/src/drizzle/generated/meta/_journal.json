@@ -29,6 +29,13 @@
       "when": 1710508387450,
       "tag": "0003_ancient_molecule_man",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1710970967846,
+      "tag": "0004_bright_mantis",
+      "breakpoints": true
     }
   ]
 }

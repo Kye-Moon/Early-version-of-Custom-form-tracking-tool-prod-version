@@ -81,9 +81,6 @@ export class JobResolver {
     @ResolveField(() => Project)
     async project(@Parent() job: Job) {
         const {projectId} = job;
-        console.log('projectId', projectId);
-        const project = await this.projectService.findOne(projectId);
-        console.log('project', project);
-        return project;
+        return await this.projectService.findOne(projectId);
     }
 }
