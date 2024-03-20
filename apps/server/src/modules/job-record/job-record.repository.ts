@@ -34,7 +34,7 @@ export class JobRecordRepository {
      * @param searchInput
      */
     async search({userId, orgId, searchInput}: { userId: string, orgId: string, searchInput?: JobRecordSearchInput }) {
-        return await this.db.selectDistinctOn([jobRecord.id,jobRecord.createdAt])
+        return await this.db.selectDistinctOn([jobRecord.id])
             .from(jobRecord)
             .leftJoin(job, (eq(jobRecord.jobId, job.id)))
             .leftJoin(jobCrew, (eq(job.id, jobCrew.jobId)))
