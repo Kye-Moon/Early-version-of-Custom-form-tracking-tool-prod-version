@@ -175,6 +175,7 @@ const routeTree = rootRoute.addChildren([
             viewProjectRoute,
             editProjectRoute,
         ]),
+		settingsRoute,
     ]),
 ]);
 const router = new Router({
