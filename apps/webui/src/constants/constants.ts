@@ -155,3 +155,26 @@ export const jobRecordFlagSelectOptions: DropSelectOption[] = [
     },
 ];
 
+export const newFormTemplateCategorySelectOptions: DropSelectOption[] = [
+	{
+		label: "Safety",
+		value: "SAFETY",
+	},
+	{
+		label: "QA",
+		value: "QA",
+	},
+	{
+		label: "Checklist",
+		value: "CHECKLIST",
+	},
+	{
+		label: "Commissioning",
+		value: "COMMISSIONING",
+	},
+	{
+		label: "Other",
+		value: "OTHER",
+	},
+];
+

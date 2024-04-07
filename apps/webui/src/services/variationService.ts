@@ -47,37 +47,37 @@ export const dashboardNotificationsQuery = graphql(`
 `)
 
 export const jobRecordQuery = graphql(`
-    query Variation($id: String!) {
+	query JobRecord($id: String!) {
 		jobRecord(id: $id) {
-            id
-            title
-            description
-            status
-            type
-            flag
-            createdAt
-            initialData {
-                id
-                numPeople
-                hours
-                materials
-                equipment
-				who
-            }
-            job {
-                id 
-                title
-                customerName
-            }
-            submittedBy {
-                name
-            }
-            images {
-                id
-                url
-            }
-        }
-    }
+			id
+			title
+			description
+			status
+			type
+			flag
+			createdAt
+			job {
+				id
+				title
+				customerName
+			}
+			submittedBy {
+				name
+			}
+			images {
+				id
+				url
+			}
+			jobForm {
+				formTemplate {
+					structure
+				}
+			}
+			formResponse {
+				response
+			}
+		}
+	}
 `)
 
 export const jobRecordUpdateMutation = graphql(`

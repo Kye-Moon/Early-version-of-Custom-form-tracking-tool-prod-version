@@ -33,9 +33,6 @@ export default function RiskLevelSelect({onValueChange, jobId}: ScopeItemSelectP
             <SelectPortal>
                 <SelectBackdrop/>
                 <SelectContent style={styles.container}>
-                    <SelectDragIndicatorWrapper>
-                        <SelectDragIndicator/>
-                    </SelectDragIndicatorWrapper>
                     <SelectItem label="Choose a record type" value={""} isDisabled={false}/>
                     <ScrollView width={'100%'}>
                         {

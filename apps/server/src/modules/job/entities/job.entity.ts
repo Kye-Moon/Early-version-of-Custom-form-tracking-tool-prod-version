@@ -2,6 +2,7 @@ import {Field, ObjectType} from '@nestjs/graphql';
 import {JobRecord} from "../../job-record/entities/job-record.entity";
 import {JobScopeItem} from "../../job-scope-item/entities/job-scope-item.entity";
 import {Project} from "../../project/entities/project.entity";
+import {FormTemplate} from "../../form-template/entities/form-template.entity";
 
 @ObjectType()
 export class Job {
@@ -46,6 +47,9 @@ export class Job {
 
     @Field(() => Project, {nullable: true})
     project: Project;
+
+    @Field(() => [FormTemplate], {nullable: true})
+    jobForms: FormTemplate[];
 }
 
 export enum JobStatus {

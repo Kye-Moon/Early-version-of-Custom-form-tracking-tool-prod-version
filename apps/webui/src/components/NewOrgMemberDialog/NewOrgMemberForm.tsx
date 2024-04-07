@@ -16,7 +16,7 @@ import {inviteUser} from "@/Services/userService";
 
 
 /**
- * Props for the NewProjectForm component
+ * Props for the NewRecordTemplateForm component
  */
 interface NewCrewMemberFormProps {
     /**

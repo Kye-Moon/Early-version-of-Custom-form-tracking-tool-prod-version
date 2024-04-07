@@ -17,6 +17,7 @@ const documents = {
     "\n    query PreSignedUrl($key: String!) {\n        presignedUrl(key: $key)\n    }\n": types.PreSignedUrlDocument,
     "\n    query Settings {\n        currentUser {\n            name\n            email\n            phone\n            organisation {\n                name\n            }\n        }\n    }\n": types.SettingsDocument,
     "\n    query JobCell($jobId: String!) {\n        job(id: $jobId) {\n            id\n            title\n            description\n            status\n            customerName\n            dueDate\n            variations {\n                id\n                title\n                description\n            }\n            attachments {\n                id\n                name\n                url\n            }\n        }\n    }\n": types.JobCellDocument,
+    "\n    query JobFormSelect($jobId: String!) {\n        job(id: $jobId) {\n            jobForms {\n                id\n                name\n                description\n                category\n                status\n                structure\n            }\n        },\n    }\n": types.JobFormSelectDocument,
     "\n    query VariationCell($variationId: String!) {\n        jobRecord(id: $variationId) {\n            id\n            title\n            description\n            job {\n                title\n                customerName\n            }\n            submittedBy {\n                name\n            }\n            initialData {\n                hours\n                numPeople\n                who\n                materials\n                equipment\n            }\n            images {\n                id\n                url\n            }\n            scopeItem {\n                title\n                reference\n                description\n            }\n        }\n    }\n": types.VariationCellDocument,
     "\n    query JobSelect($input: JobSearchInput!) {\n        searchJobs(jobSearchInput: $input) {\n            id\n            title\n        }\n    }\n": types.JobSelectDocument,
     "\n    query GetScopeItems($jobId: String!) {\n        jobScopeItems(jobId: $jobId) {\n            id\n            title\n            reference\n            description\n        }\n    }\n": types.GetScopeItemsDocument,
@@ -27,6 +28,8 @@ const documents = {
     "\n    mutation CreateJobRecord($input: CreateJobRecordInput!) {\n        createJobRecord(createJobRecordInput: $input) {\n            id\n        }\n    }\n": types.CreateJobRecordDocument,
     "\n    mutation UpdateJobRecord($input: UpdateJobRecordInput!) {\n        updateJobRecord(updateJobRecordInput: $input) {\n            id\n        }\n    }\n": types.UpdateJobRecordDocument,
     "\n    mutation CreateVariationInitialData($input: CreateVariationInitialDataInput!) {\n        createVariationInitialData(createVariationInitialDataInput: $input) {\n            id\n        }\n    }\n": types.CreateVariationInitialDataDocument,
+    "\n\tquery JobFormSelect($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tjobForms {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\tcategory\n\t\t\t\tstatus\n\t\t\t\tstructure\n\t\t\t}\n\t\t},\n\t}\n": types.JobFormSelectDocument,
+    "\n\tquery JobForms($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tjobForms {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\tcategory\n\t\t\t\tstatus\n\t\t\t}\n\t\t},\n\t}\n": types.JobFormsDocument,
     "\n\tquery PreSignedUrlWeb($key: String!) {\n\t\tpresignedUrl(key: $key)\n\t}\n": types.PreSignedUrlWebDocument,
     "\n\tquery CrewPageTableSection($input: SearchUserInput!) {\n\t\tsearchUsers(userSearchInput: $input) {\n\t\t\tid\n\t\t\tname\n\t\t\tuserOrganisation {\n\t\t\t\trole\n\t\t\t}\n\t\t}\n\t}\n": types.CrewPageTableSectionDocument,
     "\n    mutation CreateJobAttachments($input: CreateAttachmentsInput !) {\n        createAttachments(createAttachmentInput: $input) {\n            id\n            referenceId\n            url\n        }\n    }\n": types.CreateJobAttachmentsDocument,
@@ -34,13 +37,18 @@ const documents = {
     "\n    mutation DeleteJobAttachment($input: String!) {\n        removeJobAttachment(id: $input)\n    }\n": types.DeleteJobAttachmentDocument,
     "\n\tquery JobCrew($jobId: String!) {\n\t\tjobCrew(jobId: $jobId) {\n\t\t\tid\n\t\t\tname\n\t\t\tphone\n\t\t\tuserOrganisation {\n\t\t\t\trole\n\t\t\t}\n\t\t},\n\t}\n": types.JobCrewDocument,
     "\n\tquery JobDetails($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tdescription\n\t\t\townerId\n\t\t\tstatus\n\t\t\tcustomerName\n\t\t\tcreatedAt\n\t\t\tdueDate\n\t\t\tproject {\n\t\t\t\tid\n\t\t\t\ttitle\n\t\t\t}\n\t\t},\n\t}\n": types.JobDetailsDocument,
-    "\n    mutation DeleteJob($input: String!) {\n        deleteJob(id: $input)\n    }\n": types.DeleteJobDocument,
+    "\n\tmutation DeleteJob($input: String!) {\n\t\tdeleteJob(id: $input)\n\t}\n": types.DeleteJobDocument,
     "\n\tquery JobScopeItems($input: String!) {\n\t\tjobScopeItems(jobId: $input) {\n\t\t\tid\n\t\t\treference\n\t\t\ttitle\n\t\t}\n\t}\n": types.JobScopeItemsDocument,
     "\n\tquery UserOrgExport{\n\t\tcurrentUser {\n\t\t\tid\n\t\t\torganisation {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tlogoUrl\n\t\t\t}\n\t\t}\n\t}\n": types.UserOrgExportDocument,
     "\n\tquery UserAccount {\n\t\tcurrentUser {\n\t\t\tid\n\t\t\tname\n\t\t\temail\n\t\t\tphone\n\t\t\torganisation {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t}\n\t\t}\n\t}\n": types.UserAccountDocument,
     "\n\tmutation UpdateUser($input: UpdateUserInput!) {\n\t\tupdateUser(updateUserInput: $input) {\n\t\t\tid\n\t\t\tname\n\t\t\temail\n\t\t\tphone\n\t\t}\n\t}\n": types.UpdateUserDocument,
     "\n\tquery UserOrgSettings{\n\t\tcurrentUser {\n\t\t\tid\n\t\t\torganisation {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tlogoUrl\n\t\t\t}\n\t\t}\n\t}\n": types.UserOrgSettingsDocument,
     "\n\tmutation UpdateOrganisation($input: UpdateOrganisationInput!) {\n\t\tupdateOrganisation(updateOrganisationInput: $input) {\n\t\t\tid\n\t\t\tname\n\t\t\tlogoUrl\n\t\t}\n\t}\n": types.UpdateOrganisationDocument,
+    "\n\tmutation CreateFormTemplate($input: CreateFormTemplateInput!) {\n\t\tcreateFormTemplate(createFormTemplateInput: $input) {\n\t\t\tid\n\t\t}\n\t}\n": types.CreateFormTemplateDocument,
+    "\n\tmutation UpdateFormTemplate($input: UpdateFormTemplateInput!) {\n\t\tupdateFormTemplate(updateFormTemplateInput: $input) {\n\t\t\tid\n\t\t}\n\t}\n": types.UpdateFormTemplateDocument,
+    "\n\tquery FindFormTemplate($id: String!) {\n\t\tformTemplate(id: $id) {\n\t\t\tid\n\t\t\tname\n\t\t\tdescription\n\t\t\tstructure\n\t\t\tstatus\n\t\t}\n\t}\n": types.FindFormTemplateDocument,
+    "\n\tquery FindAllFormTemplate {\n\t\tformTemplates {\n\t\t\tid\n\t\t\tname\n\t\t\tdescription\n\t\t\tcategory\n\t\t\tstatus\n\t\t}\n\t}\n": types.FindAllFormTemplateDocument,
+    "\n\tmutation CreateJobForm($input: CreateJobFormInput!) {\n\t\tcreateJobForm(createJobFormInput: $input) {\n\t\t\tid\n\t\t}\n\t}\n": types.CreateJobFormDocument,
     "\n\tmutation CreateJobRecord($input: CreateJobRecordInput!) {\n\t\tcreateJobRecord(createJobRecordInput: $input) {\n\t\t\tid\n\t\t}\n\t}\n": types.CreateJobRecordDocument,
     "\n\tmutation UpdateJobRecord($input: UpdateJobRecordInput!) {\n\t\tupdateJobRecord(updateJobRecordInput: $input) {\n\t\t\tid\n\t\t}\n\t}\n": types.UpdateJobRecordDocument,
     "\n    mutation createJobScopeItem($input: CreateJobScopeItemInput!) {\n        createJobScopeItem(createJobScopeItemInput: $input) {\n            id\n            jobId\n            title\n            description\n            reference\n        }\n    }\n": types.CreateJobScopeItemDocument,
@@ -68,7 +76,7 @@ const documents = {
     "\n    query ResourceSummary($variationId: String!) {\n        variationResourceSummary(variationId: $variationId) {\n            labourTotal\n            materialTotal\n            equipmentTotal\n            otherTotal\n            total\n        }\n    }\n": types.ResourceSummaryDocument,
     "\n    query VariationTableSearchVariations($input: JobRecordSearchInput!) {\n\t\tsearchJobRecords(jobRecordSearchInput: $input) {\n            id\n            title\n            description\n\t\t\tcreatedAt\n            status,\n            type,\n            flag,\n            initialData {\n                id\n                numPeople\n                hours\n                materials\n                equipment\n            }\n            job {\n                title\n            }\n            submittedBy {\n                name\n            }\n        }\n    }\n": types.VariationTableSearchVariationsDocument,
     "\n    query DashboardSearchVariations($input: JobRecordSearchInput!) {\n\t\tsearchJobRecords(jobRecordSearchInput: $input) {\n            id\n            title\n            description\n            status,\n            flag,\n            type\n            job {\n                title\n            }\n            submittedBy {\n                name\n            }\n        }\n    }\n": types.DashboardSearchVariationsDocument,
-    "\n    query Variation($id: String!) {\n\t\tjobRecord(id: $id) {\n            id\n            title\n            description\n            status\n            type\n            flag\n            createdAt\n            initialData {\n                id\n                numPeople\n                hours\n                materials\n                equipment\n\t\t\t\twho\n            }\n            job {\n                id \n                title\n                customerName\n            }\n            submittedBy {\n                name\n            }\n            images {\n                id\n                url\n            }\n        }\n    }\n": types.VariationDocument,
+    "\n\tquery JobRecord($id: String!) {\n\t\tjobRecord(id: $id) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tdescription\n\t\t\tstatus\n\t\t\ttype\n\t\t\tflag\n\t\t\tcreatedAt\n\t\t\tjob {\n\t\t\t\tid\n\t\t\t\ttitle\n\t\t\t\tcustomerName\n\t\t\t}\n\t\t\tsubmittedBy {\n\t\t\t\tname\n\t\t\t}\n\t\t\timages {\n\t\t\t\tid\n\t\t\t\turl\n\t\t\t}\n\t\t\tjobForm {\n\t\t\t\tformTemplate {\n\t\t\t\t\tstructure\n\t\t\t\t}\n\t\t\t}\n\t\t\tformResponse {\n\t\t\t\tresponse\n\t\t\t}\n\t\t}\n\t}\n": types.JobRecordDocument,
 };
 
 /**
@@ -101,6 +109,10 @@ export function graphql(source: "\n    query Settings {\n        currentUser {\n
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    query JobCell($jobId: String!) {\n        job(id: $jobId) {\n            id\n            title\n            description\n            status\n            customerName\n            dueDate\n            variations {\n                id\n                title\n                description\n            }\n            attachments {\n                id\n                name\n                url\n            }\n        }\n    }\n"): (typeof documents)["\n    query JobCell($jobId: String!) {\n        job(id: $jobId) {\n            id\n            title\n            description\n            status\n            customerName\n            dueDate\n            variations {\n                id\n                title\n                description\n            }\n            attachments {\n                id\n                name\n                url\n            }\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query JobFormSelect($jobId: String!) {\n        job(id: $jobId) {\n            jobForms {\n                id\n                name\n                description\n                category\n                status\n                structure\n            }\n        },\n    }\n"): (typeof documents)["\n    query JobFormSelect($jobId: String!) {\n        job(id: $jobId) {\n            jobForms {\n                id\n                name\n                description\n                category\n                status\n                structure\n            }\n        },\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -144,6 +156,14 @@ export function graphql(source: "\n    mutation CreateVariationInitialData($inpu
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n\tquery JobFormSelect($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tjobForms {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\tcategory\n\t\t\t\tstatus\n\t\t\t\tstructure\n\t\t\t}\n\t\t},\n\t}\n"): (typeof documents)["\n\tquery JobFormSelect($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tjobForms {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\tcategory\n\t\t\t\tstatus\n\t\t\t\tstructure\n\t\t\t}\n\t\t},\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\tquery JobForms($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tjobForms {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\tcategory\n\t\t\t\tstatus\n\t\t\t}\n\t\t},\n\t}\n"): (typeof documents)["\n\tquery JobForms($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tjobForms {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\tcategory\n\t\t\t\tstatus\n\t\t\t}\n\t\t},\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n\tquery PreSignedUrlWeb($key: String!) {\n\t\tpresignedUrl(key: $key)\n\t}\n"): (typeof documents)["\n\tquery PreSignedUrlWeb($key: String!) {\n\t\tpresignedUrl(key: $key)\n\t}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -172,7 +192,7 @@ export function graphql(source: "\n\tquery JobDetails($jobId: String!) {\n\t\tjo
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    mutation DeleteJob($input: String!) {\n        deleteJob(id: $input)\n    }\n"): (typeof documents)["\n    mutation DeleteJob($input: String!) {\n        deleteJob(id: $input)\n    }\n"];
+export function graphql(source: "\n\tmutation DeleteJob($input: String!) {\n\t\tdeleteJob(id: $input)\n\t}\n"): (typeof documents)["\n\tmutation DeleteJob($input: String!) {\n\t\tdeleteJob(id: $input)\n\t}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -197,6 +217,26 @@ export function graphql(source: "\n\tquery UserOrgSettings{\n\t\tcurrentUser {\n
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n\tmutation UpdateOrganisation($input: UpdateOrganisationInput!) {\n\t\tupdateOrganisation(updateOrganisationInput: $input) {\n\t\t\tid\n\t\t\tname\n\t\t\tlogoUrl\n\t\t}\n\t}\n"): (typeof documents)["\n\tmutation UpdateOrganisation($input: UpdateOrganisationInput!) {\n\t\tupdateOrganisation(updateOrganisationInput: $input) {\n\t\t\tid\n\t\t\tname\n\t\t\tlogoUrl\n\t\t}\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\tmutation CreateFormTemplate($input: CreateFormTemplateInput!) {\n\t\tcreateFormTemplate(createFormTemplateInput: $input) {\n\t\t\tid\n\t\t}\n\t}\n"): (typeof documents)["\n\tmutation CreateFormTemplate($input: CreateFormTemplateInput!) {\n\t\tcreateFormTemplate(createFormTemplateInput: $input) {\n\t\t\tid\n\t\t}\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\tmutation UpdateFormTemplate($input: UpdateFormTemplateInput!) {\n\t\tupdateFormTemplate(updateFormTemplateInput: $input) {\n\t\t\tid\n\t\t}\n\t}\n"): (typeof documents)["\n\tmutation UpdateFormTemplate($input: UpdateFormTemplateInput!) {\n\t\tupdateFormTemplate(updateFormTemplateInput: $input) {\n\t\t\tid\n\t\t}\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\tquery FindFormTemplate($id: String!) {\n\t\tformTemplate(id: $id) {\n\t\t\tid\n\t\t\tname\n\t\t\tdescription\n\t\t\tstructure\n\t\t\tstatus\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery FindFormTemplate($id: String!) {\n\t\tformTemplate(id: $id) {\n\t\t\tid\n\t\t\tname\n\t\t\tdescription\n\t\t\tstructure\n\t\t\tstatus\n\t\t}\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\tquery FindAllFormTemplate {\n\t\tformTemplates {\n\t\t\tid\n\t\t\tname\n\t\t\tdescription\n\t\t\tcategory\n\t\t\tstatus\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery FindAllFormTemplate {\n\t\tformTemplates {\n\t\t\tid\n\t\t\tname\n\t\t\tdescription\n\t\t\tcategory\n\t\t\tstatus\n\t\t}\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\tmutation CreateJobForm($input: CreateJobFormInput!) {\n\t\tcreateJobForm(createJobFormInput: $input) {\n\t\t\tid\n\t\t}\n\t}\n"): (typeof documents)["\n\tmutation CreateJobForm($input: CreateJobFormInput!) {\n\t\tcreateJobForm(createJobFormInput: $input) {\n\t\t\tid\n\t\t}\n\t}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -308,7 +348,7 @@ export function graphql(source: "\n    query DashboardSearchVariations($input: J
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    query Variation($id: String!) {\n\t\tjobRecord(id: $id) {\n            id\n            title\n            description\n            status\n            type\n            flag\n            createdAt\n            initialData {\n                id\n                numPeople\n                hours\n                materials\n                equipment\n\t\t\t\twho\n            }\n            job {\n                id \n                title\n                customerName\n            }\n            submittedBy {\n                name\n            }\n            images {\n                id\n                url\n            }\n        }\n    }\n"): (typeof documents)["\n    query Variation($id: String!) {\n\t\tjobRecord(id: $id) {\n            id\n            title\n            description\n            status\n            type\n            flag\n            createdAt\n            initialData {\n                id\n                numPeople\n                hours\n                materials\n                equipment\n\t\t\t\twho\n            }\n            job {\n                id \n                title\n                customerName\n            }\n            submittedBy {\n                name\n            }\n            images {\n                id\n                url\n            }\n        }\n    }\n"];
+export function graphql(source: "\n\tquery JobRecord($id: String!) {\n\t\tjobRecord(id: $id) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tdescription\n\t\t\tstatus\n\t\t\ttype\n\t\t\tflag\n\t\t\tcreatedAt\n\t\t\tjob {\n\t\t\t\tid\n\t\t\t\ttitle\n\t\t\t\tcustomerName\n\t\t\t}\n\t\t\tsubmittedBy {\n\t\t\t\tname\n\t\t\t}\n\t\t\timages {\n\t\t\t\tid\n\t\t\t\turl\n\t\t\t}\n\t\t\tjobForm {\n\t\t\t\tformTemplate {\n\t\t\t\t\tstructure\n\t\t\t\t}\n\t\t\t}\n\t\t\tformResponse {\n\t\t\t\tresponse\n\t\t\t}\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery JobRecord($id: String!) {\n\t\tjobRecord(id: $id) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tdescription\n\t\t\tstatus\n\t\t\ttype\n\t\t\tflag\n\t\t\tcreatedAt\n\t\t\tjob {\n\t\t\t\tid\n\t\t\t\ttitle\n\t\t\t\tcustomerName\n\t\t\t}\n\t\t\tsubmittedBy {\n\t\t\t\tname\n\t\t\t}\n\t\t\timages {\n\t\t\t\tid\n\t\t\t\turl\n\t\t\t}\n\t\t\tjobForm {\n\t\t\t\tformTemplate {\n\t\t\t\t\tstructure\n\t\t\t\t}\n\t\t\t}\n\t\t\tformResponse {\n\t\t\t\tresponse\n\t\t\t}\n\t\t}\n\t}\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

@@ -4,31 +4,10 @@ import { InferType } from "prop-types";
 export const newJobRecordDetailsSchema = z.object({
     jobId: z.string().min(1, { message: "Job is required" }),
     scopeRef: z.string().optional(),
-    type: z.string().min(1, { message: "Type is required" }),
-    title: z.string().min(1, { message: "Title is required" }).max(50),
+    formId: z.string().min(1, { message: "Form is required" }),
+    title: z.string().optional(),
     description: z.string().optional(),
-
-    //Variation additional fields
-    hours: z.string().max(1000).optional().nullable(),
-    numPeople: z.string().max(1000).optional().nullable(),
-    who: z.string().max(50).optional(),
-    materials: z.string().max(500).optional(),
-    equipment: z.string().max(500).optional(),
-
-    //
-    flag: z.string().optional(),
-    // startTime: z.date().optional(),
-    // endTime: z.date().optional(),
+    formContent: z.string().optional(),
 })
 
 export type NewJobRecordDetailsFormType = InferType<typeof newJobRecordDetailsSchema>;
-
-
-export const variationResourcesSchema = z.object({
-    estimatedHours: z.string().max(1000).optional().nullable(),
-    numPeople: z.string().max(1000).optional().nullable(),
-    who: z.string().max(50).optional(),
-    materials: z.string().max(500).optional(),
-    equipment: z.string().max(500).optional(),
-});
-export type VariationResourcesFormType = InferType<typeof variationResourcesSchema>;

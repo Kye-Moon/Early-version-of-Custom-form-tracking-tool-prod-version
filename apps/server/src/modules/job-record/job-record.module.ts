@@ -10,6 +10,9 @@ import {VariationInitialDataModule} from "../variation-initial-data/variation-in
 import {JobScopeItemModule} from "../job-scope-item/job-scope-item.module";
 import {UserModule} from "../user/user.module";
 import {OrganisationModule} from "../organisation/organisation.module";
+import {FormTemplateModule} from "../form-template/form-template.module";
+import {JobFormModule} from "../job-form/job-form.module";
+import {JobFormResponseModule} from "../job-form-response/job-form-response.module";
 
 @Module({
     providers: [JobRecordResolver, JobRecordService, JobRecordRepository],
@@ -21,7 +24,10 @@ import {OrganisationModule} from "../organisation/organisation.module";
         VariationInitialDataModule,
         JobScopeItemModule,
         UserModule,
-        OrganisationModule
+        OrganisationModule,
+        FormTemplateModule,
+        JobFormModule,
+        JobFormResponseModule,
     ],
 
     exports: [JobRecordService, JobRecordRepository],

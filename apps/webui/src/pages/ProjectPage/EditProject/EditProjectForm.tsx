@@ -37,10 +37,6 @@ export default function EditProjectForm({projectDetails}: EditJobFormProps) {
     });
 
     async function onSubmit(values: EditJobFormType) {
-        if (!form.formState.isDirty) {
-            toast("No changes made")
-            return
-        }
         await update({
             variables: {
                 input: {
@@ -55,7 +51,6 @@ export default function EditProjectForm({projectDetails}: EditJobFormProps) {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-
                 <div className={'grid grid-cols-1 '}>
                     <div className={'col-span-1 space-y-4  pr-12'}>
                         <h1 className={'text-xl font-semibold'}>Details</h1>

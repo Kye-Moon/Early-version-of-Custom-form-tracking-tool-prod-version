@@ -38,6 +38,19 @@ export const getJobStatusBadgeVariant = (status?: string | null) => {
 	}
 }
 
+export const getFormTemplateStatusBadgeVariant = (status?: string | null) => {
+	switch (status) {
+		case "PENDING":
+			return "blue";
+		case "ACTIVE":
+			return "green";
+		case "ARCHIVED":
+			return "yellow";
+		default:
+			return null;
+	}
+}
+
 export const getJobRecordTypeBadgeVariant = (type?: string | null) => {
 	switch (type) {
 		case "NOTE":
@@ -182,4 +195,8 @@ export const stripEmptyValues = (obj: any) => {
 		}
 	});
 	return newObj;
+}
+
+export function idGenerator(): string {
+	return Math.floor(Math.random() * 10001).toString();
 }

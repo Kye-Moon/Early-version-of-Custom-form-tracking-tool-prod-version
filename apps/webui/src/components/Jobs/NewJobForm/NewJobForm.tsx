@@ -19,7 +19,7 @@ import {Checkbox} from "@/Primitives/Checkbox";
 import SelectLoading from "@/Components/Loading/SelectLoading";
 
 /**
- * Props for the NewProjectForm component
+ * Props for the NewRecordTemplateForm component
  */
 interface NewProjectFormProps {
     /**
@@ -47,7 +47,7 @@ export default function NewJobForm({onFormSubmitComplete}: NewProjectFormProps) 
         awaitRefetchQueries: true,
     });
 
-    // The form hook for the NewProjectForm
+    // The form hook for the NewRecordTemplateForm
     const form = useForm<NewJobFormType>({
         resolver: zodResolver(newJobFormSchema),
         defaultValues: {

@@ -11,10 +11,22 @@ import {AttachmentModule} from "../attachment/attachment.module";
 import {UserModule} from "../user/user.module";
 import {OrganisationModule} from "../organisation/organisation.module";
 import {ProjectModule} from "../project/project.module";
+import {JobFormModule} from "../job-form/job-form.module";
 
 @Module({
     providers: [JobResolver, JobService, JobRepository],
-    imports: [DrizzleModule, forwardRef(() => ProjectModule), RequestModule, forwardRef(() => JobCrewModule), JobRecordModule, JobScopeItemModule, AttachmentModule, UserModule, OrganisationModule],
+    imports: [
+        DrizzleModule,
+        forwardRef(() => ProjectModule),
+        RequestModule,
+        forwardRef(() => JobCrewModule),
+        JobRecordModule,
+        JobScopeItemModule,
+        AttachmentModule,
+        UserModule,
+        OrganisationModule,
+        JobFormModule
+    ],
     exports: [JobService, JobRepository],
 })
 export class JobModule {

@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 import LoadingButton from "@/Components/Loading/LoadingButton/LoadingButton";
 
 /**
- * Props for the NewProjectForm component
+ * Props for the NewRecordTemplateForm component
  */
 interface NewProjectFormProps {
     /**
@@ -43,7 +43,7 @@ export default function NewProjectForm({onFormSubmitComplete}: NewProjectFormPro
         awaitRefetchQueries: true,
     });
 
-    // The form hook for the NewProjectForm
+    // The form hook for the NewRecordTemplateForm
     const form = useForm<NewProjectFormType>({
         resolver: zodResolver(newProjectFormSchema),
         defaultValues: {

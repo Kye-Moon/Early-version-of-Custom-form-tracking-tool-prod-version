@@ -12,6 +12,7 @@ export const sideBarMenuItems: NavigationItemProps[] = [
 	{label: "Projects", route: "/projects", icon: BriefcaseIcon},
 	{label: "Jobs", route: "/jobs", icon: HardHat},
 	{label: "Job Records", route: "/job-records", icon: FileTextIcon},
+	{label: "Form Templates", route: "/record-templates", icon: FileTextIcon},
 ];
 
 export const adminMenuItems: NavigationItemProps[] = [

@@ -4,6 +4,8 @@ import {User} from "../../user/entities/user.entity";
 import {VariationInitialData} from "../../variation-initial-data/entities/variation-initial-data.entity";
 import {JobRecordImage} from "../../job-record-image/entities/job-record-image.entity";
 import {JobScopeItem} from "../../job-scope-item/entities/job-scope-item.entity";
+import {JobForm} from "../../job-form/entities/job-form.entity";
+import {JobFormResponse} from "../../job-form-response/entities/job-form-response.entity";
 
 @ObjectType()
 export class JobRecord {
@@ -20,13 +22,22 @@ export class JobRecord {
     description?: string
 
     @Field(() => String)
-    type: JobRecordType
+    type: string
 
     @Field(() => String, {nullable: true})
     status?: JobRecordStatus
 
     @Field(() => String)
     jobId: string
+
+    @Field(() => String, {nullable: true})
+    jobFormId?: string
+
+    @Field(() => JobForm, {nullable: true})
+    jobForm: JobForm
+
+    @Field(() => JobFormResponse, {nullable: true})
+    formResponse: JobFormResponse
 
     @Field(() => String, {nullable: true})
     flag?: JobRecordFlag
@@ -59,6 +70,7 @@ export enum JobRecordType {
     QA = 'QA',
     SAFETY = 'SAFETY',
     CREW_LOG = 'CREW_LOG',
+    UNASSIGNED = 'UNASSIGNED',
 }
 
 export enum JobRecordFlag {

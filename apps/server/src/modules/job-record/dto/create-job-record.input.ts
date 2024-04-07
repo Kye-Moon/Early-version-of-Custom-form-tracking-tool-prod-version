@@ -1,5 +1,5 @@
 import {Field, InputType} from '@nestjs/graphql';
-import {JobRecordFlag, JobRecordStatus, JobRecordType} from "../entities/job-record.entity";
+import GraphQLJSONObject from 'graphql-type-json';
 
 @InputType()
 export class CreateJobRecordInput {
@@ -9,35 +9,17 @@ export class CreateJobRecordInput {
     @Field(() => String, {nullable: true})
     scopeRef?: string
 
-    @Field(() => String)
+    @Field(() => String, {nullable: true})
     title: string
 
     @Field(() => String, {nullable: true})
     description: string
 
     @Field(() => String, {nullable: true})
-    status: JobRecordStatus
+    formId: string
 
-    @Field(() => String, {nullable: true})
-    flag: JobRecordFlag
-
-    @Field(() => String)
-    type: JobRecordType
-
-    @Field(() => String, {nullable: true})
-    hours: string;
-
-    @Field(() => String, {nullable: true})
-    numPeople: string;
-
-    @Field(() => String, {nullable: true})
-    who: string;
-
-    @Field(() => String, {nullable: true})
-    materials: string;
-
-    @Field(() => String, {nullable: true})
-    equipment: string;
+    @Field(() => GraphQLJSONObject, {nullable: true})
+    formContent?: JSON
 
     @Field(() => [String], {nullable: true})
     imageUrls?: string[]

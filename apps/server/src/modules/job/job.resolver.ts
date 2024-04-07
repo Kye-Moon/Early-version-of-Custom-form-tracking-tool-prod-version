@@ -14,6 +14,8 @@ import {AttachmentService} from "../attachment/attachment.service";
 import {AuthGuard} from "../../guards/auth.guard";
 import {ProjectService} from "../project/project.service";
 import {Project} from "../project/entities/project.entity";
+import {JobFormService} from "../job-form/job-form.service";
+import {FormTemplate} from "../form-template/entities/form-template.entity";
 
 @Resolver(() => Job)
 export class JobResolver {
@@ -23,6 +25,7 @@ export class JobResolver {
         private readonly jobScopeItemService: JobScopeItemService,
         private readonly attachmentService: AttachmentService,
         private readonly projectService: ProjectService,
+        private readonly jobFormService: JobFormService,
     ) {
     }
 
@@ -82,5 +85,12 @@ export class JobResolver {
     async project(@Parent() job: Job) {
         const {projectId} = job;
         return await this.projectService.findOne(projectId);
+    }
+
+    @UseGuards(AuthGuard)
+    @ResolveField(() => [FormTemplate])
+    async jobForms(@Parent() job: Job) {
+        const {id} = job;
+        return await this.jobFormService.getFormTemplatesByJobId(id);
     }
 }

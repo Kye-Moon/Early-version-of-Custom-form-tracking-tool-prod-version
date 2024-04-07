@@ -22,9 +22,7 @@ export default function JobRecordTable({jobId}: VariationTableProps) {
 				jobName: record.job.title,
 				title: record.title,
 				description: record.description,
-				status: record.status,
 				type: record.type,
-				flag: record.flag,
 				submittedBy: record.submittedBy.name,
 				createdAt: record.createdAt,
 			}

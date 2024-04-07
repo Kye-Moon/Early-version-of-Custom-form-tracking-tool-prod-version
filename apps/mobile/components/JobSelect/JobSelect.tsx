@@ -48,7 +48,7 @@ export default function JobSelect({onValueChange}:JobSelectProps){
                         {
                             data?.searchJobs.map((job) => {
                                 return (
-                                        <SelectItem key={job.id} label={job.title} value={job.id} />
+                                        <SelectItem key={job.id} label={job.title ?? "-"} value={job.id} />
                                 )
                             })
                         }
@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#fff",
-
     },
 
 });

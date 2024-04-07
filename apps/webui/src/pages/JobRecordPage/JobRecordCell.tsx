@@ -18,7 +18,6 @@ export default function JobRecordCell({jobRecordId}: EditVariationPageCellProps)
         <div className={'grid grid-cols-1 xl:grid-cols-3 xl:space-x-4'}>
             <div className={'col-span-2 border-r-2 '}>
                 <JobRecordDetails jobRecord={data.jobRecord}/>
-                {data.jobRecord.type === 'VARIATION' && (<VariationJobRecordView jobRecord={data.jobRecord}/>)}
             </div>
             <div className={'col-span-1'}>
                 <h3 className={'text-lg font-semibold'}>Images</h3>

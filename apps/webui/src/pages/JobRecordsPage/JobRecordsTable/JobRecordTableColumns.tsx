@@ -13,11 +13,9 @@ import {
 
 export interface JobRecordTableColumn {
     id: string;
-    jobName: string;
+    jobName?: string | null;
     title: string;
     type?: string | null;
-    status?: string | null;
-    flag?: string | null;
     submittedBy: string;
     createdAt: string;
 }
@@ -48,24 +46,6 @@ export const jobRecordTableColumns: ColumnDef<JobRecordTableColumn>[] = [
             return <Badge text={row.getValue("type") ? row.getValue("type") : "-"} size={'sm'}
                           variant={getJobRecordTypeBadgeVariant(row.getValue("type"))}/>
 
-        }
-    },
-    {
-        accessorKey: "flag",
-        header: "Flag",
-        cell: ({row}) => {
-            return <Badge text={row.getValue("flag") ? enumToSentenceCase(row.getValue("flag")) : "-"} size={'sm'}
-                          variant={getJobRecordFlagBadgeVariant(row.getValue("flag"))}/>
-
-        }
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({row}) => {
-            const material = row.getValue("status");
-            return <Badge text={row.getValue("status") ? enumToSentenceCase(row.getValue("status")) : "-"} size={'sm'}
-                          variant={getJobRecordStatusBadgeVariant(row.getValue("status"))}/>
         }
     },
     {

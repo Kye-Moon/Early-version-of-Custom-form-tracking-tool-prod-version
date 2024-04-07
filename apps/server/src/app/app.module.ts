@@ -19,6 +19,8 @@ import {JobScopeItemModule} from "../modules/job-scope-item/job-scope-item.modul
 import {AttachmentModule} from "../modules/attachment/attachment.module";
 import {CrewLogModule} from "../modules/crew-log/crew-log.module";
 import {ProjectModule} from "../modules/project/project.module";
+import {FormTemplateModule} from "../modules/form-template/form-template.module";
+import {JobFormModule} from "../modules/job-form/job-form.module";
 
 @Module({
     imports: [
@@ -53,6 +55,8 @@ import {ProjectModule} from "../modules/project/project.module";
         AttachmentModule,
         CrewLogModule,
         ProjectModule,
+        FormTemplateModule,
+        JobFormModule,
     ],
     controllers: [AppResolver],
     providers: [AppService],

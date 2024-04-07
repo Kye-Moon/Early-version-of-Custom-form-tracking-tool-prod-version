@@ -20,6 +20,7 @@ import LabelAndValue from "../LabelAndValue";
 import {enumToSentenceCase, truncate} from "../../lib/utils";
 import {EyeIcon} from "lucide-react-native";
 import {isValid, parseISO} from "date-fns";
+import {getBadgeColors} from "../../lib/badgeUtils";
 
 const query = graphql(`
     query JobCell($jobId: String!) {
@@ -53,7 +54,10 @@ export default function JobCell({jobId}: { jobId: string }) {
                     <ScreenContentSection heading={"Details"}>
                         <View style={styles.container}>
                             <LabelAndValue label={'Status'} value={
-                                <Badge><BadgeText>{data.job?.status ? enumToSentenceCase(data.job?.status) : "-"}</BadgeText></Badge>}/>
+                                <Badge bg={getBadgeColors(data.job?.status ?? "").bg}>
+                                    <BadgeText
+                                        color={getBadgeColors(data.job?.status ?? "").text}>{data.job?.status ? enumToSentenceCase(data.job?.status) : "-"}</BadgeText>
+                                </Badge>}/>
                         </View>
                         <View style={styles.container}>
                             <LabelAndValue label={'Customer'} value={data.job.customerName}/>

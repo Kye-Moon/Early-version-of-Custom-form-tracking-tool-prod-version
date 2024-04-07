@@ -6,7 +6,7 @@ import PageHeadingWithMetaAndActions, {
 } from "@/Components/PageHeadingWithMetaAndActions/PageHeadingWithMetaAndActions";
 import DeleteItemDialog from "@/Components/DeleteItemDialog/DeleteItemDialog";
 import React, {Suspense} from "react";
-import {deleteProject, findProject} from "@/Services/projectService";
+import {deleteProject, finaAllProjects, findProject} from "@/Services/projectService";
 import {ProjectPageActions} from "@/Pages/ProjectPage/ProjectPageActions";
 import BreadCrumb from "@/Components/BreadCrumbs/BreadCrumb";
 import {getViewProjectPageBreadCrumb} from "@/Constants/breadcrumbs";
@@ -32,7 +32,7 @@ export default function ViewProject() {
         onError: () => {
             toast.error("Error deleting project");
         },
-        refetchQueries: ["FindAllProjects"],
+        refetchQueries: [{query: finaAllProjects}],
         awaitRefetchQueries: true,
     });
 

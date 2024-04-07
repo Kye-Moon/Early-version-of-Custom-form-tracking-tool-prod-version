@@ -42,3 +42,12 @@ export const getViewProjectPageBreadCrumb = ({projectId}: {
 		{name: "Project", href: `/projects/${projectId}`, current: true},
 	]
 }
+
+export const getEditRecordTemplatesPageBreadCrumb = ({templateId}: {
+	templateId?: string
+}) => {
+	return [
+		{name: 'Record Templates', href: '/record-templates', current: false},
+		{name: "Edit", href: `/record-templates/${templateId}/edit`, current: true},
+	]
+}

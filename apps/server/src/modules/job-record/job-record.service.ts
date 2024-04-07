@@ -8,6 +8,11 @@ import {JobRecordSearchInput} from "./dto/search-job-record";
 import {VariationInitialDataService} from "../variation-initial-data/variation-initial-data.service";
 import {UserRepository} from "../user/user.repository";
 import {OrganisationRepository} from "../organisation/organisation.repository";
+import {FormTemplateService} from "../form-template/form-template.service";
+import dayjs from "dayjs";
+import {JobFormService} from "../job-form/job-form.service";
+import {JobFormRepository} from "../job-form/job-form.repository";
+import {JobFormResponseService} from "../job-form-response/job-form-response.service";
 
 @Injectable()
 export class JobRecordService {
@@ -18,26 +23,51 @@ export class JobRecordService {
         private readonly variationImageService: JobRecordImageService,
         private readonly variationInitialDataService: VariationInitialDataService,
         private readonly userRepository: UserRepository,
-        private readonly organisationRepository: OrganisationRepository
+        private readonly organisationRepository: OrganisationRepository,
+        private readonly formTemplateService: FormTemplateService,
+        private readonly jobFromRepository: JobFormRepository,
+        private readonly jobFromResponseService: JobFormResponseService,
     ) {
     }
 
     async create(createJobRecordInput: CreateJobRecordInput) {
+        console.log(createJobRecordInput)
         const user = await this.userRepository.findOneByAuthId(this.request.userId);
+        const {formId, formContent, title, ...jobRecordRest} = createJobRecordInput
+        let derivedTitle = title
+        let formTemplate = null
+        let jobForm = null
+        if (formId) {
+            jobForm = await this.jobFromRepository.findByJobIdAndFormTemplateId(createJobRecordInput.jobId, formId)
+            if (!jobForm) {
+                throw new Error("Cannot submit a form that is not assigned to the job")
+            }
+        }
+
+        if (formId && !title) {
+
+            formTemplate = await this.formTemplateService.findOne(formId)
+            derivedTitle = formTemplate.name + " submission - " + dayjs().format("DD/MM/YY HH:mm")
+        }
+
         const record = await this.jobRecordRepository.create({
-            ...createJobRecordInput,
+            ...jobRecordRest,
+            jobFormId: jobForm ? jobForm.id : null,
+            title: derivedTitle,
+            type: formTemplate ? formTemplate.category : "UNASSIGNED",
             submittedBy: user.id,
         })
-        if (createJobRecordInput.type === 'VARIATION') {
-            await this.variationInitialDataService.create({
-                hours: createJobRecordInput.hours,
-                who: createJobRecordInput.who,
-                materials: createJobRecordInput.materials,
-                equipment: createJobRecordInput.equipment,
-                numPeople: createJobRecordInput.numPeople,
-            }, record.id)
+
+        if (formId && formContent) {
+            await this.jobFromResponseService.create({
+                jobFormId: jobForm.id,
+                jobRecordId: record.id,
+                response: formContent
+            })
         }
+
         return record
+
     }
 
     async search(searchInput: JobRecordSearchInput) {

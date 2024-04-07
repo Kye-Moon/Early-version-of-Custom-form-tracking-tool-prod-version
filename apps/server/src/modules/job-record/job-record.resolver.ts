@@ -13,21 +13,25 @@ import {JobRecordImage} from "../job-record-image/entities/job-record-image.enti
 import {VariationResource} from "../variation-resource/entities/variation-resource.entity";
 import {JobScopeItem} from "../job-scope-item/entities/job-scope-item.entity";
 import {JobScopeItemService} from "../job-scope-item/job-scope-item.service";
+import {JobForm} from "../job-form/entities/job-form.entity";
+import {JobFormService} from "../job-form/job-form.service";
+import {JobFormResponse} from "../job-form-response/entities/job-form-response.entity";
+import {JobFormResponseService} from "../job-form-response/job-form-response.service";
 
 @Resolver(() => JobRecord)
 export class JobRecordResolver {
     constructor(
         private readonly jobRecordService: JobRecordService,
-        private readonly jobScopeItemService: JobScopeItemService
+        private readonly jobScopeItemService: JobScopeItemService,
+        private readonly jobFormService: JobFormService,
+        private readonly jobFormResponseService: JobFormResponseService,
     ) {
     }
 
     @UseGuards(AuthGuard)
     @Mutation(() => JobRecord)
     async createJobRecord(@Args('createJobRecordInput') createJobRecordInput: CreateJobRecordInput) {
-        const result =  await this.jobRecordService.create(createJobRecordInput);
-        console.log('result', result)
-        return result;
+        return await this.jobRecordService.create(createJobRecordInput);
     }
 
     @UseGuards(AuthGuard)
@@ -94,6 +98,22 @@ export class JobRecordResolver {
     async scopeItem(@Parent() variation: JobRecord) {
         const {scopeRef} = variation;
         return await this.jobScopeItemService.findOne(scopeRef);
+    }
+
+    @UseGuards(AuthGuard)
+    @ResolveField(() => JobForm)
+    async jobForm(@Parent() jobRecord: JobRecord) {
+        const {jobFormId} = jobRecord;
+        console.log('getting job form', jobFormId)
+        if (!jobFormId) return null;
+        return await this.jobFormService.findById(jobFormId);
+    }
+
+    @UseGuards(AuthGuard)
+    @ResolveField(() => [JobFormResponse])
+    async formResponse(@Parent() jobRecord: JobRecord) {
+        const {id} = jobRecord;
+        return await this.jobFormResponseService.findByJobRecordId(id)
     }
 
 }

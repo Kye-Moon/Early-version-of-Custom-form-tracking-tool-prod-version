@@ -1,4 +1,4 @@
-import {boolean, numeric, pgTable, text, timestamp, uuid, varchar,} from 'drizzle-orm/pg-core';
+import {boolean, jsonb, numeric, pgTable, text, timestamp, uuid, varchar,} from 'drizzle-orm/pg-core';
 import {InferInsertModel, InferSelectModel, relations, sql,} from 'drizzle-orm';
 
 // ###################### USER ######################
@@ -201,6 +201,81 @@ export const jobCrewRelations = relations(jobCrew, ({one}) => ({
     }),
 }));
 
+export const formTemplate = pgTable('form_template', {
+    id: uuid('id')
+        .default(sql`gen_random_uuid
+        ()`)
+        .primaryKey(),
+    name: text('name').notNull(),
+    description: text('description'),
+    category: text('category').notNull(),
+    organisationId: uuid('organisation_id').references(() => organisation.id),
+    autoAssign: boolean('auto_assign').default(false),
+    structure: jsonb('structure'),
+    status: varchar('status', {enum: ["ACTIVE", "PENDING", "ARCHIVED"]}).default("PENDING"),
+    isSystemDefault: boolean('is_system_default').default(false),
+});
+
+export type FormTemplate = InferSelectModel<typeof formTemplate>;
+export type NewFormTemplate = InferInsertModel<typeof formTemplate>;
+
+export const jobForm = pgTable('job_form', {
+    id: uuid('id')
+        .default(sql`gen_random_uuid
+        ()`)
+        .primaryKey(),
+    jobId: uuid('job_id')
+        .references(() => job.id, {onDelete: 'cascade'})
+        .notNull(),
+    formTemplateId: uuid('form_template_id')
+        .references(() => formTemplate.id)
+        .notNull(),
+    isActive: boolean('is_active').default(true),
+});
+
+export type JobForm = InferSelectModel<typeof jobForm>;
+export type NewJobForm = InferInsertModel<typeof jobForm>;
+
+export const jobFormRelations = relations(jobForm, ({one}) => ({
+    job: one(job, {
+        fields: [jobForm.jobId],
+        references: [job.id],
+    }),
+    formTemplate: one(formTemplate, {
+        fields: [jobForm.formTemplateId],
+        references: [formTemplate.id],
+    }),
+}));
+
+export const jobFormResponse = pgTable('job_form_response', {
+    id: uuid('id')
+        .default(sql`gen_random_uuid
+        ()`)
+        .primaryKey(),
+    jobFormId: uuid('job_form_id')
+        .references(() => jobForm.id, {onDelete: 'cascade'})
+        .notNull(),
+    jobRecordId: uuid('job_record_id')
+        .references(() => jobRecord.id)
+        .notNull(),
+    response: jsonb('response').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+        .default(sql`CURRENT_TIMESTAMP`)
+        .notNull(),
+});
+
+export type JobFormResponse = InferSelectModel<typeof jobFormResponse>;
+export type NewJobFormResponse = InferInsertModel<typeof jobFormResponse>;
+
+export const jobFormResponseRelations = relations(jobFormResponse, ({one}) => ({
+    jobForm: one(jobForm, {
+        fields: [jobFormResponse.jobFormId],
+        references: [jobForm.id],
+    })
+}));
+
+
 // ###################### VARIATION TABLE ######################
 export const jobRecord = pgTable('job_record', {
     id: uuid('id')
@@ -210,17 +285,15 @@ export const jobRecord = pgTable('job_record', {
     jobId: uuid('job_id')
         .references(() => job.id, {onDelete: 'cascade'})
         .notNull(),
-    scopeRef: text('scope_ref'),
-    title: text('title').notNull(),
+    title: text('title'),
     description: text('description'),
-    type: varchar('type', {enum: ['VARIATION', 'NOTE', "QA", "SAFETY", "CREW_LOG"]}),
-    status: varchar('status', {
-        enum: ["IN_REVIEW", "SUBMITTED", 'APPROVED', 'REJECTED', "NO_ACTION", 'ARCHIVED']
-    }),
-    flag: varchar('flag', {enum: ['POTENTIAL', "CONFIRMED", 'IN_PROGRESS', 'COMPLETED', "HIGH_RISK", "MEDIUM_RISK", "LOW_RISK"]}),
+    scopeRef: text('scope_ref'),
+    type: text('type'),
     submittedBy: uuid('submitted_by')
         .references(() => user.id)
         .notNull(),
+    archived: boolean('archived').default(false),
+    jobFormId: uuid('job_form_id').references(() => jobForm.id),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at')
         .default(sql`CURRENT_TIMESTAMP`)

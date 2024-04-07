@@ -1,17 +1,12 @@
 import StackedLabelAndValue from "@/Components/StackedLabelAndValue";
 import React from "react";
-import {VariationQuery} from "gql-types";
-import {
-    enumToSentenceCase,
-    getJobRecordFlagBadgeVariant,
-    getJobRecordStatusBadgeVariant,
-    getJobRecordTypeBadgeVariant
-} from "@/Lib/utils";
+import {JobRecordQuery} from "gql-types";
+import {enumToSentenceCase, getJobRecordTypeBadgeVariant} from "@/Lib/utils";
 import Badge from "@/Primitives/Badge/Badge";
 import {format} from "date-fns";
 
 interface ViewDetailsProps {
-    variation: VariationQuery['jobRecord']
+    variation: JobRecordQuery['jobRecord']
 }
 
 export function ViewDetails({variation}: ViewDetailsProps) {
@@ -30,25 +25,13 @@ export function ViewDetails({variation}: ViewDetailsProps) {
 				<StackedLabelAndValue label={'Submitted By'} value={variation.submittedBy.name}/>
 			</div>
             <div className={'col-span-1 space-y-2'}>
-                <StackedLabelAndValue label={'Status'}
-                                      value={<Badge text={variation.status ? enumToSentenceCase(variation.status) : "-"}
-                                                    size={'sm'}
-                                                    variant={getJobRecordStatusBadgeVariant(variation.status)}/>}/>
-            </div>
-            <div className={'col-span-1 space-y-2'}>
-                <StackedLabelAndValue label={'Record Type'}
+                <StackedLabelAndValue label={'Category'}
                                       value={<Badge text={variation.type ? enumToSentenceCase(variation.type) : "-"}
                                                     size={'sm'}
                                                     variant={getJobRecordTypeBadgeVariant(variation.type)}/>}/>
             </div>
-            <div className={'col-span-1 space-y-2'}>
-                <StackedLabelAndValue label={'Flag'}
-                                      value={<Badge text={variation.flag ? enumToSentenceCase(variation.flag) : "-"}
-                                                    size={'sm'}
-                                                    variant={getJobRecordFlagBadgeVariant(variation.flag)}/>}/>
-            </div>
             <div className={'col-span-3 space-y-2'}>
-                <StackedLabelAndValue label={'Description'} value={variation.description}/>
+                <StackedLabelAndValue label={'Description'} value={variation.description ?? "-"}/>
             </div>
         </div>
     )
