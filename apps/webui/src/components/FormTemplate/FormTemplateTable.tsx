@@ -4,12 +4,11 @@ import TableEmptyState from "@/Components/TableEmptyState";
 import DataTable from "@/Components/DataTable/DataTable";
 import {
 	baseFormTemplateTableColumns,
-	FormTemplateTableColumn,
 	formTemplateTableColumns
-} from "@/Components/RecordTemplate/FormtemplateTableColumns";
+} from "@/Components/FormTemplate/FormtemplateTableColumns";
 
 interface FormTemplateTableProps {
-	formTemplates: FormTemplateTableColumn[];
+	formTemplates: FindAllFormTemplateQuery['formTemplates']
 	showActions?: boolean;
 }
 

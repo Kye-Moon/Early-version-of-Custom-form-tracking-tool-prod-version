@@ -1,9 +1,10 @@
 import StackedLabelAndValue from "@/Components/StackedLabelAndValue";
 import React from "react";
 import {JobRecordQuery} from "gql-types";
-import {enumToSentenceCase, getJobRecordTypeBadgeVariant} from "@/Lib/utils";
+import {enumToSentenceCase} from "@/Lib/utils";
 import Badge from "@/Primitives/Badge/Badge";
 import {format} from "date-fns";
+import {getBadgeVariant} from "@/Lib/badgeUtils";
 
 interface ViewDetailsProps {
     variation: JobRecordQuery['jobRecord']
@@ -28,7 +29,7 @@ export function ViewDetails({variation}: ViewDetailsProps) {
                 <StackedLabelAndValue label={'Category'}
                                       value={<Badge text={variation.type ? enumToSentenceCase(variation.type) : "-"}
                                                     size={'sm'}
-                                                    variant={getJobRecordTypeBadgeVariant(variation.type)}/>}/>
+                                                    variant={getBadgeVariant(variation.type)}/>}/>
             </div>
             <div className={'col-span-3 space-y-2'}>
                 <StackedLabelAndValue label={'Description'} value={variation.description ?? "-"}/>

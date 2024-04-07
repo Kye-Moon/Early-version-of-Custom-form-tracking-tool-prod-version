@@ -11,7 +11,9 @@ import {AttachmentUpload, AttachmentUploadHandles} from "@/Pages/EditJobPage/Att
 import AttachmentsView from "@/Pages/EditJobPage/Attachments/AttachmentsView";
 import LoadingButton from "@/Components/Loading/LoadingButton/LoadingButton";
 import BreadCrumb from "@/Components/BreadCrumbs/BreadCrumb";
-import {getEditJobPageBreadCrumb, getJobPageBreadCrumbWithJobName} from "@/Constants/breadcrumbs";
+import {getEditJobPageBreadCrumb} from "@/Constants/breadcrumbs";
+import TableWithHeaderLoadingSkeleton
+	from "@/Components/Loading/Skeletons/TableWithHeaderLoadingSkeleton";
 
 
 export default function EditJobPage() {
@@ -34,11 +36,11 @@ export default function EditJobPage() {
 			<PageHeadingWithMetaAndActions pageHeading={'Edit ' + data?.job.title || ""}/>
 			<BreadCrumb pages={getEditJobPageBreadCrumb({jobId: params.jobId})}/>
 			<PageContentSection>
-				{loading ? (<></>) : (<EditJobForm jobDetails={data?.job} jobCrew={jobCrew}/>)}
+				{loading ? (<><TableWithHeaderLoadingSkeleton/> </>) : (<EditJobForm jobDetails={data?.job} jobCrew={jobCrew}/>)}
 			</PageContentSection>
 			<PageContentSection>
 				<div className={'col-span-2 '}>
-					<Suspense fallback={<div>Loading...</div>}>
+					<Suspense fallback={<TableWithHeaderLoadingSkeleton/>}>
 						<h1 className={'text-xl font-semibold'}>Scope Items</h1>
 						<h3 className={'text-sm pb-4 text-gray-400'}>Add or remove scope items from
 							this job</h3>
@@ -58,7 +60,7 @@ export default function EditJobPage() {
 						</div>
 					</div>
 					<div>
-						<Suspense>
+						<Suspense fallback={<TableWithHeaderLoadingSkeleton/>}>
 							<AttachmentsView referenceId={params.jobId}/>
 						</Suspense>
 					</div>

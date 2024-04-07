@@ -18,7 +18,6 @@ import {useAuth} from "@clerk/clerk-react";
 import ProjectsPage from "@/Pages/ProjectsPage/ProjectsPage";
 import ViewProject from "@/Pages/ProjectPage/ViewProject";
 import EditProject from "@/Pages/ProjectPage/EditProject/EditProject";
-import NewFormPage from "@/Pages/NewForm/NewFormPage";
 import DesignerContextProvider from "@/Context/DesignerContext";
 import RecordTemplatesPage from "@/Pages/FormTemplatesPage/RecordTemplatesPage";
 import EditRecordTemplatePage from "@/Pages/EditFormTemplatePage/EditRecordTemplatePage";
@@ -185,15 +184,6 @@ export const editRecordTemplateRoute = new Route({
 	),
 });
 
-const newFormRoute = new Route({
-	getParentRoute: () => layoutRoute,
-	path: "new-form",
-	component: () => (
-		<DesignerContextProvider>
-			<NewFormPage/>
-		</DesignerContextProvider>
-	),
-});
 
 
 const routeTree = rootRoute.addChildren([
@@ -206,7 +196,6 @@ const routeTree = rootRoute.addChildren([
 		jobsRoute.addChildren([jobIndexRoute, jobRoute, editJobRoute]),
 		jobRecordsRoute.addChildren([variationIndexRoute, editVariationRoute]),
 		crewRoute,
-		newFormRoute,
 		recordTemplatesRoute.addChildren([recordTemplateIndexRoute, editRecordTemplateRoute]),
 		projectsRoute.addChildren([
 			projectsIndexRoute,

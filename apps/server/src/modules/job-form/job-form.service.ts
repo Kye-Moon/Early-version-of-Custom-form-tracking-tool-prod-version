@@ -14,6 +14,10 @@ export class JobFormService {
         return await this.jobFormRepository.create(createJobFormInput);
     }
 
+    async createMany(createJobFormInput: CreateJobFormInput[]) {
+        return this.jobFormRepository.createMany(createJobFormInput);
+    }
+
     async findByJobId(jobId: string) {
         return await this.jobFormRepository.findByJobId(jobId);
     }

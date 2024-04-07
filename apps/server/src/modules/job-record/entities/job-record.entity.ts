@@ -33,6 +33,9 @@ export class JobRecord {
     @Field(() => String, {nullable: true})
     jobFormId?: string
 
+    @Field(() => Boolean, {nullable: true})
+    archived?: boolean
+
     @Field(() => JobForm, {nullable: true})
     jobForm: JobForm
 

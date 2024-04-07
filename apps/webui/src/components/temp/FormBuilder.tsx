@@ -9,11 +9,12 @@ import {FindFormTemplateQuery} from "gql-types";
 import SaveFormBtn from "@/Components/temp/SaveFormBtn";
 import PublishFormBtn from "@/Components/temp/PublishFormBtn";
 import {FormElements} from "@/Components/temp/FormElements";
+import {Input} from "@/Primitives/Input";
 
 function FormBuilder({form}: { form: FindFormTemplateQuery['formTemplate'] }) {
 	const {setElements, setSelectedElement} = useDesigner();
 	const [isReady, setIsReady] = useState(false);
-	const {elements} = useDesigner();
+	const {elements, setFormName, setFormDescription, formDescription, formName} = useDesigner();
 
 	const mouseSensor = useSensor(MouseSensor, {
 		activationConstraint: {
@@ -29,6 +30,12 @@ function FormBuilder({form}: { form: FindFormTemplateQuery['formTemplate'] }) {
 	});
 
 	const sensors = useSensors(mouseSensor, touchSensor);
+
+	useEffect(() => {
+		setFormName(form.name);
+		setFormDescription(form.description ?? "");
+	}, [form, setFormName, setFormDescription]);
+
 
 	useEffect(() => {
 		if (isReady) return;
@@ -80,15 +87,21 @@ function FormBuilder({form}: { form: FindFormTemplateQuery['formTemplate'] }) {
 		<DndContext sensors={sensors}>
 			<main className="flex flex-col w-full h-screen ">
 				<nav className="flex justify-between border-b-2 p-4 gap-3 items-center">
-					<div>
-						<h2 className="truncate font-medium">
+					<div className={'space-y-2'}>
+						<h2 className="">
 							<span className="text-muted-foreground mr-2">Form:</span>
-							{form.name}
+							<Input value={formName}
+								   onChange={(e) => setFormName(e.target.value)}/>{' '}
 						</h2>
-						<h2 className="truncate font-medium">
+						<h2 className="">
 							<span className="text-muted-foreground mr-2">Description:</span>
-							{form.description}
+							<Input value={formDescription}
+								   onChange={(e) => setFormDescription(e.target.value)}/>{' '}
 						</h2>
+						<h3 className={'py-2 text-md font-semibold text-primary/50'}>
+							NOTE: All forms have a title and description field by default. You do
+							not need to add these fields.
+						</h3>
 					</div>
 					<div className="flex items-center gap-2">
 						<PreviewDialogBtn/>

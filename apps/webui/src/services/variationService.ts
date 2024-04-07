@@ -1,24 +1,22 @@
 import {graphql} from "gql-types";
 
 export const variationsTableQuery = graphql(`
-    query VariationTableSearchVariations($input: JobRecordSearchInput!) {
-		searchJobRecords(jobRecordSearchInput: $input) {
+    query JobRecordTableSearch($input: JobRecordSearchInput!) {
+        searchJobRecords(jobRecordSearchInput: $input) {
             id
             title
             description
-			createdAt
+            createdAt
             status,
             type,
             flag,
-            initialData {
-                id
-                numPeople
-                hours
-                materials
-                equipment
-            }
             job {
                 title
+            }
+            jobForm {
+                formTemplate {
+                    name
+                }
             }
             submittedBy {
                 name
@@ -70,6 +68,8 @@ export const jobRecordQuery = graphql(`
 			}
 			jobForm {
 				formTemplate {
+					name
+					description
 					structure
 				}
 			}

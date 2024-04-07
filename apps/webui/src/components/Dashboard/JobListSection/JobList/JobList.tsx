@@ -32,7 +32,7 @@ export default function JobList() {
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{data.searchJobs.map((job: Omit<Job, 'ownerId'>) => (
+				{data.searchJobs.map((job: Omit<Job, 'ownerId' | "attachments">) => (
 					<TableRow key={job.id}>
 						<TableCell className="font-medium">
 							<JobDetailsCell job={job}/>

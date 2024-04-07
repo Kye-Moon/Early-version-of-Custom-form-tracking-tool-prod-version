@@ -7,7 +7,7 @@ import React, {Suspense} from "react";
 import NewItemFormDialog from "@/Components/NewItemFormDialog";
 import NewProjectForm from "@/Components/Project/NewProjectForm/NewProjectForm";
 import NewRecordTemplateForm
-	from "@/Components/RecordTemplate/NewRecordTemplateForm/NewRecordTemplateForm";
+	from "@/Components/FormTemplate/NewRecordTemplateForm/NewRecordTemplateForm";
 import RecordTemplatesCell from "@/Pages/FormTemplatesPage/RecordTemplatesCell";
 
 const newRecordPageActions: PageHeadingActionButtonProps[] = [

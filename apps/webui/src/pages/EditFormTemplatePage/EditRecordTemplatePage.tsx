@@ -7,6 +7,7 @@ import {
 	getEditRecordTemplatesPageBreadCrumb,
 	getViewProjectPageBreadCrumb
 } from "@/Constants/breadcrumbs";
+import {ImSpinner2} from "react-icons/im";
 
 export default function EditRecordTemplatePage() {
 	const params = useParams({from: "/layout/record-templates/$recordTemplateId/edit"});
@@ -16,7 +17,10 @@ export default function EditRecordTemplatePage() {
 			<BreadCrumb
 				pages={getEditRecordTemplatesPageBreadCrumb({templateId: params.recordTemplateId})}/>
 			<PageContentSection>
-				<Suspense fallback={<div>Loading...</div>}>
+				<Suspense
+					fallback={<div className={'flex flex-col align-middle place-items-center'}>
+						<ImSpinner2 className="animate-spin h-12 w-12"/></div>
+					}>
 					<EditRecordTemplateCell templateId={params.recordTemplateId}/>
 				</Suspense>
 			</PageContentSection>

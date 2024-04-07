@@ -108,6 +108,7 @@ type JobRecord {
   status: String
   jobId: String!
   jobFormId: String
+  archived: Boolean
   jobForm: JobForm
   formResponse: JobFormResponse
   flag: String
@@ -254,6 +255,7 @@ input JobRecordSearchInput {
   offset: Int
   jobId: String
   filter: String
+  archivedOnly: Boolean
 }
 
 input SearchFormTemplateInput {
@@ -277,7 +279,7 @@ type Mutation {
   removeProject(id: String!): Project!
   createJobRecord(createJobRecordInput: CreateJobRecordInput!): JobRecord!
   updateJobRecord(updateJobRecordInput: UpdateJobRecordInput!): JobRecord!
-  removeVariation(id: Int!): JobRecord!
+  removeJobRecord(id: String!): JobRecord!
   createJobScopeItem(createJobScopeItemInput: CreateJobScopeItemInput!): JobScopeItem!
   updateJobScopeItem(updateJobScopeItemInput: UpdateJobScopeItemInput!): JobScopeItem!
   removeJobScopeItem(id: String!): JobScopeItem!
@@ -373,6 +375,7 @@ input CreateJobRecordInput {
   title: String
   description: String
   formId: String
+  archived: Boolean!
   formContent: JSON
   imageUrls: [String!]
 }
@@ -383,6 +386,7 @@ input UpdateJobRecordInput {
   title: String
   description: String
   formId: String
+  archived: Boolean
   formContent: JSON
   imageUrls: [String!]
   id: String!

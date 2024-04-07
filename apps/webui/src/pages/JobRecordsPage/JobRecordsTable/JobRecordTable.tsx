@@ -20,8 +20,8 @@ export default function JobRecordTable({jobId}: VariationTableProps) {
 			return {
 				id: record.id,
 				jobName: record.job.title,
+				formName: record.jobForm?.formTemplate.name ?? 'N/A',
 				title: record.title,
-				description: record.description,
 				type: record.type,
 				submittedBy: record.submittedBy.name,
 				createdAt: record.createdAt,

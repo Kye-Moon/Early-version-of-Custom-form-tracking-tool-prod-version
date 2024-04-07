@@ -7,10 +7,12 @@ import {
     jobCrew,
     jobRecord,
     jobRecordImage,
-    NewJobRecord, organisation,
+    NewJobRecord,
+    organisation,
     UpdateJobRecord,
     user,
-    User, userOrganisation,
+    User,
+    userOrganisation,
     variationInitialData
 } from "../../drizzle/schema";
 import {and, desc, eq, inArray, or} from "drizzle-orm";
@@ -44,7 +46,8 @@ export class JobRecordRepository {
                     eq(job.ownerId, userId),
                     eq(jobCrew.crewMemberId, userId)
                 ),
-                ...(searchInput.jobId ? [eq(jobRecord.jobId, searchInput.jobId)] : [])
+                ...(searchInput.jobId ? [eq(jobRecord.jobId, searchInput.jobId)] : []),
+                ...(searchInput.archivedOnly ? [eq(jobRecord.archived, true)] :[eq(jobRecord.archived, false)]),
             ))
             .groupBy(jobRecord.id)
             .limit(searchInput.limit)
@@ -124,6 +127,10 @@ export class JobRecordRepository {
         return await this.db.query.jobRecord.findMany({
             where: eq(jobRecord.jobId, jobId),
         });
+    }
+
+    async delete(id: string) {
+        return this.db.delete(jobRecord).where(eq(jobRecord.id, id)).returning();
     }
 
 }

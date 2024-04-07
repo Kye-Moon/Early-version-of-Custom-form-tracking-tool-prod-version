@@ -20,7 +20,6 @@ import TableWithHeaderLoadingSkeleton
 	from "@/Components/Loading/Skeletons/TableWithHeaderLoadingSkeleton";
 import JobCrewSection from "@/Pages/JobPage/JobDetailsAndCrewSection/JobCrewSection";
 import AttachmentsView from "@/Pages/EditJobPage/Attachments/AttachmentsView";
-import FormTemplateTable from "@/Components/RecordTemplate/FormTemplateTable";
 import JobFormsCell from "@/Components/JobForms/JobFormsCell";
 
 const deleteJobMutation = graphql(`
@@ -89,7 +88,8 @@ export default function JobPage(): JSX.Element {
 				<div className={'grid grid-cols-1 xl:grid-cols-2'}>
 					<div className={'col-span-2 '}>
 						<h1 className={'text-xl font-semibold'}>Records</h1>
-						<JobRecords jobId={data?.job.id}/>
+						<h1 className={'text-xl font-semibold'}>Records</h1>
+						<JobRecords jobId={params.jobId}/>
 					</div>
 				</div>
 			</PageContentSection>

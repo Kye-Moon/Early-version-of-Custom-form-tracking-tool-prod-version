@@ -1,10 +1,11 @@
 import {ColumnDef} from "@tanstack/react-table";
 import Badge from "@/Primitives/Badge/Badge";
-import {enumToSentenceCase, getJobStatusBadgeVariant} from "@/Lib/utils";
+import {enumToSentenceCase} from "@/Lib/utils";
 import {ArrowUpDown, EditIcon, EyeIcon} from "lucide-react";
 import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/Primitives/HoverCard";
 import {useNavigate} from "@tanstack/react-router";
 import ActionsDropMenu, {Action} from "@/Components/ActionsDropMenu/ActionsDropMenu";
+import {getBadgeVariant} from "@/Lib/badgeUtils";
 
 export interface ProjectsTableColumn {
     id: string;
@@ -32,7 +33,7 @@ export const projectsTableColumns: ColumnDef<ProjectsTableColumn>[] = [
                     className={"flex items-center"}
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Job Status
+                    Project Status
                     <ArrowUpDown className="ml-2 h-4 w-4"/>
                 </button>
             );
@@ -41,7 +42,7 @@ export const projectsTableColumns: ColumnDef<ProjectsTableColumn>[] = [
             return (
                 <Badge
                     size={"sm"}
-                    variant={getJobStatusBadgeVariant(row.getValue("status"))}
+                    variant={getBadgeVariant(row.getValue("status"))}
                     text={row.getValue("status") ? enumToSentenceCase(row.getValue("status")) : '-'}
                 />
             );

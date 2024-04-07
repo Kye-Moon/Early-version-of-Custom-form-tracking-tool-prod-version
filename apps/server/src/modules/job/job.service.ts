@@ -3,11 +3,12 @@ import {CreateJobInput} from './dto/create-job.input';
 import {UpdateJobInput} from './dto/update-job.input';
 import {JobRepository} from './job.repository';
 import {RequestService} from '../request/request.service';
-import {Job} from '../../drizzle/schema';
 import {JobSearchInput} from './dto/search-job.input';
 import {JobCrewService} from "../job-crew/job-crew.service";
 import {UserRepository} from "../user/user.repository";
 import {OrganisationRepository} from "../organisation/organisation.repository";
+import {FormTemplateRepository} from "../form-template/form-template.repository";
+import {JobFormService} from "../job-form/job-form.service";
 
 @Injectable()
 export class JobService {
@@ -16,7 +17,9 @@ export class JobService {
         private readonly request: RequestService,
         private readonly jobCrewService: JobCrewService,
         private readonly userRepository: UserRepository,
-        private readonly organisationRepository: OrganisationRepository
+        private readonly organisationRepository: OrganisationRepository,
+        private readonly formTemplateRepository: FormTemplateRepository,
+        private readonly jobFromService: JobFormService
     ) {
     }
 
@@ -31,6 +34,20 @@ export class JobService {
         if (createJobInput.crew && createJobInput.crew.length > 0) {
             await this.jobCrewService.createMany(job.id, createJobInput.crew);
         }
+
+        const orgAutoAssignableForms = await this.formTemplateRepository.findAutoAssignable(org.id);
+        const systemDefaultForms = await this.formTemplateRepository.findSystemDefaults();
+
+        if(orgAutoAssignableForms.length > 0 || systemDefaultForms.length > 0){
+            const autoAssignForms = [...orgAutoAssignableForms, ...systemDefaultForms];
+            await this.jobFromService.createMany(autoAssignForms.map((form) => {
+                return {
+                    jobId: job.id,
+                    formTemplateId: form.id
+                }
+            }));
+        }
+
         return job;
     }
 

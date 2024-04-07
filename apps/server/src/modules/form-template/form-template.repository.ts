@@ -2,8 +2,8 @@ import {Inject, Injectable} from "@nestjs/common";
 import {ORM} from "../../drizzle/drizzle.module";
 import {NodePgDatabase} from "drizzle-orm/node-postgres";
 import * as schema from "../../drizzle/schema";
-import {formTemplate, jobRecord, NewFormTemplate} from "../../drizzle/schema";
-import {eq, or} from "drizzle-orm";
+import {formTemplate, NewFormTemplate} from "../../drizzle/schema";
+import {and, eq, or} from "drizzle-orm";
 
 @Injectable()
 export class FormTemplateRepository {
@@ -31,5 +31,16 @@ export class FormTemplateRepository {
             eq(formTemplate.organisationId, organisationId),
             eq(formTemplate.isSystemDefault, true)
         ));
+    }
+
+    async findAutoAssignable(organisationId: string) {
+        return this.db.select().from(formTemplate).where(and(
+            eq(formTemplate.organisationId, organisationId),
+            eq(formTemplate.autoAssign, true)
+        ));
+    }
+
+    async findSystemDefaults () {
+        return this.db.select().from(formTemplate).where(eq(formTemplate.isSystemDefault, true));
     }
 }

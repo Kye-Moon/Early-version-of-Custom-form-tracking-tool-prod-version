@@ -1,10 +1,11 @@
 import StackedLabelAndValue from "@/Components/StackedLabelAndValue";
 import {isValid, parseISO} from "date-fns";
 import Badge from "@/Primitives/Badge/Badge";
-import {enumToSentenceCase, getJobStatusBadgeVariant} from "@/Lib/utils";
+import {enumToSentenceCase} from "@/Lib/utils";
 import React from "react";
 import {graphql} from "gql-types";
 import {useSuspenseQuery} from "@apollo/client";
+import {getBadgeVariant} from "@/Lib/badgeUtils";
 
 interface JobDetailsProps {
 	jobId: string;
@@ -54,7 +55,7 @@ export default function JobDetails({jobId}: JobDetailsProps) {
 										  <Badge
 											  text={data.job.status ? enumToSentenceCase(data.job.status) : '-'}
 											  size={"sm"}
-											  variant={data.job.status ? getJobStatusBadgeVariant(data.job.status) : 'default'}/>
+											  variant={data.job.status ? getBadgeVariant(data.job.status) : 'default'}/>
 									  }/>
 			</div>
 			<div className="sm:col-span-6 mb-6">

@@ -12,6 +12,7 @@ import {UserModule} from "../user/user.module";
 import {OrganisationModule} from "../organisation/organisation.module";
 import {ProjectModule} from "../project/project.module";
 import {JobFormModule} from "../job-form/job-form.module";
+import {FormTemplateModule} from "../form-template/form-template.module";
 
 @Module({
     providers: [JobResolver, JobService, JobRepository],
@@ -25,7 +26,9 @@ import {JobFormModule} from "../job-form/job-form.module";
         AttachmentModule,
         UserModule,
         OrganisationModule,
-        JobFormModule
+        JobFormModule,
+        FormTemplateModule,
+        JobFormModule,
     ],
     exports: [JobService, JobRepository],
 })

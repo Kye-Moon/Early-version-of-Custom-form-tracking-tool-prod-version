@@ -1,4 +1,4 @@
-import {Args, Int, Mutation, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
+import {Args, Mutation, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 import {JobRecordService} from './job-record.service';
 import {JobRecord} from './entities/job-record.entity';
 import {CreateJobRecordInput} from './dto/create-job-record.input';
@@ -54,7 +54,7 @@ export class JobRecordResolver {
 
     @UseGuards(AuthGuard)
     @Mutation(() => JobRecord)
-    removeVariation(@Args('id', {type: () => Int}) id: number) {
+    removeJobRecord(@Args('id', {type: () => String}) id: string) {
         return this.jobRecordService.remove(id);
     }
 

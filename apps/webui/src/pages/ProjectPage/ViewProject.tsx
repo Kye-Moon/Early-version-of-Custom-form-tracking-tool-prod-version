@@ -2,7 +2,7 @@ import {useParams, useRouter} from "@tanstack/react-router";
 import {useMutation, useQuery} from "@apollo/client";
 import toast from "react-hot-toast";
 import PageHeadingWithMetaAndActions, {
-    PageHeadingActionButtonProps
+	PageHeadingActionButtonProps
 } from "@/Components/PageHeadingWithMetaAndActions/PageHeadingWithMetaAndActions";
 import DeleteItemDialog from "@/Components/DeleteItemDialog/DeleteItemDialog";
 import React, {Suspense} from "react";
@@ -11,12 +11,14 @@ import {ProjectPageActions} from "@/Pages/ProjectPage/ProjectPageActions";
 import BreadCrumb from "@/Components/BreadCrumbs/BreadCrumb";
 import {getViewProjectPageBreadCrumb} from "@/Constants/breadcrumbs";
 import PageContentSection from "@/Components/PageContentSection";
-import TableWithHeaderLoadingSkeleton from "@/Components/Loading/Skeletons/TableWithHeaderLoadingSkeleton";
+import TableWithHeaderLoadingSkeleton
+	from "@/Components/Loading/Skeletons/TableWithHeaderLoadingSkeleton";
 import AttachmentsView from "@/Pages/EditJobPage/Attachments/AttachmentsView";
 import StackedLabelAndValue from "@/Components/StackedLabelAndValue";
 import Badge from "@/Primitives/Badge/Badge";
-import {enumToSentenceCase, getJobStatusBadgeVariant} from "@/Lib/utils";
+import {enumToSentenceCase} from "@/Lib/utils";
 import JobsTable from "@/Components/Jobs/JobsTable/JobsTable";
+import {getBadgeVariant} from "@/Lib/badgeUtils";
 
 export default function ViewProject() {
     const params = useParams({from: "/layout/projects/$projectId"});
@@ -66,7 +68,7 @@ export default function ViewProject() {
                                                   <Badge
                                                       text={data?.project.status ? enumToSentenceCase(data.project.status) : '-'}
                                                       size={"sm"}
-                                                      variant={data?.project.status ? getJobStatusBadgeVariant(data.project.status) : 'default'}/>
+                                                      variant={data?.project.status ? getBadgeVariant(data.project.status) : 'default'}/>
                                               }/>
                     </div>
                     <div className="sm:col-span-6 mb-6">

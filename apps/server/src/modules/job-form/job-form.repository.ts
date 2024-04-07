@@ -2,7 +2,7 @@ import {Inject, Injectable} from "@nestjs/common";
 import {ORM} from "../../drizzle/drizzle.module";
 import {NodePgDatabase} from "drizzle-orm/node-postgres";
 import * as schema from "../../drizzle/schema";
-import {FormTemplate, formTemplate, JobForm, jobForm, NewJobForm} from "../../drizzle/schema";
+import {formTemplate, jobForm, NewJobForm} from "../../drizzle/schema";
 import {and, eq} from "drizzle-orm";
 
 @Injectable()
@@ -13,6 +13,10 @@ export class JobFormRepository {
     async create(input: NewJobForm) {
         const _jobForm = await this.db.insert(jobForm).values([input]).returning()
         return _jobForm[0]
+    }
+
+    async createMany(input: NewJobForm[]) {
+        return this.db.insert(jobForm).values(input).returning();
     }
 
     async findByJobId(jobId: string) {

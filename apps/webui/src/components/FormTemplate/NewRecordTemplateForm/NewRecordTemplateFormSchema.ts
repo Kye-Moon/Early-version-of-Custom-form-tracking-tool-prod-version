@@ -3,7 +3,7 @@ import {InferType} from "prop-types";
 
 export const newRecordTemplateFormSchema = z.object({
 	name: z.string().min(1, {message: "template name is required"}).max(50),
-	category: z.enum(['SAFETY', 'QA', 'CHECKLIST', 'COMMISSIONING',"OTHER"]).optional(),
+	category: z.string().min(1, {message: "category is required"}).max(50),
 	description: z.string().optional().nullable(),
 });
 

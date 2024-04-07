@@ -1,20 +1,15 @@
 import {ColumnDef} from "@tanstack/react-table";
 import Badge from "@/Primitives/Badge/Badge";
-import {
-	enumToSentenceCase,
-	getFormTemplateStatusBadgeVariant,
-	getJobStatusBadgeVariant
-} from "@/Lib/utils";
-import {ArrowUpDown} from "lucide-react";
-import JobsTableActionCell from "@/Components/Jobs/JobsTable/JobsTableActionCell";
-import FormTemplatesTableActionCell
-	from "@/Components/RecordTemplate/RecordTemplatesTableActionCell";
+import {enumToSentenceCase} from "@/Lib/utils";
+import FormTemplatesTableActionCell from "@/Components/FormTemplate/RecordTemplatesTableActionCell";
+import {getBadgeVariant} from "@/Lib/badgeUtils";
 
 export interface FormTemplateTableColumn {
 	id: string;
 	name: string;
 	description?: string | null;
 	status?: string | null;
+	autoAssign?: boolean;
 }
 
 export const baseFormTemplateTableColumns: ColumnDef<FormTemplateTableColumn>[] = [
@@ -57,12 +52,23 @@ export const baseFormTemplateTableColumns: ColumnDef<FormTemplateTableColumn>[] 
 			return (
 				<Badge
 					size={"sm"}
-					variant={getFormTemplateStatusBadgeVariant(row.getValue("status"))}
+					variant={getBadgeVariant(row.getValue("status"))}
 					text={row.getValue("status") ? enumToSentenceCase(row.getValue("status")) : '-'}
 				/>
 			);
 		},
 	},
+	{
+		accessorKey: "autoAssign",
+		header: "Auto-assign",
+		cell: ({row}) => {
+			return (
+				<div className={"flex items-center"}>
+					{row.getValue("autoAssign") ? 'Yes' : 'No'}
+				</div>
+			);
+		},
+	}
 ];
 
 export const formTemplateTableColumns: ColumnDef<FormTemplateTableColumn>[] = [

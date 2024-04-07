@@ -3,14 +3,11 @@ import React from "react";
 import Badge from "@/Primitives/Badge/Badge";
 import {DashboardSearchVariationsQuery} from "gql-types";
 import TableEmptyState from "@/Components/TableEmptyState";
-import {
-	enumToSentenceCase,
-	getJobRecordFlagBadgeVariant,
-	getJobRecordTypeBadgeVariant
-} from "@/Lib/utils";
+import {enumToSentenceCase} from "@/Lib/utils";
 import {Link} from "@tanstack/react-router";
 import {useSuspenseQuery} from "@apollo/client";
 import {dashboardNotificationsQuery} from "@/Services/variationService";
+import {getBadgeVariant} from "@/Lib/badgeUtils";
 
 interface NotificationListProps {
 	notifications: DashboardSearchVariationsQuery["searchJobRecords"];
@@ -61,11 +58,11 @@ const NotificationCell = ({notification}: {
 					- {notification.submittedBy.name}</p>
 			</div>
 			<div className={'s'}>
-				<Badge text={notification.type ?? "-"} size={"sm"}
-					   variant={getJobRecordTypeBadgeVariant(notification.type)}/>
+				<Badge text={enumToSentenceCase(notification.type) ?? "-"} size={"sm"}
+					   variant={getBadgeVariant(notification.type)}/>
 				{notification.flag && (
 					<Badge text={enumToSentenceCase(notification.flag)} size={"sm"}
-						   variant={getJobRecordFlagBadgeVariant(notification.flag)}/>)}
+						   variant={getBadgeVariant(notification.flag)}/>)}
 			</div>
 		</div>
 	);

@@ -1,4 +1,4 @@
-import FormTemplateTable from "@/Components/RecordTemplate/FormTemplateTable";
+import FormTemplateTable from "@/Components/FormTemplate/FormTemplateTable";
 import {useSuspenseQuery} from "@apollo/client";
 import {graphql} from "gql-types";
 import {useMemo} from "react";

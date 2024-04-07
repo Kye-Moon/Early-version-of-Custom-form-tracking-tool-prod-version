@@ -15,3 +15,11 @@ export const updateMutation = graphql(`
 		}
 	}
 `)
+
+export const deleteMutation = graphql(`
+    mutation DeleteJobRecord($id: String!) {
+        removeJobRecord(id: $id) {
+            id
+        }
+    }
+`)

@@ -9,4 +9,7 @@ export class JobRecordSearchInput extends BaseSearchInput {
 
     @Field(() => String, {nullable: true})
     filter?: string;
+
+    @Field(() => Boolean, {nullable: true})
+    archivedOnly?: boolean;
 }

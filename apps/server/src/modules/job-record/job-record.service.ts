@@ -10,7 +10,6 @@ import {UserRepository} from "../user/user.repository";
 import {OrganisationRepository} from "../organisation/organisation.repository";
 import {FormTemplateService} from "../form-template/form-template.service";
 import dayjs from "dayjs";
-import {JobFormService} from "../job-form/job-form.service";
 import {JobFormRepository} from "../job-form/job-form.repository";
 import {JobFormResponseService} from "../job-form-response/job-form-response.service";
 
@@ -31,7 +30,6 @@ export class JobRecordService {
     }
 
     async create(createJobRecordInput: CreateJobRecordInput) {
-        console.log(createJobRecordInput)
         const user = await this.userRepository.findOneByAuthId(this.request.userId);
         const {formId, formContent, title, ...jobRecordRest} = createJobRecordInput
         let derivedTitle = title
@@ -106,8 +104,8 @@ export class JobRecordService {
     }
 
 
-    remove(id: number) {
-        return `This action removes a #${id} variation`;
+    remove(id: string) {
+        return this.jobRecordRepository.delete(id);
     }
 
     async findJobRecords(jobId: string) {

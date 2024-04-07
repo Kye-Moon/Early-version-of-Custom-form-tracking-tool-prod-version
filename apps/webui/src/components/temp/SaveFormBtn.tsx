@@ -8,7 +8,7 @@ import {updateFormTemplateMutation} from "@/Services/formTemplate";
 import toast from "react-hot-toast";
 
 function SaveFormBtn({id, saveAndPublish = false}: { id: string, saveAndPublish?: boolean }) {
-	const {elements} = useDesigner();
+	const {elements,formName,formDescription} = useDesigner();
 	const [updateFormTemplate, {loading}] = useMutation(updateFormTemplateMutation, {
 		onCompleted: () => {
 			toast.success("Form saved");
@@ -23,6 +23,8 @@ function SaveFormBtn({id, saveAndPublish = false}: { id: string, saveAndPublish?
 				variables: {
 					input: {
 						id,
+						name: formName,
+						description: formDescription,
 						structure: {elements: elements},
 						...(saveAndPublish && {status: "ACTIVE"}),
 					}

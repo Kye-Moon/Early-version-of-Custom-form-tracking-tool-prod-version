@@ -12,8 +12,6 @@ export class AuthGuard implements CanActivate {
             request: ctx.getContext().request,
             secretKey: process.env.CLERK_SECRET_KEY
         });
-        console.log(authStatus);
-
         if (authStatus.isSignedIn) {
             const auth = authStatus.toAuth();
             ctx.getContext().req.userId = auth.userId;

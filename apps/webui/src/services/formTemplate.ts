@@ -36,6 +36,7 @@ export const findAllFormTemplateQuery = graphql(`
 			description
 			category
 			status
+			autoAssign
 		}
 	}
 `)

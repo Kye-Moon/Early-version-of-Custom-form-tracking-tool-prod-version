@@ -4,13 +4,16 @@ import {parseISO} from 'date-fns'
 
 import {zodResolver} from "@hookform/resolvers/zod";
 import {editJobFormSchema, EditJobFormType} from "@/Pages/EditJobPage/EditJobFormSchema";
-import EditJobDetails from "@/Pages/EditJobPage/EditJobFormComponents/EditJobDetails/EditJobDetails";
-import {Suspense} from "react";
+import EditJobDetails
+	from "@/Pages/EditJobPage/EditJobFormComponents/EditJobDetails/EditJobDetails";
+import React, {Suspense} from "react";
 import {updateJob} from "@/Services/jobService";
 import {useMutation} from "@apollo/client";
 import toast from "react-hot-toast";
 import CrewTableSection from "@/Pages/CrewPage/CrewTableSection";
 import LoadingButton from "@/Components/Loading/LoadingButton/LoadingButton";
+import TableWithHeaderLoadingSkeleton
+	from "@/Components/Loading/Skeletons/TableWithHeaderLoadingSkeleton";
 
 
 interface EditJobFormProps {
@@ -65,7 +68,7 @@ export default function EditJobForm({jobDetails, jobCrew}: EditJobFormProps) {
                     </div>
                     <div className={'col-span-1 space-y-6 xl:pl-12'}>
                         <h1 className={'text-xl font-semibold'}>Crew</h1>
-                        <Suspense fallback={<div>Loading...</div>}>
+						<Suspense fallback={<TableWithHeaderLoadingSkeleton/>}>
                             <CrewTableSection showInvited={false} initialSelected={jobCrew}/>
                         </Suspense>
                     </div>
