@@ -5,26 +5,28 @@ import {LooseAuthProp,} from '@clerk/clerk-sdk-node'; // eslint-disable-next-lin
 const cookieParser = require('cookie-parser');
 
 declare global {
-  namespace Express {
-    interface Request extends LooseAuthProp {}
-  }
+    namespace Express {
+        interface Request extends LooseAuthProp {
+        }
+    }
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.enableCors({
-    origin:
-        ['http://localhost:3001','http://localhost:3000','https://webui-szl9.onrender.com','https://production-varify-server.onrender.com', 'https://varify.synex.one'],
-    credentials: true,
-  })
+    const app = await NestFactory.create(AppModule);
+    app.enableCors({
+        origin:
+            ['http://localhost:3001', 'http://localhost:3000', 'https://webui-szl9.onrender.com', 'https://production-varify-server.onrender.com', 'https://varify.synex.one', 'https://varify.onrender.com'],
+        credentials: true,
+    })
 
-  // Add Pino logger
-  app.useLogger(app.get(Logger));
+    // Add Pino logger
+    app.useLogger(app.get(Logger));
 
-  // Add cookie parser
-  app.use(cookieParser());
+    // Add cookie parser
+    app.use(cookieParser());
 
 
-  await app.listen(4000);
+    await app.listen(4000);
 }
+
 bootstrap();
