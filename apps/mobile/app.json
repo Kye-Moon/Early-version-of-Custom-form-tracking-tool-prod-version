@@ -24,7 +24,7 @@
       }
     },
     "android": {
-      "versionCode": "12",
+      "versionCode": 12,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -37,6 +37,12 @@
     "experiments": {
       "typedRoutes": true
     },
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "checkAutomatically": "ON_LOAD",
+      "enabled": true,
+      "url": "https://u.expo.dev/7b3fa9dc-6e0b-4945-99f5-6564fae037c8"
+    },
     "extra": {
       "router": {
         "origin": false
@@ -45,6 +51,9 @@
         "projectId": "7b3fa9dc-6e0b-4945-99f5-6564fae037c8"
       }
     },
-    "owner": "kyemoon"
+    "owner": "kyemoon",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
   }
 }

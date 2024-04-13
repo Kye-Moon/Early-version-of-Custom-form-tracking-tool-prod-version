@@ -8,9 +8,9 @@ import {loadDevMessages, loadErrorMessages} from "@apollo/client/dev";
 import {registerRootComponent} from "expo";
 import {ClerkProvider} from "@clerk/clerk-expo";
 import {tokenCache} from "../lib/tokenCache";
-import ErrorBoundary from 'react-native-error-boundary'
-import {GlobalFallback} from "../components/Error/GlobalErrorBoundary";
-
+import * as Updates from 'expo-updates';
+import Updating from "../components/Updating";
+import Config from "../Config";
 
 export const unstable_settings = {
     // Ensure that reloading on `/modal` keeps a back button present.
@@ -29,6 +29,27 @@ if (__DEV__) {  // Adds messages only in a dev environment
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 export default function Root() {
+    const [updating, setUpdating] = React.useState(false);
+
+    async function onFetchUpdateAsync() {
+        try {
+            const update = await Updates.checkForUpdateAsync();
+
+            if (update.isAvailable) {
+                setUpdating(true);
+                await Updates.fetchUpdateAsync();
+                await Updates.reloadAsync();
+                setUpdating(false)
+            }
+        } catch (error) {
+            // You can also add an alert() to see the error message in case of an error when fetching updates.
+            alert(`Error fetching latest Expo update: ${error}`);
+        }
+    }
+
+    useEffect(() => {
+        onFetchUpdateAsync();
+    }, []);
 
     useEffect(() => {
         SplashScreen.hideAsync();
@@ -38,10 +59,10 @@ export default function Root() {
     return (
         <GluestackUIProvider config={config}>
             {/*@ts-ignore*/}
-            <ClerkProvider tokenCache={tokenCache} publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+            <ClerkProvider tokenCache={tokenCache} publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || Config.clerk_publishable_key}>
                 <RecoilRoot>
                     <Suspense fallback={<Text>Loading...</Text>}>
-                        <Slot/>
+                        {updating ? <Updating/> : <Slot/>}
                     </Suspense>
                 </RecoilRoot>
             </ClerkProvider>

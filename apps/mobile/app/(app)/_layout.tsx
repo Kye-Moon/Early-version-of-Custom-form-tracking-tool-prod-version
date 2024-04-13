@@ -87,7 +87,7 @@ export default function RootLayout() {
 function RootLayoutNav() {
     const [initialiseUser] = useMutation(initialiseUserMutation)
     const {user} = useUser();
-    const {isLoaded, isSignedIn} = useAuth();
+    const {isSignedIn} = useAuth();
 
     useEffect(() => {
         const initUser = async () => {

@@ -1,25 +1,42 @@
 {
   "cli": {
-    "version": ">= 5.9.1"
+    "version": ">= 5.9.1",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "channel": "staging",
       "env": {
-        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c3VidGxlLXNoYWQtOTUuY2xlcmsuYWNjb3VudHMuZGV2JA"
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c3VidGxlLXNoYWQtOTUuY2xlcmsuYWNjb3VudHMuZGV2JA",
+        "APP_ENV": "development"
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "preview"
     },
     "production": {
+      "channel": "production",
+      "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuc3luZXgub25lJA"
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuc3luZXgub25lJA",
+        "APP_ENV": "production"
       }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./varify-412112-65249a7d3ff8.json",
+        "track": "internal"
+      },
+      "ios": {
+        "appleId": "kyemoon11@icloud.com",
+        "appleTeamId": "UQDSJXLHR6",
+        "ascAppId": "6474422275"
+      }
+    }
   }
 }

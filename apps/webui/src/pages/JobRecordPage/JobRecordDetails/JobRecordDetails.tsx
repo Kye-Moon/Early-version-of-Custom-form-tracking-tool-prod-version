@@ -31,15 +31,17 @@ export default function JobRecordDetails({jobRecord}: JobRecordDetailsProps) {
 				<h3 className={'text-xl font-semibold'}>Details</h3>
 			</div>
 			<ViewDetails variation={jobRecord}/>
-
-			<div className={'my-12 py-4  rounded-xl  pr-6'}>
-				<div className={'pb-4'}>
-					<h1 className={'text-xl'}>Form: {jobRecord.jobForm?.formTemplate.name}</h1>
-					<h1 className={'text-sm text-black/50'} >Description: {jobRecord.jobForm?.formTemplate.description}</h1>
-					<Separator/>
+			{jobRecord.formResponse && (
+				<div className={'my-12 py-4  rounded-xl  pr-6'}>
+					<div className={'pb-4'}>
+						<h1 className={'text-xl'}>Form: {jobRecord.jobForm?.formTemplate.name}</h1>
+						<h1 className={'text-sm text-black/50'}>Description: {jobRecord.jobForm?.formTemplate.description}</h1>
+						<Separator/>
+					</div>
+					<FormResponseRender formFields={processedDetails}/>
 				</div>
-				<FormResponseRender formFields={processedDetails}/>
-			</div>
+			)}
+
 		</div>
 	)
 }
