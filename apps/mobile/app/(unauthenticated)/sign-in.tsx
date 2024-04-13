@@ -86,6 +86,7 @@ export default function SignIn() {
                     <Pressable onPress={handlePressLogo}>
                         <Image alt={'logo'} source={require('../../assets/images/Logo.png')} style={styles.logo}/>
                         {apiUrl === API_URLS.local && <Text size={'xs'}>LOCAL</Text>}
+                        {apiUrl === API_URLS.dev && <Text size={'xs'}>DEV</Text>}
                     </Pressable>
                     <Controller
                         control={form.control}
