@@ -2,7 +2,7 @@
   "expo": {
     "name": "varify",
     "slug": "varify",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "synex-varify",
@@ -16,7 +16,7 @@
       "**/*"
     ],
     "ios": {
-      "buildNumber": "18",
+      "buildNumber": "19",
       "supportsTablet": true,
       "bundleIdentifier": "com.synex.varify",
       "config": {
@@ -24,7 +24,7 @@
       }
     },
     "android": {
-      "versionCode": "11",
+      "versionCode": "12",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

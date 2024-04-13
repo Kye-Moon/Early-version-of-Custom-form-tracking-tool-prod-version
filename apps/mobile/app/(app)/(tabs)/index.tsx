@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 import React, {Suspense} from 'react';
 import {Button, ButtonText, Text, View} from "@gluestack-ui/themed";
 import VariationsCell from "../../../components/home/VariationsCell/VariationsCell";
-import { Link} from "expo-router";
+import {Link} from "expo-router";
 import LoadingSkeletonRows from "../../../components/Loading/SkeletonRows";
 
 export default function VariationsScreen() {
@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
         justifyContent: 'space-between',
+        paddingBottom: 24,
     },
     scrollView: {
         flex: 1,
@@ -45,11 +46,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         fontWeight: 'bold',
         paddingTop: 10,
-    },
-    separator: {
-        marginVertical: 30,
-        height: 1,
-        width: '80%',
     },
     buttonContainer: {
         position: 'absolute',

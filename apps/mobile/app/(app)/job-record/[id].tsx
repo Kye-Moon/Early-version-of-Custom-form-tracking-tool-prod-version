@@ -8,7 +8,7 @@ export default function Variation() {
     const {id, jobRecordTitle} = useLocalSearchParams<{ id: string, jobRecordTitle: string }>();
     return (
         <>
-            <Header title={jobRecordTitle}/>
+            <Header title={'Record'}/>
             <Suspense fallback={<LoadingSkeletonRows rows={6}/>}>
                 <JobRecordCell variationId={id}/>
             </Suspense>
