@@ -375,7 +375,7 @@ input CreateJobRecordInput {
   title: String
   description: String
   formId: String
-  archived: Boolean!
+  archived: Boolean
   formContent: JSON
   imageUrls: [String!]
 }

@@ -1,6 +1,6 @@
 import {graphql} from "gql-types";
 
-export const variationsTableQuery = graphql(`
+export const jobRecordsTableQuery = graphql(`
     query JobRecordTableSearch($input: JobRecordSearchInput!) {
         searchJobRecords(jobRecordSearchInput: $input) {
             id

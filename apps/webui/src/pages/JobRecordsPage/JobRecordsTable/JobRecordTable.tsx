@@ -4,7 +4,7 @@ import {
 	jobRecordTableColumns
 } from "@/Pages/JobRecordsPage/JobRecordsTable/JobRecordTableColumns";
 import {useSuspenseQuery} from "@apollo/client";
-import {variationsTableQuery} from "@/Services/variationService";
+import {jobRecordsTableQuery} from "@/Services/variationService";
 import React, {useMemo} from "react";
 import TableEmptyState from "@/Components/TableEmptyState";
 
@@ -14,7 +14,7 @@ interface VariationTableProps {
 }
 
 export default function JobRecordTable({jobId}: VariationTableProps) {
-	const {data} = useSuspenseQuery(variationsTableQuery, {variables: {input: {...(jobId && {jobId: jobId})}}})
+	const {data} = useSuspenseQuery(jobRecordsTableQuery, {variables: {input: {...(jobId && {jobId: jobId})}}})
 	const variationRows: JobRecordTableColumn[] = useMemo(() => {
 		return data.searchJobRecords.map((record) => {
 			return {

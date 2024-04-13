@@ -18,8 +18,8 @@ export class CreateJobRecordInput {
     @Field(() => String, {nullable: true})
     formId: string
 
-    @Field(() => Boolean)
-    archived: boolean
+    @Field(() => Boolean,  {nullable: true})
+    archived?: boolean
 
     @Field(() => GraphQLJSONObject, {nullable: true})
     formContent?: JSON

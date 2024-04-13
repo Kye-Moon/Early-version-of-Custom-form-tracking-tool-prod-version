@@ -15,7 +15,7 @@ import {
 	newRecordTemplateFormSchema,
 	NewRecordTemplateFormType
 } from "@/Components/FormTemplate/NewRecordTemplateForm/NewRecordTemplateFormSchema";
-import {createFormTemplateMutation} from "@/Services/formTemplate";
+import {createFormTemplateMutation, findAllFormTemplateQuery} from "@/Services/formTemplate";
 import {useNavigate} from "@tanstack/react-router";
 
 /**
@@ -50,6 +50,8 @@ export default function NewRecordTemplateForm({onFormSubmitComplete}: NewProject
 			toast.error("Error creating Template");
 			onFormSubmitComplete?.();
 		},
+		awaitRefetchQueries: true,
+		refetchQueries: [{query: findAllFormTemplateQuery}]
 	});
 
 	// The form hook for the NewRecordTemplateForm

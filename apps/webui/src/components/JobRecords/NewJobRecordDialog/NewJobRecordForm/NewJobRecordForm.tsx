@@ -31,6 +31,7 @@ import {FormElementInstance} from "form-types";
 
 import FormSubmitComponent from "@/Components/temp/FormSubmitComponent";
 import {FormElements} from "@/Components/temp/FormElements";
+import {jobRecordsTableQuery} from "@/Services/variationService";
 
 /**
  * Props for the NewRecordTemplateForm component
@@ -103,7 +104,7 @@ export default function NewJobRecordForm({onFormSubmitComplete}: NewProjectFormP
 	const [saveDetails, {loading}] = useMutation(createMutation, {
 		onError: (error) => toast.error("There was an error saving the job record"),
 		onCompleted: (data) => toast.success("Job record saved"),
-		refetchQueries: ['VariationTableSearchVariations'],
+		refetchQueries: [{query: jobRecordsTableQuery, variables: {input: {}}}],
 		awaitRefetchQueries: true
 	})
 

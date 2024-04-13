@@ -1,4 +1,4 @@
-const badgeVariant = ["default", "red", "yellow", "green", "blue", "purple", "pink"];
+	const badgeVariant = ["default", "red", "yellow", "green", "blue", "purple", "pink"];
 
 type BadgeVariantType = 'default' | 'red' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink';
 
@@ -6,7 +6,7 @@ function stringToHashCode(str: string) {
 	let hash = 0;
 	for (let i = 0; i < str.length; i++) {
 		const character = str.charCodeAt(i);
-		hash = ((hash << 5) - hash) + character;
+		hash = ((hash << 11) - hash) + character;
 		hash = hash & hash; // Convert to 32bit integer
 	}
 	return Math.abs(hash);
