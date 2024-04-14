@@ -26,6 +26,7 @@ export class JobFormRepository {
             .where(eq(jobForm.jobId, jobId))
     }
 
+
     async getFormTemplatesByJobId(jobId: string) {
         return await this.db.select({formTemplate: formTemplate})
             .from(formTemplate)

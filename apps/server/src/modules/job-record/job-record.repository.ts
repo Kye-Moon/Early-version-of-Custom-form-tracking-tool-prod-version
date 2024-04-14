@@ -3,8 +3,9 @@ import {ORM} from "../../drizzle/drizzle.module";
 import {NodePgDatabase} from "drizzle-orm/node-postgres";
 import * as schema from "../../drizzle/schema";
 import {
+    formTemplate,
     job,
-    jobCrew,
+    jobCrew, jobForm,
     jobRecord,
     jobRecordImage,
     NewJobRecord,
@@ -15,7 +16,7 @@ import {
     userOrganisation,
     variationInitialData
 } from "../../drizzle/schema";
-import {and, desc, eq, inArray, or} from "drizzle-orm";
+import {and, desc, eq, ilike, inArray, or} from "drizzle-orm";
 import {JobRecordSearchInput} from "./dto/search-job-record";
 
 @Injectable()
@@ -36,22 +37,50 @@ export class JobRecordRepository {
      * @param searchInput
      */
     async search({userId, orgId, searchInput}: { userId: string, orgId: string, searchInput?: JobRecordSearchInput }) {
-        return await this.db.select({jobRecord: jobRecord})
+
+        const query = this.db.select({jobRecord: jobRecord})
             .from(jobRecord)
-            .leftJoin(job, (eq(jobRecord.jobId, job.id)))
-            .leftJoin(jobCrew, (eq(job.id, jobCrew.jobId)))
-            .where(and(
-                eq(job.organisationId, orgId),
-                or(
-                    eq(job.ownerId, userId),
-                    eq(jobCrew.crewMemberId, userId)
-                ),
-                ...(searchInput.jobId ? [eq(jobRecord.jobId, searchInput.jobId)] : []),
-                ...(searchInput.archivedOnly ? [eq(jobRecord.archived, true)] :[eq(jobRecord.archived, false)]),
-            ))
-            .groupBy(jobRecord.id)
+            .leftJoin(job, () => eq(jobRecord.jobId, job.id))
+            .leftJoin(jobCrew, () => eq(job.id, jobCrew.jobId));
+
+        let conditions = [
+            eq(job.organisationId, orgId),
+            or(
+                eq(job.ownerId, userId),
+                eq(jobCrew.crewMemberId, userId)
+            ),
+            ...(searchInput.jobId ? [eq(jobRecord.jobId, searchInput.jobId)] : []),
+            ...(searchInput.archivedOnly ? [eq(jobRecord.archived, true)] : [eq(jobRecord.archived, false)]),
+            ...(searchInput.title ? [ilike(jobRecord.title, `%${searchInput.title}%`)] : [])
+        ];
+        // Check if formId or formCategory is specified and adjust the query
+        if (searchInput.formId || searchInput.formCategory) {
+            // Join jobForm and formTemplate based on formId or formCategory
+            query.leftJoin(jobForm, () => eq(jobRecord.jobFormId, jobForm.id))
+                .leftJoin(formTemplate, () => eq(jobForm.formTemplateId, formTemplate.id));
+
+            // Add conditions based on formId and formCategory
+            if (searchInput.formId) {
+                conditions.push(eq(formTemplate.id, searchInput.formId));
+            }
+            if (searchInput.formCategory) {
+                conditions.push(eq(formTemplate.category, searchInput.formCategory));
+            }
+        }
+
+        if(searchInput.submittedBy) {
+            query.leftJoin(user, () => eq(jobRecord.submittedBy, user.id))
+            conditions.push(ilike(user.name, `%${searchInput.submittedBy}%`))
+        }
+        // Apply all conditions
+        query.where(and(...conditions));
+
+        // Additional query modifiers
+        query.groupBy(jobRecord.id)
             .limit(searchInput.limit)
-            .orderBy(desc(jobRecord.createdAt))
+            .orderBy(desc(jobRecord.createdAt));
+
+        return await query.execute()
     }
 
     async ownerSearch({orgId, jobId}: { orgId: string, jobId?: string }) {

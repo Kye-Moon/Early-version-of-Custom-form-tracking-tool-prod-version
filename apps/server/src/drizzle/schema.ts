@@ -219,6 +219,7 @@ export const formTemplate = pgTable('form_template', {
 export type FormTemplate = InferSelectModel<typeof formTemplate>;
 export type NewFormTemplate = InferInsertModel<typeof formTemplate>;
 
+
 export const jobForm = pgTable('job_form', {
     id: uuid('id')
         .default(sql`gen_random_uuid

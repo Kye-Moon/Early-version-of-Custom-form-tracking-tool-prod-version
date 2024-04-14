@@ -254,7 +254,10 @@ input JobRecordSearchInput {
   limit: Int
   offset: Int
   jobId: String
-  filter: String
+  title: String
+  formId: String
+  formCategory: String
+  submittedBy: String
   archivedOnly: Boolean
 }
 

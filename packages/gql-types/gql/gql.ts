@@ -1,6 +1,6 @@
 /* eslint-disable */
 import * as types from './graphql';
-import {TypedDocumentNode as DocumentNode} from '@graphql-typed-document-node/core';
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 
 /**
  * Map of all GraphQL operations in the project.
@@ -30,6 +30,7 @@ const documents = {
     "\n    mutation CreateVariationInitialData($input: CreateVariationInitialDataInput!) {\n        createVariationInitialData(createVariationInitialDataInput: $input) {\n            id\n        }\n    }\n": types.CreateVariationInitialDataDocument,
     "\n\tquery JobFormSelect($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tjobForms {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\tcategory\n\t\t\t\tstatus\n\t\t\t\tstructure\n\t\t\t}\n\t\t},\n\t}\n": types.JobFormSelectDocument,
     "\n\tquery JobForms($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tjobForms {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\tcategory\n\t\t\t\tstatus\n\t\t\t}\n\t\t},\n\t}\n": types.JobFormsDocument,
+    "\n\tquery OrganisationFormSelect {\n\t\tformTemplates {\n\t\t\tid\n\t\t\tname\n\t\t\tcategory\n\t\t}\n\t}\n": types.OrganisationFormSelectDocument,
     "\n\tquery PreSignedUrlWeb($key: String!) {\n\t\tpresignedUrl(key: $key)\n\t}\n": types.PreSignedUrlWebDocument,
     "\n\tquery CrewPageTableSection($input: SearchUserInput!) {\n\t\tsearchUsers(userSearchInput: $input) {\n\t\t\tid\n\t\t\tname\n\t\t\tuserOrganisation {\n\t\t\t\trole\n\t\t\t}\n\t\t}\n\t}\n": types.CrewPageTableSectionDocument,
     "\n    mutation CreateJobAttachments($input: CreateAttachmentsInput !) {\n        createAttachments(createAttachmentInput: $input) {\n            id\n            referenceId\n            url\n        }\n    }\n": types.CreateJobAttachmentsDocument,
@@ -75,7 +76,7 @@ const documents = {
     " \n    query VariationResources($variationId: String!) {\n        variationResources(variationId: $variationId) {\n            id\n            description\n            type\n            quantity\n            unit\n            unitPrice\n            hours\n            rate\n            numPeople\n            createdAt\n        }\n    }\n": types.VariationResourcesDocument,
     "\n    mutation DeleteVariationResource($id: String!) {\n        removeVariationResource(id: $id){\n            id\n        }\n    }\n": types.DeleteVariationResourceDocument,
     "\n    query ResourceSummary($variationId: String!) {\n        variationResourceSummary(variationId: $variationId) {\n            labourTotal\n            materialTotal\n            equipmentTotal\n            otherTotal\n            total\n        }\n    }\n": types.ResourceSummaryDocument,
-    "\n    query JobRecordTableSearch($input: JobRecordSearchInput!) {\n        searchJobRecords(jobRecordSearchInput: $input) {\n            id\n            title\n            description\n            createdAt\n            status,\n            type,\n            flag,\n            job {\n                title\n            }\n            jobForm {\n                formTemplate {\n                    name\n                }\n            }\n            submittedBy {\n                name\n            }\n        }\n    }\n": types.JobRecordTableSearchDocument,
+    "\n    query JobRecordTableSearch($input: JobRecordSearchInput!) {\n        searchJobRecords(jobRecordSearchInput: $input) {\n            id\n            title\n            description\n            createdAt\n            status,\n            type,\n            flag,\n            job {\n                title\n            }\n            jobForm {\n                formTemplate {\n                    id\n\t\t\t\t\tname\n\t\t\t\t\tcategory\n                }\n            }\n            submittedBy {\n                name\n            }\n        }\n    }\n": types.JobRecordTableSearchDocument,
     "\n    query DashboardSearchVariations($input: JobRecordSearchInput!) {\n\t\tsearchJobRecords(jobRecordSearchInput: $input) {\n            id\n            title\n            description\n            status,\n            flag,\n            type\n            job {\n                title\n            }\n            submittedBy {\n                name\n            }\n        }\n    }\n": types.DashboardSearchVariationsDocument,
     "\n\tquery JobRecord($id: String!) {\n\t\tjobRecord(id: $id) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tdescription\n\t\t\tstatus\n\t\t\ttype\n\t\t\tflag\n\t\t\tcreatedAt\n\t\t\tjob {\n\t\t\t\tid\n\t\t\t\ttitle\n\t\t\t\tcustomerName\n\t\t\t}\n\t\t\tsubmittedBy {\n\t\t\t\tname\n\t\t\t}\n\t\t\timages {\n\t\t\t\tid\n\t\t\t\turl\n\t\t\t}\n\t\t\tjobForm {\n\t\t\t\tformTemplate {\n\t\t\t\t\tname\n\t\t\t\t\tdescription\n\t\t\t\t\tstructure\n\t\t\t\t}\n\t\t\t}\n\t\t\tformResponse {\n\t\t\t\tresponse\n\t\t\t}\n\t\t}\n\t}\n": types.JobRecordDocument,
 };
@@ -162,6 +163,10 @@ export function graphql(source: "\n\tquery JobFormSelect($jobId: String!) {\n\t\
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n\tquery JobForms($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tjobForms {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\tcategory\n\t\t\t\tstatus\n\t\t\t}\n\t\t},\n\t}\n"): (typeof documents)["\n\tquery JobForms($jobId: String!) {\n\t\tjob(id: $jobId) {\n\t\t\tjobForms {\n\t\t\t\tid\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\tcategory\n\t\t\t\tstatus\n\t\t\t}\n\t\t},\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\tquery OrganisationFormSelect {\n\t\tformTemplates {\n\t\t\tid\n\t\t\tname\n\t\t\tcategory\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery OrganisationFormSelect {\n\t\tformTemplates {\n\t\t\tid\n\t\t\tname\n\t\t\tcategory\n\t\t}\n\t}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -345,7 +350,7 @@ export function graphql(source: "\n    query ResourceSummary($variationId: Strin
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    query JobRecordTableSearch($input: JobRecordSearchInput!) {\n        searchJobRecords(jobRecordSearchInput: $input) {\n            id\n            title\n            description\n            createdAt\n            status,\n            type,\n            flag,\n            job {\n                title\n            }\n            jobForm {\n                formTemplate {\n                    name\n                }\n            }\n            submittedBy {\n                name\n            }\n        }\n    }\n"): (typeof documents)["\n    query JobRecordTableSearch($input: JobRecordSearchInput!) {\n        searchJobRecords(jobRecordSearchInput: $input) {\n            id\n            title\n            description\n            createdAt\n            status,\n            type,\n            flag,\n            job {\n                title\n            }\n            jobForm {\n                formTemplate {\n                    name\n                }\n            }\n            submittedBy {\n                name\n            }\n        }\n    }\n"];
+export function graphql(source: "\n    query JobRecordTableSearch($input: JobRecordSearchInput!) {\n        searchJobRecords(jobRecordSearchInput: $input) {\n            id\n            title\n            description\n            createdAt\n            status,\n            type,\n            flag,\n            job {\n                title\n            }\n            jobForm {\n                formTemplate {\n                    id\n\t\t\t\t\tname\n\t\t\t\t\tcategory\n                }\n            }\n            submittedBy {\n                name\n            }\n        }\n    }\n"): (typeof documents)["\n    query JobRecordTableSearch($input: JobRecordSearchInput!) {\n        searchJobRecords(jobRecordSearchInput: $input) {\n            id\n            title\n            description\n            createdAt\n            status,\n            type,\n            flag,\n            job {\n                title\n            }\n            jobForm {\n                formTemplate {\n                    id\n\t\t\t\t\tname\n\t\t\t\t\tcategory\n                }\n            }\n            submittedBy {\n                name\n            }\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

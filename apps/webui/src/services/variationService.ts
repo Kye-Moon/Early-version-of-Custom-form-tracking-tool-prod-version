@@ -15,7 +15,9 @@ export const jobRecordsTableQuery = graphql(`
             }
             jobForm {
                 formTemplate {
-                    name
+                    id
+					name
+					category
                 }
             }
             submittedBy {

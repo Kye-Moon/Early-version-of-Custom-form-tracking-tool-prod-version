@@ -9,7 +9,8 @@ import {
 } from "@/Primitives/Command";
 import {Popover, PopoverContent, PopoverTrigger} from "@/Primitives//Popover";
 import * as React from "react";
-import {Check, ChevronsUpDown} from "lucide-react";
+import {Check, ChevronsUpDown, XIcon} from "lucide-react";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,} from "@/Primitives/Tooltip";
 
 /**
  * ComboBox Option type
@@ -40,6 +41,8 @@ export interface ComboBoxProps {
 	value: string;
 	setValue: (value: string) => void;
 	options: ComboBoxOption[];
+	width?: string;
+	allowClear?: boolean;
 }
 
 /**
@@ -51,7 +54,15 @@ export interface ComboBoxProps {
  * @param options the options of the ComboBox
  * @constructor
  */
-const ComboBox = ({open, setOpen, value, setValue, options}: ComboBoxProps) => {
+const ComboBox = ({
+					  open,
+					  setOpen,
+					  value,
+					  setValue,
+					  options,
+					  width = '400px',
+					  allowClear = false
+				  }: ComboBoxProps) => {
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
@@ -60,16 +71,32 @@ const ComboBox = ({open, setOpen, value, setValue, options}: ComboBoxProps) => {
 					size={"sm"}
 					role="combobox"
 					aria-expanded={open}
-					className="w-[400px] h-8 justify-between"
+					className={`w-[${width}] h-8 justify-between`}
 				>
 					{value ? options.find((framework) => framework.value === value)?.label : "Select..."}
-					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50"/>
+					<div className={'flex'}>
+						{value && (
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger>
+										<XIcon
+											className={cn("h-4 w-4 cursor-pointer rounded-sm hover:bg-primary/20")}
+											onClick={() => setValue("")}/>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>Clear</p>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+						)}
+						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50"/>
+					</div>
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-[400px] p-0">
+			<PopoverContent className={`p-1 w-[${width}]`}>
 				<Command>
 					<CommandInput placeholder="Search..."/>
-					<CommandEmpty>No framework found.</CommandEmpty>
+					<CommandEmpty>No result found.</CommandEmpty>
 					<CommandGroup>
 						{options.map((framework) => (
 							<CommandItem

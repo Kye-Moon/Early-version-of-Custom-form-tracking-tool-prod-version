@@ -104,7 +104,6 @@ export class JobRecordResolver {
     @ResolveField(() => JobForm)
     async jobForm(@Parent() jobRecord: JobRecord) {
         const {jobFormId} = jobRecord;
-        console.log('getting job form', jobFormId)
         if (!jobFormId) return null;
         return await this.jobFormService.findById(jobFormId);
     }
