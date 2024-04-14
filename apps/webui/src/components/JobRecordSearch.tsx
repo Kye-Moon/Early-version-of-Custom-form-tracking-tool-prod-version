@@ -5,7 +5,7 @@ import JobSelect from "@/Components/JobSelect/JobSelect";
 import {useJobRecordSearch} from "@/Context/JobRecordSearchContext";
 import {useSuspenseQuery} from "@apollo/client";
 import ComboBox from "@/Components/ComboBox/ComboBox";
-import {useState} from "react";
+import {Suspense, useState} from "react";
 import {Button} from "@/Primitives/Button/Button";
 
 const formSelectQuery = graphql(`
@@ -38,7 +38,6 @@ export default function JobRecordSearch({hideJobSelect}: JobRecordSearchProps) {
 		categories,
 		forms
 	} = useJobRecordSearch();
-	const {data: orgForms} = useSuspenseQuery(formSelectQuery)
 	const [formSelectOpen, setFormSelectOpen] = useState(false);
 	const [formCategorySelectOpen, setFormCategorySelectOpen] = useState(false);
 
@@ -58,7 +57,9 @@ export default function JobRecordSearch({hideJobSelect}: JobRecordSearchProps) {
 			</div>
 			{!hideJobSelect &&
 				<div className="col-span-1">
-					<JobSelect width={'full'} value={jobId} setValue={setJobId}/>
+					<Suspense fallback={<div>Loading...</div>}>
+						<JobSelect width={'full'} value={jobId} setValue={setJobId}/>
+					</Suspense>
 				</div>
 			}
 			<div className="col-span-1 flex flex-col space-y-1 ">
