@@ -21,6 +21,7 @@ export default function JobRecordPage() {
 					<JobRecordCell jobRecordId={params.jobRecordId}/>
 				</Suspense>
 			</PageContentSection>
+
 		</>
 	)
 }

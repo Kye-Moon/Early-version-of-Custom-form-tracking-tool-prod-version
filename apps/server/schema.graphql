@@ -223,8 +223,9 @@ type Query {
   attachments(referenceId: String!): [Attachment!]!
   jobAttachment(id: Int!): Attachment!
   jobForms(jobId: String!): [JobForm!]!
+  searchJobForms(searchInput: SearchJobFormInput!): [JobForm!]!
   formTemplates: [FormTemplate!]!
-  searchFormTemplates(formTemplateSearchInput: SearchFormTemplateInput!): [FormTemplate!]!
+  searchFormTemplates(searchInput: SearchFormTemplateInput!): [FormTemplate!]!
   formTemplate(id: String!): FormTemplate!
   variationResources(variationId: String!): [VariationResource!]!
   variationResourceSummary(variationId: String!): VariationResourceSummary!
@@ -261,9 +262,17 @@ input JobRecordSearchInput {
   archivedOnly: Boolean
 }
 
+input SearchJobFormInput {
+  jobId: String
+  includeStatuses: [String!]
+  organisationId: String
+}
+
 input SearchFormTemplateInput {
   category: String
   jobId: String
+  includeStatuses: [String!]
+  organisationId: String
 }
 
 type Mutation {
@@ -290,6 +299,7 @@ type Mutation {
   removeJobAttachment(id: String!): Boolean!
   createJobForm(createJobFormInput: CreateJobFormInput!): JobForm!
   createFormTemplate(createFormTemplateInput: CreateFormTemplateInput!): FormTemplate!
+  duplicateFormTemplate(id: String!): FormTemplate!
   updateFormTemplate(updateFormTemplateInput: UpdateFormTemplateInput!): FormTemplate!
   createVariationInitialData(createVariationInitialDataInput: CreateVariationInitialDataInput!): VariationInitialData!
   createJobFormResponse(createJobFormResponseInput: CreateJobFormResponseInput!): JobFormResponse!

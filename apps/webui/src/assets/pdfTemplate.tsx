@@ -1,12 +1,12 @@
 import React from 'react';
 import {Document, Image, Page, StyleSheet, Text, View} from "@react-pdf/renderer";
-import {ResourceSummaryQuery, VariationQuery} from "gql-types";
+import {ResourceSummaryQuery} from "gql-types";
 import logo from "@/Assets/Logo.png";
 import {generateRandomDocumentId} from "@/Lib/utils";
 import {format} from "date-fns";
 
 interface Props {
-	variation: VariationQuery['jobRecord']
+	variation: any
 	organisationLogoUrl: string | undefined | null
 	orgName: string | undefined | null
 	labourResources: {

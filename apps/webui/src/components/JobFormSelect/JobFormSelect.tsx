@@ -10,14 +10,12 @@ import {
 } from "@/Components/JobRecords/NewJobRecordDialog/NewJobRecordForm/NewJobRecordFormSchema";
 
 const query = graphql(`
-	query JobFormSelect($jobId: String!) {
-		job(id: $jobId) {
-			jobForms {
+	query JobFormSelectSearch($searchInput: SearchJobFormInput!) {
+		searchJobForms(searchInput: $searchInput) {
+			id
+			formTemplate {
 				id
 				name
-				description
-				category
-				status
 				structure
 			}
 		},
@@ -32,13 +30,22 @@ interface JobFormsCellProps {
 export default function JobFormSelect({jobId, setFormStructure}: JobFormsCellProps) {
 	const [selectedForm, setSelectedForm] = useState('');
 	const [open, setOpen] = useState(false);
-	const {data} = useSuspenseQuery(query, {variables: {jobId: jobId}, skip: !jobId})
-	const { setValue} = useFormContext<NewJobRecordFormType>();
+	const {setValue} = useFormContext<NewJobRecordFormType>();
 
-	const items = data?.job.jobForms?.map((item: any) => ({
-		value: item.id,
-		label: item.name,
-		content: item.structure
+	const {data} = useSuspenseQuery(query, {
+		variables: {
+			searchInput:
+				{
+					includeStatuses: ['ACTIVE'],
+					jobId
+				}
+		}, skip: !jobId
+	});
+
+	const items = data?.searchJobForms?.map((item: any) => ({
+		value: item.formTemplate.id,
+		label: item.formTemplate.name,
+		content: item.formTemplate.structure
 	})) || [];
 
 	return (

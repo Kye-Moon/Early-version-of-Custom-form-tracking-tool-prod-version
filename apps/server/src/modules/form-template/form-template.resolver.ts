@@ -1,4 +1,4 @@
-import {Resolver, Query, Mutation, Args, Int} from '@nestjs/graphql';
+import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {FormTemplateService} from './form-template.service';
 import {FormTemplate} from './entities/form-template.entity';
 import {CreateFormTemplateInput} from './dto/create-form-template.input';
@@ -19,6 +19,13 @@ export class FormTemplateResolver {
     }
 
     @UseGuards(AuthGuard)
+    @Mutation(() => FormTemplate)
+    duplicateFormTemplate(@Args('id', {type: () => String}) id: string) {
+        return this.formTemplateService.duplicate(id);
+    }
+
+
+    @UseGuards(AuthGuard)
     @Query(() => [FormTemplate], {name: 'formTemplates'})
     findAll() {
         return this.formTemplateService.findAll();
@@ -26,8 +33,8 @@ export class FormTemplateResolver {
 
     @UseGuards(AuthGuard)
     @Query(() => [FormTemplate], {name: 'searchFormTemplates'})
-    searchFormTemplates(@Args('formTemplateSearchInput') search: SearchFormTemplateInput) {
-        return "this.formTemplateService.search(search);"
+    searchFormTemplates(@Args('searchInput') searchInput: SearchFormTemplateInput) {
+        return this.formTemplateService.search(searchInput)
     }
 
     @UseGuards(AuthGuard)

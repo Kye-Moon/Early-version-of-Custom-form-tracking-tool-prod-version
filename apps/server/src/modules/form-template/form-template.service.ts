@@ -4,6 +4,7 @@ import {UpdateFormTemplateInput} from './dto/update-form-template.input';
 import {FormTemplateRepository} from "./form-template.repository";
 import {OrganisationRepository} from "../organisation/organisation.repository";
 import {RequestService} from "../request/request.service";
+import {SearchFormTemplateInput} from "./dto/search-form-template.input";
 
 @Injectable()
 export class FormTemplateService {
@@ -24,11 +25,33 @@ export class FormTemplateService {
     }
 
     /**
+     * Duplicate a formTemplate by id
+     * @param templateId
+     */
+    async duplicate(templateId: string) {
+        const formTemplate = await this.formTemplateRepository.findById(templateId);
+        const {id, name, status, ...formTemplateData} = formTemplate;
+        return this.formTemplateRepository.create({
+                ...formTemplateData,
+                name: `${name} (copy)`,
+                status: "PENDING"
+            }
+        );
+    }
+
+    /**
      * Find all formTemplate (all is based on the organisation and the system defaults)
      */
     async findAll() {
         const organisation = await this.organisationRepository.findByAuthId(this.request.organisationId)
         return this.formTemplateRepository.findAll(organisation.id);
+    }
+
+    async search(search: SearchFormTemplateInput) {
+        const organisation = await this.organisationRepository.findByAuthId(this.request.organisationId)
+        search.organisationId = organisation.id;
+        return this.formTemplateRepository.search(search);
+
     }
 
     async findOne(id: string) {

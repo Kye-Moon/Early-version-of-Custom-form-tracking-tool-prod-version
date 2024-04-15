@@ -1,11 +1,22 @@
 import ActionsDropMenu, {Action} from "@/Components/ActionsDropMenu/ActionsDropMenu";
 import {useNavigate} from "@tanstack/react-router";
-import {ArchiveIcon, ArrowRightIcon, EyeIcon, StarIcon, StopCircleIcon} from "lucide-react";
+import {
+	ArchiveIcon,
+	ArrowRightIcon,
+	CopyIcon,
+	EyeIcon,
+	StarIcon,
+	StopCircleIcon
+} from "lucide-react";
 import {Row} from "@tanstack/react-table";
 import {FormTemplateTableColumn} from "@/Components/FormTemplate/FormtemplateTableColumns";
 import AssignFormTemplateToJobModal from "@/Components/FormTemplate/AssignFormTemplateToJobModal";
 import {useState} from "react";
-import {findAllFormTemplateQuery, updateFormTemplateMutation} from "@/Services/formTemplate";
+import {
+	duplicateFormTemplateMutation,
+	findAllFormTemplateQuery,
+	updateFormTemplateMutation
+} from "@/Services/formTemplate";
 import toast from "react-hot-toast";
 import {useMutation} from "@apollo/client";
 
@@ -18,8 +29,21 @@ export default function FormTemplatesTableActionCell({row}: FormTemplatesTableAc
 	const [isAssignFormTemplateToJobModalOpen, setIsAssignFormTemplateToJobModalOpen] = useState(false);
 	const isAutoAssign = row.original.autoAssign;
 
+	const [duplicate] = useMutation(duplicateFormTemplateMutation, {
+		onCompleted: () => {
+			toast.dismiss()
+			toast.success("Form template duplicated");
+		},
+		onError: (error) => {
+			toast.error("Failed to duplicate form template");
+		},
+		awaitRefetchQueries: true,
+		refetchQueries: [
+			{query: findAllFormTemplateQuery}
+		]
+	});
 
-	const [update, {loading}] = useMutation(updateFormTemplateMutation, {
+	const [update] = useMutation(updateFormTemplateMutation, {
 		onCompleted: () => {
 			toast.dismiss()
 			toast.success("Form template updated");
@@ -47,13 +71,15 @@ export default function FormTemplatesTableActionCell({row}: FormTemplatesTableAc
 				});
 			},
 		},
-		{
-			label: "Assign to job",
-			icon: <EyeIcon className={"h-4 text-primary/50"}/>,
-			onClick: () => {
-				setIsAssignFormTemplateToJobModalOpen(true);
-			},
-		},
+		...(row.original.status === "ACTIVE" ? [
+			{
+				label: "Assign to job",
+				icon: <EyeIcon className={"h-4 text-primary/50"}/>,
+				onClick: () => {
+					setIsAssignFormTemplateToJobModalOpen(true);
+				},
+			}
+		] : []),
 		...(isAutoAssign ? [
 			{
 				label: "Stop auto-assign",
@@ -71,21 +97,23 @@ export default function FormTemplatesTableActionCell({row}: FormTemplatesTableAc
 				},
 			},
 		] : [
-			{
-				label: "Auto-assign to jobs",
-				icon: <StarIcon className={"h-4 text-primary/50"}/>,
-				onClick: async () => {
-					setLoadingToast();
-					await update({
-						variables: {
-							input: {
-								id: row.original.id,
-								autoAssign: true
+			...(row.original.status === "ACTIVE" ? [
+				{
+					label: "Auto-assign to jobs",
+					icon: <StarIcon className={"h-4 text-primary/50"}/>,
+					onClick: async () => {
+						setLoadingToast();
+						await update({
+							variables: {
+								input: {
+									id: row.original.id,
+									autoAssign: true
+								}
 							}
-						}
-					});
+						});
+					},
 				},
-			},
+			] : []),
 		]),
 		...(row.original.status === "ACTIVE" ? [
 			{
@@ -103,9 +131,9 @@ export default function FormTemplatesTableActionCell({row}: FormTemplatesTableAc
 					});
 				}
 			}
-		]:[
+		] : [
 			{
-				label: "Republish",
+				label: "Publish",
 				icon: <ArrowRightIcon className={"h-4 text-green-500/50"}/>,
 				onClick: async () => {
 					setLoadingToast();
@@ -120,6 +148,19 @@ export default function FormTemplatesTableActionCell({row}: FormTemplatesTableAc
 				}
 			}
 		]),
+		{
+			label: "Duplicate",
+			icon: <CopyIcon className={"h-4 text-primary/50"}/>,
+			onClick: async () => {
+				toast.loading("Duplicating form template")
+				await duplicate({
+					variables: {
+						id: row.original.id
+					}
+				});
+			}
+		}
+
 	];
 	return (
 		<>

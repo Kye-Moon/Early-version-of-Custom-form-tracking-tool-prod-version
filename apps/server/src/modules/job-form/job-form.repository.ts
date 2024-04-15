@@ -3,7 +3,7 @@ import {ORM} from "../../drizzle/drizzle.module";
 import {NodePgDatabase} from "drizzle-orm/node-postgres";
 import * as schema from "../../drizzle/schema";
 import {formTemplate, jobForm, NewJobForm} from "../../drizzle/schema";
-import {and, eq} from "drizzle-orm";
+import {and, eq, inArray} from "drizzle-orm";
 
 @Injectable()
 export class JobFormRepository {
@@ -41,7 +41,6 @@ export class JobFormRepository {
                 eq(jobForm.jobId, jobId),
                 eq(jobForm.formTemplateId, formTemplateId)
             ));
-        console.log("JobFor",_jobForm)
         return _jobForm[0]
     }
 
@@ -50,5 +49,14 @@ export class JobFormRepository {
             .from(jobForm)
             .where(eq(jobForm.id, id));
         return _jobForm[0]
+    }
+
+    async search(search: any) {
+        return this.db.select({jobForm}).from(jobForm)
+            .innerJoin(formTemplate, eq(jobForm.formTemplateId, formTemplate.id))
+            .where(and(
+                ...(search.includeStatuses ? [inArray(formTemplate.status, search.includeStatuses)] : []),
+                eq(jobForm.jobId, search.jobId)
+            ));
     }
 }

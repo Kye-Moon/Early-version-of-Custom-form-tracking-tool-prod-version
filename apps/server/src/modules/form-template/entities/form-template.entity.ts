@@ -25,8 +25,10 @@ export class FormTemplate {
     structure?: JSON;
 
     @Field(() => String, {nullable: true})
-    status?: "ACTIVE" | "PENDING" | "ARCHIVED";
+    status?: FormTemplateStatus;
 
     @Field(() => Boolean, {nullable: true})
     isSystemDefault: boolean;
 }
+
+export type FormTemplateStatus = "ACTIVE" | "PENDING" | "ARCHIVED";

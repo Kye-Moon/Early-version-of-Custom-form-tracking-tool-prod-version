@@ -16,6 +16,15 @@ export const updateFormTemplateMutation = graphql(`
 	}
 `)
 
+
+export const duplicateFormTemplateMutation = graphql(`
+	mutation DuplicateFormTemplate($id: String!) {
+		duplicateFormTemplate(id: $id) {
+			id
+		}
+	}
+`)
+
 export const findFormTemplateQuery = graphql(`
 	query FindFormTemplate($id: String!) {
 		formTemplate(id: $id) {

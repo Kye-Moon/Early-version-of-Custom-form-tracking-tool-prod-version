@@ -9,6 +9,8 @@ import NewProjectForm from "@/Components/Project/NewProjectForm/NewProjectForm";
 import NewRecordTemplateForm
 	from "@/Components/FormTemplate/NewRecordTemplateForm/NewRecordTemplateForm";
 import RecordTemplatesCell from "@/Pages/FormTemplatesPage/RecordTemplatesCell";
+import TableWithHeaderLoadingSkeleton
+	from "@/Components/Loading/Skeletons/TableWithHeaderLoadingSkeleton";
 
 const newRecordPageActions: PageHeadingActionButtonProps[] = [
 	{
@@ -27,7 +29,7 @@ export default function RecordTemplatesPage() {
 										   subHeading={"Manage form templates"}
 			/>
 			<PageContentSection>
-				<Suspense fallback={<div>Loading...</div>}>
+				<Suspense fallback={<TableWithHeaderLoadingSkeleton/>}>
 					<RecordTemplatesCell/>
 				</Suspense>
 			</PageContentSection>

@@ -1,22 +1,11 @@
-import {graphql} from "gql-types";
 import {Label} from "@/Primitives/Label";
 import {Input} from "@/Primitives/Input";
 import JobSelect from "@/Components/JobSelect/JobSelect";
 import {useJobRecordSearch} from "@/Context/JobRecordSearchContext";
-import {useSuspenseQuery} from "@apollo/client";
 import ComboBox from "@/Components/ComboBox/ComboBox";
 import {Suspense, useState} from "react";
 import {Button} from "@/Primitives/Button/Button";
 
-const formSelectQuery = graphql(`
-	query OrganisationFormSelect {
-		formTemplates {
-			id
-			name
-			category
-		}
-	}
-`)
 
 interface JobRecordSearchProps {
 	hideJobSelect?: boolean;

@@ -1,11 +1,9 @@
 import {Field, InputType} from '@nestjs/graphql';
-import {FormTemplateStatus} from "../entities/form-template.entity";
+import {FormTemplateStatus} from "../../form-template/entities/form-template.entity";
 
 
 @InputType()
-export class SearchFormTemplateInput {
-    @Field(() => String, {nullable: true})
-    category?: string;
+export class SearchJobFormInput {
 
     @Field(() => String, {nullable: true})
     jobId?: string;

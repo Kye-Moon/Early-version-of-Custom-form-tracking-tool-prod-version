@@ -3,7 +3,8 @@ import {ORM} from "../../drizzle/drizzle.module";
 import {NodePgDatabase} from "drizzle-orm/node-postgres";
 import * as schema from "../../drizzle/schema";
 import {formTemplate, NewFormTemplate} from "../../drizzle/schema";
-import {and, eq, or} from "drizzle-orm";
+import {and, eq, inArray, or} from "drizzle-orm";
+import {SearchFormTemplateInput} from "./dto/search-form-template.input";
 
 @Injectable()
 export class FormTemplateRepository {
@@ -40,7 +41,17 @@ export class FormTemplateRepository {
         ));
     }
 
-    async findSystemDefaults () {
+    async search(search: SearchFormTemplateInput) {
+        return this.db.select().from(formTemplate).where(and(
+            ...(search.includeStatuses ? [inArray(formTemplate.status, search.includeStatuses)] : []),
+            or(
+                eq(formTemplate.organisationId, search.organisationId),
+                eq(formTemplate.isSystemDefault, true)
+            )
+        ));
+    }
+
+    async findSystemDefaults() {
         return this.db.select().from(formTemplate).where(eq(formTemplate.isSystemDefault, true));
     }
 }
