@@ -149,6 +149,10 @@ export const jobScopeItem = pgTable('job_scope_item', {
     reference: text('reference'),
     title: text('title'),
     description: text('description'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+        .default(sql`CURRENT_TIMESTAMP`)
+        .notNull(),
 });
 
 export const jobScopeItemRelations = relations(jobScopeItem, ({one}) => ({

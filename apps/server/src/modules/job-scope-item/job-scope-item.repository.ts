@@ -3,7 +3,7 @@ import {ORM} from "../../drizzle/drizzle.module";
 import {NodePgDatabase} from "drizzle-orm/node-postgres";
 import * as schema from "../../drizzle/schema";
 import {JobScopeItem, jobScopeItem, NewJobScopeItem} from "../../drizzle/schema";
-import {eq} from "drizzle-orm";
+import {asc, eq} from "drizzle-orm";
 
 @Injectable()
 export class JobScopeItemRepository {
@@ -22,7 +22,7 @@ export class JobScopeItemRepository {
     }
 
     async findByJobId(jobId: string) {
-        return this.db.select().from(jobScopeItem).where(eq(jobScopeItem.jobId, jobId));
+        return this.db.select().from(jobScopeItem).where(eq(jobScopeItem.jobId, jobId)).orderBy(asc(jobScopeItem.createdAt))
     }
 
     async delete(id: string) {

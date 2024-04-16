@@ -21,6 +21,20 @@ interface JobSelectProps {
 	jobId: string;
 }
 
+const generateReferenceString = (reference: string | null | undefined, title: string | null | undefined) => {
+	let referenceString = "";
+	if (reference) {
+		referenceString = `${reference}`;
+	}
+	if (reference && title) {
+		referenceString += " - ";
+	}
+	if (title) {
+		referenceString += title;
+	}
+	return referenceString;
+}
+
 export default function JobScopeItemSelect({value, setValue, jobId}: JobSelectProps) {
 	const [open, setOpen] = useState(false);
 	const {data} = useSuspenseQuery(getJobScopeItems, {
@@ -29,8 +43,8 @@ export default function JobScopeItemSelect({value, setValue, jobId}: JobSelectPr
 	});
 	const items = data?.jobScopeItems?.map((item: GetJobScopeItemsQuery['jobScopeItems'][0]) => ({
 		value: item.id,
-		label: `[${item.reference}] - ${item.title}`
-	})) || [];
+		label: generateReferenceString(item.reference, item.title),
+	})).filter((item) => item.label) || [];
 
 	return (
 		<div className={"flex flex-col space-y-1"}>

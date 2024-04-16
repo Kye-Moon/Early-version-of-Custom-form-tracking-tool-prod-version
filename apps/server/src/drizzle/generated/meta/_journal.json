@@ -43,6 +43,13 @@
       "when": 1712464606145,
       "tag": "0005_omniscient_nightcrawler",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1713264835007,
+      "tag": "0006_square_magdalene",
+      "breakpoints": true
     }
   ]
 }

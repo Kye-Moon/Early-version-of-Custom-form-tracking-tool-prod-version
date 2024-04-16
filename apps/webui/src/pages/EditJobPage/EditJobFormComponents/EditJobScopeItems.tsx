@@ -57,10 +57,22 @@ export default function EditJobScopeItems({jobId}: { jobId: string }) {
 	}, [data]);
 
 	const [create] = useMutation(createJobScopeItem, {
-		refetchQueries: [{query: getJobScopeItems, variables: {jobId: jobId}}]
+		refetchQueries: [{query: getJobScopeItems, variables: {jobId: jobId}}],
+		optimisticResponse: {
+			__typename: "Mutation",
+			createJobScopeItem: {
+				__typename: "JobScopeItem",
+				id: "temp",
+				jobId: jobId,
+				title: "",
+				reference: "",
+				description: ""
+			}
+		}
 	})
+
 	const [update] = useMutation(updateJobScopeItem, {
-		refetchQueries: [{query: getJobScopeItems, variables: {jobId: jobId}}]
+		refetchQueries: [{query: getJobScopeItems, variables: {jobId: jobId}}],
 	})
 	const [deleteScopeItem] = useMutation(deleteJobScopeItem, {
 		refetchQueries: [{query: getJobScopeItems, variables: {jobId: jobId}}]
