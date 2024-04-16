@@ -17,8 +17,6 @@ export default function JobSearch({hideProjectSelect}: JobSearchProps) {
 	const {
 		name,
 		setName,
-		submittedBy,
-		setSubmittedBy,
 		clearAll,
 		projectId,
 		setProjectId,
@@ -53,6 +51,7 @@ export default function JobSearch({hideProjectSelect}: JobSearchProps) {
 			<div className="col-span-1 flex flex-col space-y-1 ">
 				<Label htmlFor="form">Status</Label>
 				<ComboBox
+					width={'full'}
 					open={statusSelectOpen}
 					setOpen={setStatusSelectOpen}
 					value={status}
