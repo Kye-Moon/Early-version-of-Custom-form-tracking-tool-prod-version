@@ -59,6 +59,7 @@ export class JobService {
     async search(searchInput: JobSearchInput) {
         const user = await this.userRepository.findOneByAuthId(this.request.userId);
         const org = await this.organisationRepository.findByAuthId(this.request.organisationId);
+
         const results = await this.jobRepository.search({
             ...searchInput,
             userId: user.id,

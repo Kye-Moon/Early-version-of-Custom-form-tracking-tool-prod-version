@@ -11,6 +11,7 @@ export interface JobsTableColumn {
 	status: string;
 	customer: string;
 	numRecords: number;
+	project: string;
 }
 
 export const jobsTableColumns: ColumnDef<JobsTableColumn>[] = [
@@ -20,7 +21,17 @@ export const jobsTableColumns: ColumnDef<JobsTableColumn>[] = [
 	},
 	{
 		accessorKey: "customer",
-		header: "Customer",
+		header: ({column}) => {
+			return (
+				<button
+					className={"flex items-center"}
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					Customer
+					<ArrowUpDown className="ml-2 h-4 w-4"/>
+				</button>
+			);
+		},
 	},
 	{
 		accessorKey: "status",
@@ -47,10 +58,35 @@ export const jobsTableColumns: ColumnDef<JobsTableColumn>[] = [
 	},
 	{
 		accessorKey: "numRecords",
-		header: "# Records",
+		header: ({column}) => {
+			return (
+				<button
+					className={"flex items-center"}
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					# Records
+					<ArrowUpDown className="ml-2 h-4 w-4"/>
+				</button>
+			);
+		},
+	},
+	{
+		accessorKey: "project",
+		header: ({column}) => {
+			return (
+				<button
+					className={"flex items-center"}
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					Project
+					<ArrowUpDown className="ml-2 h-4 w-4"/>
+				</button>
+			);
+		},
 	},
 	{
 		id: "actions",
+
 		cell: ({row}) => {
 			return <div className={'text-right'}>
 				<JobsTableActionCell row={row}/>

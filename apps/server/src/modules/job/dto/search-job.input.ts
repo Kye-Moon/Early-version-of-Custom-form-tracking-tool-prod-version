@@ -5,14 +5,14 @@ import {JobStatus} from '../entities/job.entity';
 @InputType()
 export class JobSearchInput extends BaseSearchInput {
     @Field(() => String, {nullable: true})
-    customerName: string;
+    customer: string;
 
     @Field(() => String, {nullable: true})
     status: JobStatus;
 
-    @Field(() => Boolean, {nullable: true})
-    includeOwner: boolean;
-
     @Field(() => String, {nullable: true})
     projectId: string;
+
+    @Field(() => String, {nullable: true})
+    title: string;
 }

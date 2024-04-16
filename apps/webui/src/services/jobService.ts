@@ -39,6 +39,10 @@ export const jobTableSearchJobs = graphql(`
 			status
 			customerName
 			dueDate
+			project {
+				id
+				title
+			}
 			variations {
 				id
 				type
@@ -88,19 +92,18 @@ export const jobPageQuery = graphql(`
 
 
 export const convertJobsToJobsTableColumns = (
-	jobs: JobsTableSearchJobsQuery
+	jobs?: JobsTableSearchJobsQuery
 ): JobsTableColumn[] => {
 
-
-	return jobs.searchJobs.map((job) => {
-
+	return jobs?.searchJobs.map((job) => {
 		const column: JobsTableColumn = {
 			id: job.id,
 			title: job.title || "-",
 			status: job.status || "-",
 			customer: job.customerName || "-",
-			numRecords: job.variations?.length || 0
+			numRecords: job.variations?.length || 0,
+			project: job.project?.title || "-",
 		};
 		return column;
-	});
+	}) || [];
 };

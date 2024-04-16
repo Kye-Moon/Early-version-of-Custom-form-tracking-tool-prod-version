@@ -4,9 +4,13 @@ import PageHeadingWithMetaAndActions, {
 } from "@/Components/PageHeadingWithMetaAndActions/PageHeadingWithMetaAndActions";
 import PageContentSection from "@/Components/PageContentSection";
 import JobsTable from "@/Components/Jobs/JobsTable/JobsTable";
-import TableWithHeaderLoadingSkeleton from "@/Components/Loading/Skeletons/TableWithHeaderLoadingSkeleton";
+import TableWithHeaderLoadingSkeleton
+	from "@/Components/Loading/Skeletons/TableWithHeaderLoadingSkeleton";
 import NewItemFormDialog from "@/Components/NewItemFormDialog";
 import NewJobForm from "@/Components/Jobs/NewJobForm/NewJobForm";
+import JobSearchProvider, {JobSearchContext} from "@/Context/JobSearchContext";
+import JobRecordSearch from "@/Components/JobRecordSearch";
+import JobSearch from "@/Components/Jobs/JobsSearch";
 
 const jobsPageActions: PageHeadingActionButtonProps[] = [
 	{
@@ -27,11 +31,10 @@ export default function JobsPage() {
 				subHeading={"Jobs are the portions of work that need to be completed. They can be assigned to crew members and have records created for them."}
 			/>
 			<PageContentSection>
-				<Suspense fallback={<TableWithHeaderLoadingSkeleton gridCols={'grid-cols-7'}
-																	numberRows={14}
-																	showSearch={true}/>}>
+				<JobSearchProvider>
+					<JobSearch/>
 					<JobsTable/>
-				</Suspense>
+				</JobSearchProvider>
 			</PageContentSection>
 		</>
 	);

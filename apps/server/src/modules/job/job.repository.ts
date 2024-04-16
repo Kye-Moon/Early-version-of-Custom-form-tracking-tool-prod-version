@@ -3,7 +3,7 @@ import {ORM} from '../../drizzle/drizzle.module';
 import {NodePgDatabase} from 'drizzle-orm/node-postgres';
 import * as schema from '../../drizzle/schema';
 import {Job, job, jobCrew, NewJob, UpdateJob} from '../../drizzle/schema';
-import {and, asc, eq, or} from 'drizzle-orm';
+import {and, asc, eq, ilike, or} from 'drizzle-orm';
 import {JobSearchInput} from './dto/search-job.input';
 
 @Injectable()
@@ -17,23 +17,30 @@ export class JobRepository {
     }
 
     async search(searchInput: JobSearchInput & { userId: string, organisationId: string }) {
-        return await this.db.select({job: job})
+
+        const query = this.db.select({job: job})
             .from(job)
-            .leftJoin(jobCrew, (eq(job.id, jobCrew.jobId)))
-            .where(
-                and(
-                    eq(job.organisationId, searchInput.organisationId),
-                    or(
-                        eq(job.ownerId, searchInput.userId),
-                        eq(jobCrew.crewMemberId, searchInput.userId)
-                    ),
-                    ...searchInput.projectId ? [eq(job.projectId, searchInput.projectId)] : [],
-                )
-            )
-            .groupBy(job.id)
-            .offset(searchInput.offset)
+            .leftJoin(jobCrew, (eq(job.id, jobCrew.jobId)));
+
+        let conditions = [
+            eq(job.organisationId, searchInput.organisationId),
+            or(
+                eq(job.ownerId, searchInput.userId),
+                eq(jobCrew.crewMemberId, searchInput.userId)
+            ),
+            ...(searchInput.projectId ? [eq(job.projectId, searchInput.projectId)] : []),
+            ...(searchInput.title ? [ilike(job.title, `%${searchInput.title}%`)] : []),
+            ...(searchInput.status ? [eq(job.status, searchInput.status)] : []),
+            ...(searchInput.customer ? [ilike(job.customerName, `%${searchInput.customer}%`)] : []),
+        ];
+
+        query.where(and(...conditions));
+        query.groupBy(job.id)
+            .orderBy(asc(job.createdAt))
             .limit(searchInput.limit)
-            .orderBy(asc(job.createdAt));
+            .offset(searchInput.offset);
+
+        return await query.execute();
     }
 
     // async ownerSearch({orgId, limit, offset}: { orgId: string, limit: number, offset: number }): Promise<Job[]> {

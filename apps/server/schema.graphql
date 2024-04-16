@@ -245,10 +245,10 @@ input SearchUserInput {
 input JobSearchInput {
   limit: Int
   offset: Int
-  customerName: String
+  customer: String
   status: String
-  includeOwner: Boolean
   projectId: String
+  title: String
 }
 
 input JobRecordSearchInput {
