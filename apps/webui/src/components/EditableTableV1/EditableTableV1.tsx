@@ -43,6 +43,8 @@ export default function EditableTableV1({
 											setOriginalData
 										}: EditableTableProps<any, any>) {
 	const [editedRows, setEditedRows] = useState({});
+	const [isLoading, setIsLoading] = useState(false);
+
 	const table = useReactTable({
 		data,
 		columns,
@@ -76,21 +78,25 @@ export default function EditableTableV1({
 					})
 				);
 			},
-			updateRow: (rowIndex: number) => {
-				updateRow(data[rowIndex].id, data[rowIndex]);
+			updateRow: async (rowIndex: number) => {
+				setIsLoading(true);
+				await updateRow(data[rowIndex].id, data[rowIndex]);
+				setIsLoading(false);
 			},
 			addRow: () => {
-				const newRow: Omit<CreateVariationResourceInput, 'jobRecordId'> = {
+				const newRow: any = {
 					id: uuidv4(),
-					type: resourceType ?? "UNKNOWN",
 				};
 				setData((old) => [...old, newRow]);
 				addRow(newRow);
 			},
-			removeRow: (rowIndex: number) => {
+			removeRow: async (rowIndex: number) => {
+				setIsLoading(true);
+				await deleteRow(data[rowIndex].id);
+				setIsLoading(false);
 				setData((old) => old.filter((row: any, index: number) => index !== rowIndex));
-				deleteRow(data[rowIndex].id);
 			},
+			isLoading,
 		},
 	});
 
