@@ -16,16 +16,6 @@ import {
 export default function EditCell({row, table}) {
 	const meta = table.options.meta
 	//@ts-ignore
-	const setEditedRows = (e: MouseEvent<HTMLButtonElement>) => {
-		const elName = e.currentTarget.name
-		meta?.setEditedRows((old: []) => ({
-			...old,
-			[row.id]: !old[row.id],
-		}))
-		if (elName !== "edit") {
-			e.currentTarget.name === "cancel" ? meta?.revertData(row.index) : meta?.updateRow(row.index);
-		}
-	}
 	const removeRow = () => {
 		meta?.removeRow(row.index);
 	};

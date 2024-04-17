@@ -11,6 +11,10 @@ import {
 	getJobScopeItems,
 	updateJobScopeItem
 } from "@/Services/jobScopeItemService";
+import EditableTableV1 from "@/Components/EditableTableV1/EditableTableV1";
+import EditableTableCellV1 from "@/Components/EditableTableV1/EditableTableCellV1";
+import EditCellV1 from "@/Components/EditableTableV1/EditCellV1";
+import toast from "react-hot-toast";
 
 type ScopeItem = {
 	description: string;
@@ -22,23 +26,30 @@ const columnHelper = createColumnHelper<ScopeItem>();
 const columns = [
 	columnHelper.accessor("title", {
 		header: "Title",
-		cell: EditableTableCell,
+		cell: EditableTableCellV1,
 		meta: {
 			type: "text",
-			width: 800
+			width: 800,
+			className: "w-screen"
 		},
 	}),
 	columnHelper.accessor("reference", {
 		header: "Reference",
-		cell: EditableTableCell,
+		cell: EditableTableCellV1,
 		meta: {
 			type: "text",
-			width: 300
+			width: 300,
+			className: "w-screen"
 		},
 	}),
 	columnHelper.display({
 		id: "edit",
-		cell: EditCell,
+		cell: (props) => (
+			<div className={'flex justify-end mr-2'}>
+				<EditCellV1 {...props} />
+			</div>
+		),
+
 		meta: {
 			width: 80
 
@@ -73,9 +84,17 @@ export default function EditJobScopeItems({jobId}: { jobId: string }) {
 
 	const [update] = useMutation(updateJobScopeItem, {
 		refetchQueries: [{query: getJobScopeItems, variables: {jobId: jobId}}],
+		onCompleted: () => {
+			toast.dismiss()
+			toast.success("Scope item updated")
+		}
 	})
 	const [deleteScopeItem] = useMutation(deleteJobScopeItem, {
-		refetchQueries: [{query: getJobScopeItems, variables: {jobId: jobId}}]
+		refetchQueries: [{query: getJobScopeItems, variables: {jobId: jobId}}],
+		onCompleted: () => {
+			toast.dismiss()
+			toast.success("Scope item deleted")
+		}
 	})
 
 	const addScopeItem = async (scopeItem: CreateJobScopeItemInput) => {
@@ -92,6 +111,7 @@ export default function EditJobScopeItems({jobId}: { jobId: string }) {
 	}
 
 	const updateScopeItem = async (id: string, scopeItem: UpdateJobScopeItemInput) => {
+		toast.loading("Updating scope item")
 		await update({
 			variables: {
 				input: {
@@ -106,13 +126,15 @@ export default function EditJobScopeItems({jobId}: { jobId: string }) {
 	}
 
 	const removeScopeItem = async (id: string) => {
+		toast.loading("Deleting scope item")
 		await deleteScopeItem({variables: {id: id}})
 	}
 
 	return (
-		<EditableTable
+		<EditableTableV1
 			columns={columns}
 			data={_data}
+			setOriginalData={setOriginalData}
 			originalData={originalData}
 			setData={setData}
 			updateRow={updateScopeItem}

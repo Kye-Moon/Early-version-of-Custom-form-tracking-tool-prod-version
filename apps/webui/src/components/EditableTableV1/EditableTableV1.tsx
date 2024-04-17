@@ -23,6 +23,7 @@ interface EditableTableProps<TData, TValue> {
 	 * The default data to render in the table (must match the column definition)
 	 */
 	originalData: TData[];
+	setOriginalData: (data: (old: any) => any) => void;
 	updateRow: (id: string, data: any) => void;
 	addRow: (newRow: any) => void;
 	resourceType?: string;
@@ -30,17 +31,17 @@ interface EditableTableProps<TData, TValue> {
 }
 
 
-export default function EditableTable({
-										  columns,
-										  data,
-										  setData,
-										  originalData,
-										  updateRow,
-										  addRow,
-										  deleteRow,
-										  resourceType
-									  }: EditableTableProps<any, any>) {
-
+export default function EditableTableV1({
+											columns,
+											data,
+											setData,
+											originalData,
+											updateRow,
+											addRow,
+											deleteRow,
+											resourceType,
+											setOriginalData
+										}: EditableTableProps<any, any>) {
 	const [editedRows, setEditedRows] = useState({});
 	const table = useReactTable({
 		data,
@@ -49,15 +50,18 @@ export default function EditableTable({
 		meta: {
 			editedRows,
 			setEditedRows,
-			revertData: (rowIndex: number) => {
-				setData((old) =>
-					old.map((row: any, index: number) =>
-						index === rowIndex ? originalData[rowIndex] : row
-					)
-				);
-			},
-			updateRow: (rowIndex: number) => {
-				updateRow(data[rowIndex].id, data[rowIndex]);
+			revertData: (rowIndex: number, revert: boolean) => {
+				if (revert) {
+					setData((old) =>
+						old.map((row: any, index: number) =>
+							index === rowIndex ? originalData[rowIndex] : row
+						)
+					);
+				} else {
+					setOriginalData((old) =>
+						old.map((row: any, index: number) => (index === rowIndex ? data[rowIndex] : row))
+					);
+				}
 			},
 			updateData: (rowIndex: number, columnId: string, value: string) => {
 				setData((old) =>
@@ -71,12 +75,9 @@ export default function EditableTable({
 						return row;
 					})
 				);
-				// // if the row is changed, update the row in the database
-				// if (data[rowIndex][columnId] !== value) {
-				// 	updateRow(data[rowIndex].id, {[columnId]: value});
-				// }
-				//
-				// // updateRow(data[rowIndex].id, value);
+			},
+			updateRow: (rowIndex: number) => {
+				updateRow(data[rowIndex].id, data[rowIndex]);
 			},
 			addRow: () => {
 				const newRow: Omit<CreateVariationResourceInput, 'jobRecordId'> = {
@@ -114,7 +115,7 @@ export default function EditableTable({
 				</TableHeader>
 				<TableBody>
 					{table.getRowModel().rows.map((row) => (
-						<tr key={row.id} >
+						<tr key={row.id} className={'border-b-2 h-10'}>
 							{row.getVisibleCells().map((cell) => (
 								<>
 									{/*@ts-ignore*/}

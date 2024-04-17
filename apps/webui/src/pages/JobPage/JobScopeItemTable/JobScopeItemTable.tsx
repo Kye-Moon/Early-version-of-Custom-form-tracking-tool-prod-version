@@ -28,7 +28,7 @@ export default function JobScopeItemTable({jobId}: JobScopeItemsProps) {
 		id: scopeItem.id,
 		reference: scopeItem.reference,
 		title: scopeItem.title,
-	})) ?? []
+	})).filter((scopeItem) => scopeItem.reference || scopeItem.title) || []
 
 	return (
 		<DataTable
