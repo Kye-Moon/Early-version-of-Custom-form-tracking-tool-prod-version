@@ -12,6 +12,10 @@ import {Organisation} from "../../drizzle/schema";
 import {InviteUserInput} from "./dto/invite-user.input";
 import {UserOrganisationRepository} from "../user-organisation/user-organisation.repository";
 
+interface OrgRoles {
+    [orgId: string]: string; // orgId as key and role as value
+}
+
 @Injectable()
 export class UserService {
     constructor(
@@ -29,24 +33,30 @@ export class UserService {
      * This function is called when the user logs in for the first time
      * It checks if the user exists in the database, if not, it creates a new user
      * It then checks if the user is part of the current organisation, if not, it adds them
+     *
      */
     async initialise(): Promise<User> {
-        const organisation = await this.organisationService.findOrCreateByAuthId(this.request.organisationId);
+        let user, organisation, userOrgRole
+
         const authUser = await clerkClient.users.getUser(this.request.userId)
-        let user = await this.userRepository.findOneByAuthId(authUser.id);
-        const userOrgRole = await this.getUserRoleFromCurrentOrg(organisation);
+        user = await this.userRepository.findOneByAuthId(authUser.id);
+
+        organisation = await this.organisationService.findOrCreateByAuthId(this.request.organisationId);
+        userOrgRole = await this.getUserRoleFromCurrentOrg(organisation);
+
         const invitationList = await clerkClient.organizations.getOrganizationInvitationList({
             organizationId: this.request.organisationId,
             status: ['accepted']
         })
         const userInvitation = invitationList.find((invitation) => invitation.emailAddress === authUser.emailAddresses[0].emailAddress);
         const appRole = userOrgRole === 'org:admin' ? "ADMIN" : userInvitation?.publicMetadata['varify_role'] ?? "MEMBER";
+
         // If user exists, check if they are part of the current organisation, if not, add them
         if (user) {
             const userOrgs = await this.userOrganisationService.getAllByUserId(user.id);
             const userOrg = userOrgs.find((userOrg) => userOrg.organisationId === organisation.id);
+
             if (!userOrg) {
-                const userOrgRole = await this.getUserRoleFromCurrentOrg(organisation);
                 await this.userOrganisationService.create({
                     userId: user.id,
                     organisationId: organisation.id,
@@ -61,11 +71,6 @@ export class UserService {
                 email: authUser.emailAddresses[0].emailAddress,
                 authId: authUser.id,
                 status: "ACTIVE",
-            });
-            await this.userOrganisationService.create({
-                userId: user.id,
-                organisationId: organisation.id,
-                role: userOrgRole
             });
         }
         await clerkClient.users.updateUserMetadata(user.authId, {
@@ -96,13 +101,14 @@ export class UserService {
 
     async invite(input: InviteUserInput) {
         try {
-            await clerkClient.organizations.createOrganizationInvitation({
+            const invitation = await clerkClient.organizations.createOrganizationInvitation({
                 inviterUserId: this.request.userId,
                 organizationId: this.request.organisationId,
                 role: 'org:member',
                 emailAddress: input.email,
+                redirectUrl: 'http://localhost:3000/accept-invite',
                 publicMetadata: {
-                    'varify_role': input.role
+                    'org_role': input.role
                 }
             })
         } catch (e) {

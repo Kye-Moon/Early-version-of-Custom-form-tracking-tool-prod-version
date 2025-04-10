@@ -8,15 +8,14 @@ import {AuthGuard} from "../../guards/auth.guard";
 import {Job} from "../job/entities/job.entity";
 import {User} from "../user/entities/user.entity";
 import {JobRecordSearchInput} from "./dto/search-job-record";
-import {VariationInitialData} from "../variation-initial-data/entities/variation-initial-data.entity";
 import {JobRecordImage} from "../job-record-image/entities/job-record-image.entity";
-import {VariationResource} from "../variation-resource/entities/variation-resource.entity";
 import {JobScopeItem} from "../job-scope-item/entities/job-scope-item.entity";
 import {JobScopeItemService} from "../job-scope-item/job-scope-item.service";
 import {JobForm} from "../job-form/entities/job-form.entity";
 import {JobFormService} from "../job-form/job-form.service";
 import {JobFormResponse} from "../job-form-response/entities/job-form-response.entity";
 import {JobFormResponseService} from "../job-form-response/job-form-response.service";
+import {GraphQLError} from "graphql/error";
 
 @Resolver(() => JobRecord)
 export class JobRecordResolver {
@@ -37,7 +36,12 @@ export class JobRecordResolver {
     @UseGuards(AuthGuard)
     @Query(() => [JobRecord], {name: 'searchJobRecords'})
     async searchJobRecords(@Args('jobRecordSearchInput') jobRecordSearchInput: JobRecordSearchInput) {
-        return await this.jobRecordService.search(jobRecordSearchInput);
+        try {
+            return await this.jobRecordService.search(jobRecordSearchInput);
+        } catch (e) {
+            console.error(e)
+            throw new GraphQLError(`Error searching job records: ${e.message}`)
+        }
     }
 
     @UseGuards(AuthGuard)
@@ -73,25 +77,12 @@ export class JobRecordResolver {
     }
 
     @UseGuards(AuthGuard)
-    @ResolveField(() => VariationInitialData)
-    async initialData(@Parent() variation: JobRecord) {
-        const {id} = variation;
-        return await this.jobRecordService.getVariationInitialData(id);
-    }
-
-    @UseGuards(AuthGuard)
     @ResolveField(() => [JobRecordImage])
     async images(@Parent() variation: JobRecord) {
         const {id} = variation;
         return await this.jobRecordService.getVariationImages(id);
     }
 
-    @UseGuards(AuthGuard)
-    @ResolveField(() => [VariationResource])
-    async resources(@Parent() variation: JobRecord) {
-        const {id} = variation;
-        return await this.jobRecordService.getVariationResources(id);
-    }
 
     @UseGuards(AuthGuard)
     @ResolveField(() => JobScopeItem)

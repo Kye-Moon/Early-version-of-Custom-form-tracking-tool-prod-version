@@ -1,9 +1,6 @@
-"use client";
-
 import {ElementsType, FormElement, FormElementInstance, SubmitFunction} from "form-types";
 import {Label} from "@/Primitives/Label";
 import {Input} from "@/Primitives/Input";
-import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect, useState} from "react";
@@ -28,7 +25,8 @@ import {AiOutlineClose, AiOutlinePlus} from "react-icons/ai";
 import toast from "react-hot-toast";
 import {
 	SelectCustomInstance,
-	SelectExtraAttributes, selectPropertiesFormSchemaType,
+	SelectExtraAttributes,
+	selectPropertiesFormSchemaType,
 	selectPropertiesSchema
 } from "form-types/SelectField";
 

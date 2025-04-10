@@ -5,7 +5,6 @@ import {RequestService} from "../request/request.service";
 import {JobRecordRepository} from "./job-record.repository";
 import {JobRecordImageService} from "../job-record-image/job-record-image.service";
 import {JobRecordSearchInput} from "./dto/search-job-record";
-import {VariationInitialDataService} from "../variation-initial-data/variation-initial-data.service";
 import {UserRepository} from "../user/user.repository";
 import {OrganisationRepository} from "../organisation/organisation.repository";
 import {FormTemplateService} from "../form-template/form-template.service";
@@ -20,7 +19,6 @@ export class JobRecordService {
         private readonly jobRecordRepository: JobRecordRepository,
         private readonly request: RequestService,
         private readonly variationImageService: JobRecordImageService,
-        private readonly variationInitialDataService: VariationInitialDataService,
         private readonly userRepository: UserRepository,
         private readonly organisationRepository: OrganisationRepository,
         private readonly formTemplateService: FormTemplateService,
@@ -120,15 +118,8 @@ export class JobRecordService {
         return this.jobRecordRepository.findVariationSubmittedBy(id)
     }
 
-    async getVariationInitialData(id: string) {
-        return await this.jobRecordRepository.findVariationInitialData(id)
-    }
-
     async getVariationImages(id: string) {
         return await this.jobRecordRepository.findVariationImages(id)
     }
 
-    async getVariationResources(id: string) {
-        return await this.jobRecordRepository.findVariationResources(id)
-    }
 }

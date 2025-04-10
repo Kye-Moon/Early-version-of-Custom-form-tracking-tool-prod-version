@@ -3,6 +3,8 @@ import {CreateJobFormInput} from './dto/create-job-form.input';
 import {UpdateJobFormInput} from './dto/update-job-form.input';
 import {JobFormRepository} from "./job-form.repository";
 import {SearchJobFormInput} from "./dto/search-job-form.input";
+import {JobForm} from "./entities/job-form.entity";
+import {mapResultsToIds} from "../../common/utils";
 
 @Injectable()
 export class JobFormService {
@@ -44,4 +46,10 @@ export class JobFormService {
     remove(id: number) {
         return `This action removes a #${id} jobForm`;
     }
+
+    async findBatchByIds(ids: string[]) {
+        const jobForms = await this.jobFormRepository.findByIds(ids);
+        return mapResultsToIds(ids, jobForms);
+    }
+
 }

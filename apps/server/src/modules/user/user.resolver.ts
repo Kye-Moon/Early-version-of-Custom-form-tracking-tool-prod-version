@@ -10,6 +10,7 @@ import {UserRepository} from "./user.repository";
 import {UserOrganisation} from "../user-organisation/entities/user-organisation.entity";
 import {UserOrganisationService} from "../user-organisation/user-organisation.service";
 import {InviteUserInput} from "./dto/invite-user.input";
+import {GraphQLError} from "graphql/error";
 
 @Resolver(() => User)
 export class UserResolver {
@@ -22,9 +23,14 @@ export class UserResolver {
     }
 
     @UseGuards(AuthGuard)
-    @Mutation(() => User)
-    initialiseUser() {
-        return this.userService.initialise();
+    @Mutation(() => User, {nullable: true})
+    async initialiseUser() {
+        try {
+            return await this.userService.initialise();
+        } catch (e) {
+            console.error(e)
+            throw new GraphQLError(`Error initialising user: ${e.message}`)
+        }
     }
 
     @UseGuards(AuthGuard)
@@ -35,19 +41,25 @@ export class UserResolver {
 
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
-    inviteUser(@Args('inviteInput') inviteInput: InviteUserInput) {
+    inviteUser(@Args('inviteInput')
+                   inviteInput: InviteUserInput
+    ) {
         return !!this.userService.invite(inviteInput);
     }
 
     @UseGuards(AuthGuard)
     @Query(() => [User], {name: 'searchUsers'})
-    searchUsers(@Args('userSearchInput') searchInput: SearchUserInput) {
+    searchUsers(@Args('userSearchInput')
+                    searchInput: SearchUserInput
+    ) {
         return this.userService.search(searchInput);
     }
 
     @UseGuards(AuthGuard)
     @Query(() => User, {name: 'user'})
-    findOne(@Args('id', {type: () => String}) id: string) {
+    findOne(@Args('id', {type: () => String})
+                id: string
+    ) {
         return this.userService.findOne(id);
     }
 
@@ -59,13 +71,17 @@ export class UserResolver {
 
     @UseGuards(AuthGuard)
     @Mutation(() => User)
-    updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
+    updateUser(@Args('updateUserInput')
+                   updateUserInput: UpdateUserInput
+    ) {
         return this.userService.update(updateUserInput.id, updateUserInput);
     }
 
     @UseGuards(AuthGuard)
     @Mutation(() => User)
-    removeUser(@Args('id', {type: () => Int}) id: number) {
+    removeUser(@Args('id', {type: () => Int})
+                   id: number
+    ) {
         return this.userService.remove(id);
     }
 

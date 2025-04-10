@@ -1,7 +1,6 @@
 import {Field, ObjectType} from '@nestjs/graphql';
 import {Job} from "../../job/entities/job.entity";
 import {User} from "../../user/entities/user.entity";
-import {VariationInitialData} from "../../variation-initial-data/entities/variation-initial-data.entity";
 import {JobRecordImage} from "../../job-record-image/entities/job-record-image.entity";
 import {JobScopeItem} from "../../job-scope-item/entities/job-scope-item.entity";
 import {JobForm} from "../../job-form/entities/job-form.entity";
@@ -51,8 +50,6 @@ export class JobRecord {
     @Field(() => User)
     submittedBy: User
 
-    @Field(() => VariationInitialData, {nullable: true})
-    initialData: VariationInitialData
 
     @Field(() => [JobRecordImage])
     images: JobRecordImage[]

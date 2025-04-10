@@ -31,7 +31,7 @@ export const organisation = pgTable('organisation', {
         ()`)
         .primaryKey(),
     name: text('name').notNull(),
-    authId: text('auth_id').notNull(),
+    authId: text('auth_id').notNull().unique(),
     logoUrl: text('logo_url'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -318,36 +318,8 @@ export const jobRecordRelations = relations(jobRecord, ({one, many}) => ({
         fields: [jobRecord.submittedBy],
         references: [user.id],
     }),
-    resources: many(variationResource),
     images: many(jobRecordImage),
-
 }));
-
-// ###################### VARIATION RESOURCES TABLE ######################
-export const variationResource = pgTable('variation_resource', {
-    id: uuid('id')
-        .default(sql`gen_random_uuid
-        ()`)
-        .primaryKey(),
-    jobRecordId: uuid('job_record_id')
-        .references(() => jobRecord.id, {onDelete: 'cascade'})
-        .notNull(),
-    type: varchar('type', {enum: ['LABOUR', 'MATERIAL', 'EQUIPMENT', 'OTHER']}),
-    description: text('description'),
-    quantity: numeric('quantity'),
-    unit: varchar('unit'),
-    unitPrice: numeric('unit_price'),
-    hours: numeric('hours'),
-    rate: numeric('rate'),
-    numPeople: numeric('num_people'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at')
-        .default(sql`CURRENT_TIMESTAMP`)
-        .notNull(),
-});
-
-export type VariationResource = InferSelectModel<typeof variationResource>;
-export type NewVariationResource = InferInsertModel<typeof variationResource>;
 
 // ###################### VARIATION IMAGE TABLE ######################
 export const jobRecordImage = pgTable('job_record_image', {
@@ -368,107 +340,5 @@ export const jobRecordImage = pgTable('job_record_image', {
 export type JobRecordImage = InferSelectModel<typeof jobRecordImage>;
 export type NewJobRecordImage = InferInsertModel<typeof jobRecordImage>;
 
-export const variationInitialData = pgTable('variation_initial_data', {
-    id: uuid('id')
-        .default(sql`gen_random_uuid
-        ()`)
-        .primaryKey(),
-    jobRecordId: uuid('job_record_id')
-        .references(() => jobRecord.id, {onDelete: 'cascade'})
-        .notNull(),
-    hours: numeric('time'),
-    numPeople: numeric('num_people'),
-    who: text('who'),
-    materials: text('materials'),
-    equipment: text('equipment'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at')
-        .default(sql`CURRENT_TIMESTAMP`)
-        .notNull(),
-});
-
-export type VariationInitialData = InferSelectModel<typeof variationInitialData>;
-export type NewVariationInitialData = InferInsertModel<typeof variationInitialData>;
-// ###################### NOTIFICATION TABLE ######################
-export const notification = pgTable('notification', {
-    id: uuid('id')
-        .default(sql`gen_random_uuid
-        ()`)
-        .primaryKey(),
-    jobId: uuid('job_id')
-        .references(() => job.id)
-        .notNull(),
-    jobRecordId: uuid('job_record_id').references(() => jobRecord.id),
-    message: text('message').notNull(),
-    isRead: boolean('is_read').default(false),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at')
-        .default(sql`CURRENT_TIMESTAMP`)
-        .notNull(),
-});
-
-export type Notification = InferSelectModel<typeof notification>;
-export type NewNotification = InferInsertModel<typeof notification>;
-
-export const notificationRelations = relations(notification, ({one}) => ({
-    job: one(job, {
-        fields: [notification.jobId],
-        references: [job.id],
-    }),
-    jobRecord: one(jobRecord, {
-        fields: [notification.jobRecordId],
-        references: [jobRecord.id],
-    }),
-}));
-
-////////////////////////// CREW LOG //////////////////////////
-export const crewLog = pgTable('crew_log', {
-    id: uuid('id')
-        .default(sql`gen_random_uuid
-        ()`)
-        .primaryKey(),
-    userId: uuid('crew_member_id')
-        .references(() => user.id)
-        .notNull(),
-    jobId: uuid('job_id')
-        .references(() => job.id)
-        .notNull(),
-    scopeRef: text('scope_ref'),
-    startTime: timestamp('start_time'),
-    endTime: timestamp('end_time'),
-    notes: text('message'),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-});
-
-export type CrewLog = InferSelectModel<typeof crewLog>;
-export type NewCrewLog = InferInsertModel<typeof crewLog>;
-
-export const crewLogRelations = relations(crewLog, ({one, many}) => ({
-    crewMember: one(user, {
-        fields: [crewLog.userId],
-        references: [user.id],
-    }),
-    job: one(job, {
-        fields: [crewLog.jobId],
-        references: [job.id],
-    }),
-    images: many(crewLogImage),
-}));
-
-
-export const crewLogImage = pgTable('crew_log_image', {
-    id: uuid('id')
-        .default(sql`gen_random_uuid
-        ()`)
-        .primaryKey(),
-    crewLogId: uuid('crew_log_id')
-        .references(() => crewLog.id)
-        .notNull(),
-    url: text('url').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-});
-
-export type CrewLogImage = InferSelectModel<typeof crewLogImage>;
-export type NewCrewLogImage = InferInsertModel<typeof crewLogImage>;
 
 

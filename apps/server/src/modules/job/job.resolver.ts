@@ -1,9 +1,9 @@
-import {Args, Mutation, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
+import {Args, Context, Mutation, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 import {JobService} from './job.service';
 import {Job} from './entities/job.entity';
 import {CreateJobInput} from './dto/create-job.input';
 import {UpdateJobInput} from './dto/update-job.input';
-import {UseGuards} from '@nestjs/common';
+import {ExecutionContext, UseGuards} from '@nestjs/common';
 import {JobSearchInput} from './dto/search-job.input';
 import {JobRecord} from "../job-record/entities/job-record.entity";
 import {JobRecordService} from "../job-record/job-record.service";
@@ -89,7 +89,7 @@ export class JobResolver {
 
     @UseGuards(AuthGuard)
     @ResolveField(() => [FormTemplate])
-    async jobForms(@Parent() job: Job) {
+    async jobForms(@Parent() job: Job, @Context() ctx: any) {
         const {id} = job;
         return await this.jobFormService.getFormTemplatesByJobId(id);
     }

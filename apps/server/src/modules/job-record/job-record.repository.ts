@@ -14,7 +14,6 @@ import {
     user,
     User,
     userOrganisation,
-    variationInitialData
 } from "../../drizzle/schema";
 import {and, desc, eq, ilike, inArray, or} from "drizzle-orm";
 import {JobRecordSearchInput} from "./dto/search-job-record";
@@ -128,24 +127,11 @@ export class JobRecordRepository {
         return _variation.submittedBy
     }
 
-    async findVariationInitialData(variationId: string) {
-        return await this.db.query.variationInitialData.findFirst({
-            where: eq(variationInitialData.jobRecordId, variationId),
-        })
-    }
-
     async findVariationImages(variationId: string) {
         return await this.db.query.jobRecordImage.findMany({
             where: eq(jobRecordImage.jobRecordId, variationId),
         })
     }
-
-    async findVariationResources(variationId: string) {
-        return await this.db.query.variationResource.findMany({
-            where: eq(jobRecordImage.jobRecordId, variationId),
-        })
-    }
-
 
     async update(id: string, input: UpdateJobRecord) {
         const _variation = await this.db.update(jobRecord).set({...input}).where(eq(jobRecord.id, id)).returning()

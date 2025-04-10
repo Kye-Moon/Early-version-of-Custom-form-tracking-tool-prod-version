@@ -13,11 +13,8 @@ import {JobRecordModule} from "../modules/job-record/job-record.module";
 import {S3Module} from "../modules/s3/s3.module";
 import {ConfigModule} from "@nestjs/config";
 import {JobRecordImageModule} from "../modules/job-record-image/job-record-image.module";
-import {VariationInitialDataModule} from "../modules/variation-initial-data/variation-initial-data.module";
-import {VariationResourceModule} from "../modules/variation-resource/variation-resource.module";
 import {JobScopeItemModule} from "../modules/job-scope-item/job-scope-item.module";
 import {AttachmentModule} from "../modules/attachment/attachment.module";
-import {CrewLogModule} from "../modules/crew-log/crew-log.module";
 import {ProjectModule} from "../modules/project/project.module";
 import {FormTemplateModule} from "../modules/form-template/form-template.module";
 import {JobFormModule} from "../modules/job-form/job-form.module";
@@ -46,14 +43,11 @@ import {JobFormModule} from "../modules/job-form/job-form.module";
         JobCrewModule,
         JobRecordModule,
         JobRecordImageModule,
-        VariationInitialDataModule,
-        VariationResourceModule,
         DrizzleModule,
         RequestModule,
         S3Module,
         JobScopeItemModule,
         AttachmentModule,
-        CrewLogModule,
         ProjectModule,
         FormTemplateModule,
         JobFormModule,

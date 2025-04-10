@@ -8,13 +8,17 @@ import {setContext} from "@apollo/client/link/context";
 export default function ApolloWrapper({children}: { children: React.ReactNode }) {
 	const {getToken, signOut} = useAuth()
 
-	const errorLink = onError(({graphQLErrors, networkError}) => {
+// Log any GraphQL errors or network error that occurred
+	const errorLink = onError(({ graphQLErrors, networkError }) => {
 		if (graphQLErrors)
-			graphQLErrors.forEach(({message}) => {
+			graphQLErrors.forEach(({ message, locations, path }) => {
 				if (message === "Unauthorized") {
 					signOut()
 				}
-			})
+				console.log(
+					`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+				)
+			});
 		if (networkError) console.log(`[Network error]: ${networkError}`);
 	});
 
@@ -36,7 +40,7 @@ export default function ApolloWrapper({children}: { children: React.ReactNode })
 		})
 
 		return new ApolloClient({
-			link: from([authMiddleware, httpLink, errorLink]),
+			link: from([errorLink, authMiddleware, httpLink]),
 			cache: new InMemoryCache(),
 		})
 	}, [getToken])

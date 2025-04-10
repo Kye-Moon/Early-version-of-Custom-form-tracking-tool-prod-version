@@ -36,16 +36,6 @@ type User {
   updatedAt: DateTime!
 }
 
-type VariationInitialData {
-  id: String!
-  variationId: String!
-  hours: String
-  numPeople: String
-  who: String
-  materials: String
-  equipment: String
-}
-
 type JobRecordImage {
   id: String!
   crewLogId: String!
@@ -84,7 +74,7 @@ type JobForm {
   jobId: String!
   formTemplateId: String!
   isActive: Boolean!
-  formTemplate: FormTemplate!
+  formTemplate: FormTemplate
 }
 
 type JobFormResponse {
@@ -114,12 +104,10 @@ type JobRecord {
   flag: String
   job: Job!
   submittedBy: User!
-  initialData: VariationInitialData
   images: [JobRecordImage!]!
   scopeItem: JobScopeItem
   createdAt: DateTime!
   updatedAt: DateTime!
-  resources: [VariationResource!]!
 }
 
 type Project {
@@ -171,41 +159,6 @@ type JobCrewMember {
   userOrganisation: UserOrganisation
 }
 
-type VariationResource {
-  id: String!
-  jobRecordId: String!
-  type: String!
-  description: String
-  quantity: String
-  unit: String
-  unitPrice: String
-  hours: String
-  rate: String
-  numPeople: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type VariationResourceSummary {
-  variationId: String!
-  labourTotal: String!
-  materialTotal: String!
-  equipmentTotal: String!
-  otherTotal: String!
-  total: String!
-}
-
-type CrewLog {
-  id: String!
-  user: User!
-  job: Job!
-  jobScopeItem: JobScopeItem!
-  startTime: DateTime
-  endTime: DateTime
-  notes: String
-  createdAt: DateTime!
-}
-
 type Query {
   isUserInitialised: Boolean!
   searchUsers(userSearchInput: SearchUserInput!): [User!]!
@@ -227,11 +180,7 @@ type Query {
   formTemplates: [FormTemplate!]!
   searchFormTemplates(searchInput: SearchFormTemplateInput!): [FormTemplate!]!
   formTemplate(id: String!): FormTemplate!
-  variationResources(variationId: String!): [VariationResource!]!
-  variationResourceSummary(variationId: String!): VariationResourceSummary!
-  variationResource(id: String!): VariationResource!
   presignedUrl(key: String!): String!
-  crewLog(id: Int!): CrewLog!
 }
 
 input SearchUserInput {
@@ -276,7 +225,7 @@ input SearchFormTemplateInput {
 }
 
 type Mutation {
-  initialiseUser: User!
+  initialiseUser: User
   inviteUser(inviteInput: InviteUserInput!): Boolean!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
@@ -301,14 +250,7 @@ type Mutation {
   createFormTemplate(createFormTemplateInput: CreateFormTemplateInput!): FormTemplate!
   duplicateFormTemplate(id: String!): FormTemplate!
   updateFormTemplate(updateFormTemplateInput: UpdateFormTemplateInput!): FormTemplate!
-  createVariationInitialData(createVariationInitialDataInput: CreateVariationInitialDataInput!): VariationInitialData!
   createJobFormResponse(createJobFormResponseInput: CreateJobFormResponseInput!): JobFormResponse!
-  createVariationResource(createVariationResourceInput: CreateVariationResourceInput!): VariationResource!
-  updateVariationResource(updateVariationResourceInput: UpdateVariationResourceInput!): VariationResource!
-  removeVariationResource(id: String!): VariationResource!
-  createCrewLog(createCrewLogInput: CreateCrewLogInput!): CrewLog!
-  updateCrewLog(updateCrewLogInput: UpdateCrewLogInput!): CrewLog!
-  removeCrewLog(id: Int!): CrewLog!
 }
 
 input InviteUserInput {
@@ -455,60 +397,8 @@ input UpdateFormTemplateInput {
   isSystemDefault: Boolean
 }
 
-input CreateVariationInitialDataInput {
-  hours: String
-  numPeople: String
-  who: String
-  materials: String
-  equipment: String
-}
-
 input CreateJobFormResponseInput {
   jobFormId: String!
   jobRecordId: String!
   response: JSON!
-}
-
-input CreateVariationResourceInput {
-  id: String
-  jobRecordId: String!
-  type: String!
-  description: String
-  quantity: String
-  unit: String
-  unitPrice: String
-  hours: String
-  rate: String
-  numPeople: String
-}
-
-input UpdateVariationResourceInput {
-  id: String!
-  jobRecordId: String
-  type: String
-  description: String
-  quantity: String
-  unit: String
-  unitPrice: String
-  hours: String
-  rate: String
-  numPeople: String
-}
-
-input CreateCrewLogInput {
-  jobId: String!
-  jobScopeItemId: String
-  startTime: DateTime
-  endTime: DateTime
-  notes: String
-}
-
-input UpdateCrewLogInput {
-  jobId: String
-  jobScopeItemId: String
-  startTime: DateTime
-  endTime: DateTime
-  notes: String
-  id: String!
-  imageUrls: [String!]
 }

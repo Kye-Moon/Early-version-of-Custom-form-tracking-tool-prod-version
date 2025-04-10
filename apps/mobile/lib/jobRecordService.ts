@@ -14,12 +14,3 @@ export const updateMutation = graphql(`
         }
     }
 `)
-
-
-export const variationInitialDataMutation = graphql(`
-    mutation CreateVariationInitialData($input: CreateVariationInitialDataInput!) {
-        createVariationInitialData(createVariationInitialDataInput: $input) {
-            id
-        }
-    }
-`)

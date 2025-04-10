@@ -21,6 +21,9 @@ import EditProject from "@/Pages/ProjectPage/EditProject/EditProject";
 import DesignerContextProvider from "@/Context/DesignerContext";
 import RecordTemplatesPage from "@/Pages/FormTemplatesPage/RecordTemplatesPage";
 import EditRecordTemplatePage from "@/Pages/EditFormTemplatePage/EditRecordTemplatePage";
+import ErrorPage from "@/Pages/ErrorPage";
+import SignUpPage from "@/Pages/SignUpPage/SignUpPage";
+import AcceptInvitePage from "@/Pages/AcceptInvitePage/AcceptInvitePage";
 
 const rootRoute = new RootRoute({
 	component: () => (
@@ -38,7 +41,6 @@ function Index() {
 	if (!isSignedIn && isLoaded) {
 		router.navigate({to: "/login"});
 	} else {
-		console.log('Redirecting to dashboard')
 		router.navigate({to: "/dashboard"});
 	}
 	return <div>Redirecting...</div>;
@@ -72,11 +74,35 @@ const loginRoute = new Route({
 	component: Login,
 });
 
+const signupRoute = new Route({
+	getParentRoute: () => unAuthenticatedLayoutRoute,
+	path: "/signup",
+	component: SignUpPage,
+});
+
+const forgotPasswordRoute = new Route({
+	getParentRoute: () => unAuthenticatedLayoutRoute,
+	path: "/forgot-password",
+	component: () => <div>Forgot Password</div>,
+});
+
+const acceptInviteRoute = new Route({
+	getParentRoute: () => unAuthenticatedLayoutRoute,
+	path: "/accept-invite",
+	component: AcceptInvitePage,
+});
+
 
 const layoutRoute = new Route({
 	getParentRoute: () => rootRoute,
 	id: "layout",
 	component: AppLayout,
+});
+
+const fallbackErrorRoute = new Route({
+	getParentRoute: () => rootRoute,
+	path: "*",
+	component: ErrorPage,
 });
 
 const dashboardRoute = new Route({
@@ -185,11 +211,13 @@ export const editRecordTemplateRoute = new Route({
 });
 
 
-
 const routeTree = rootRoute.addChildren([
 	indexRoute,
 	unAuthenticatedLayoutRoute.addChildren([
 		loginRoute,
+		signupRoute,
+		forgotPasswordRoute,
+		acceptInviteRoute,
 	]),
 	layoutRoute.addChildren([
 		dashboardRoute,

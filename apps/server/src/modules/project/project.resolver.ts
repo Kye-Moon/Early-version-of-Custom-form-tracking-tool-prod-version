@@ -1,14 +1,11 @@
-import {Resolver, Query, Mutation, Args, Int, ResolveField, Parent} from '@nestjs/graphql';
+import {Args, Context, Mutation, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 import {ProjectService} from './project.service';
 import {Project} from './entities/project.entity';
 import {CreateProjectInput} from './dto/create-project.input';
 import {UpdateProjectInput} from './dto/update-project.input';
 import {UseGuards} from "@nestjs/common";
 import {AuthGuard} from "../../guards/auth.guard";
-import {JobScopeItem} from "../job-scope-item/entities/job-scope-item.entity";
-import {JobRecord} from "../job-record/entities/job-record.entity";
 import {Job} from "../job/entities/job.entity";
-import {JobService} from "../job/job.service";
 import {JobRepository} from "../job/job.repository";
 
 @Resolver(() => Project)
@@ -53,8 +50,12 @@ export class ProjectResolver {
 
     @UseGuards(AuthGuard)
     @ResolveField(() => Job)
-    async jobs(@Parent() project: Project) {
+    async jobs(@Parent() project: Project, @Context() ctx: any) {
         const {id} = project;
+        console.log('ctx')
+        console.log(ctx.loaders)
+        const result = await ctx.loaders.jobsLoader.load(id);
+        console.log('result', result)
         return await this.jobRepository.findByProjectId(id);
     }
 }

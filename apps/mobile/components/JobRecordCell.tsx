@@ -21,13 +21,6 @@ const query = graphql(`
             submittedBy {
                 name
             }
-            initialData {
-                hours
-                numPeople
-                who
-                materials
-                equipment
-            }
             images {
                 id
                 url
@@ -56,23 +49,6 @@ export default function JobRecordCell({variationId}: { variationId: string }) {
                         <LabelAndValue label={'Description'} value={data.jobRecord.description}/>
                     </View>
                 </ScreenContentSection>
-                {data.jobRecord.initialData && (
-                    <ScreenContentSection heading={"Initial Information"}>
-                        <View style={styles.container}>
-                            <LabelAndValue label={'Est. hours'} value={data.jobRecord.initialData?.hours}/>
-                            <LabelAndValue label={'Num people'} value={data.jobRecord.initialData?.numPeople}/>
-                        </View>
-                        <View style={styles.container}>
-                            <LabelAndValue label={'Who?'} value={data.jobRecord.initialData?.who}/>
-                        </View>
-                        <View style={styles.container}>
-                            <LabelAndValue label={'Material'} value={data.jobRecord.initialData?.materials}/>
-                        </View>
-                        <View style={styles.container}>
-                            <LabelAndValue label={'Equipment'} value={data.jobRecord.initialData?.equipment}/>
-                        </View>
-                    </ScreenContentSection>
-                )}
                 <ScreenContentSection heading={"Images"}>
                     <ImageGrid images={data.jobRecord.images} size={4}/>
                 </ScreenContentSection>

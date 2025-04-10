@@ -59,4 +59,8 @@ export class JobFormRepository {
                 eq(jobForm.jobId, search.jobId)
             ));
     }
+
+    async findByIds(ids: string[]) {
+        return this.db.select().from(jobForm).where(inArray(jobForm.id, ids));
+    }
 }

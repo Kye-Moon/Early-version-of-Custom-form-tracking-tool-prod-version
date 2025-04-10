@@ -6,9 +6,12 @@ import {useSetRecoilState} from "recoil";
 import {userInitialisedState} from "@/State/state";
 import {LogOutIcon, SettingsIcon} from "lucide-react";
 import Logo from "@/Assets/Logo.png";
-import {OrganizationSwitcher, useAuth} from "@clerk/clerk-react";
+import {useAuth} from "@clerk/clerk-react";
 
-export default function SideBar() {
+interface SideBarProps {
+	disabled?: boolean
+}
+export default function SideBar({disabled}: SideBarProps) {
     const {signOut} = useAuth();
     const {orgRole} = useAuth();
     const setUserInitialised = useSetRecoilState(userInitialisedState);
@@ -26,9 +29,9 @@ export default function SideBar() {
                     alt="Your Company"
                 />
             </div>
-            <OrganizationSwitcher hidePersonal={true}/>
+
             <Separator/>
-            <nav className="flex flex-1 flex-col">
+            <nav className={`flex flex-1 flex-col ${disabled ? 'opacity-30 pointer-events-none' : ''}`}>
                 <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li>
                         <ul role="list" className="-mx-2 space-y-6">

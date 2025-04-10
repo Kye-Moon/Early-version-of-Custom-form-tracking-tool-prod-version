@@ -3,7 +3,7 @@ import {ORM} from '../../drizzle/drizzle.module';
 import {NodePgDatabase} from 'drizzle-orm/node-postgres';
 import * as schema from '../../drizzle/schema';
 import {Job, job, jobCrew, NewJob, UpdateJob} from '../../drizzle/schema';
-import {and, asc, eq, ilike, or} from 'drizzle-orm';
+import {and, asc, eq, ilike, inArray, or} from 'drizzle-orm';
 import {JobSearchInput} from './dto/search-job.input';
 
 @Injectable()
@@ -76,9 +76,13 @@ export class JobRepository {
         });
     }
 
-    async update(id: string, updateJobInput: UpdateJob): Promise<Job> {
+    async findManyByIds(ids: string[]) {
+        return this.db.query.job.findMany({
+            where: inArray(job.id, ids),
+        });
+    }
 
-        console.log('updateJobInput', updateJobInput);
+    async update(id: string, updateJobInput: UpdateJob): Promise<Job> {
         const _job = await this.db.update(job).set({
             title: updateJobInput.title,
             description: updateJobInput.description,
@@ -92,5 +96,11 @@ export class JobRepository {
     async delete(id: string): Promise<boolean> {
         await this.db.delete(job).where(eq(job.id, id));
         return true;
+    }
+
+    async findManyByProjectIds(projectIds: string[]) {
+        return this.db.query.job.findMany({
+            where: inArray(job.projectId, projectIds),
+        });
     }
 }

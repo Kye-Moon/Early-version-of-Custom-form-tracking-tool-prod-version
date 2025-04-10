@@ -9,6 +9,8 @@ import {UserRepository} from "../user/user.repository";
 import {OrganisationRepository} from "../organisation/organisation.repository";
 import {FormTemplateRepository} from "../form-template/form-template.repository";
 import {JobFormService} from "../job-form/job-form.service";
+import {mapResultsToIds} from "../../common/utils";
+import {Job} from "gql-types";
 
 @Injectable()
 export class JobService {
@@ -21,6 +23,7 @@ export class JobService {
         private readonly formTemplateRepository: FormTemplateRepository,
         private readonly jobFromService: JobFormService
     ) {
+        console.log('JobService initialized');
     }
 
     async create(createJobInput: CreateJobInput) {
@@ -90,4 +93,10 @@ export class JobService {
     async delete(id: string) {
         return await this.jobRepository.delete(id);
     }
+    async findManyByProjectIds(projectIds: string[]) {
+        const jobs = await this.jobRepository.findManyByProjectIds(projectIds);
+        return jobs;
+    }
+
+    mapJobsToProjectIds = (projectIds,jobs: Job[]) => {}
 }

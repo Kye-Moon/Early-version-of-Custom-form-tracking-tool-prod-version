@@ -28,7 +28,6 @@ import {FormTemplateModule} from "../form-template/form-template.module";
         OrganisationModule,
         JobFormModule,
         FormTemplateModule,
-        JobFormModule,
     ],
     exports: [JobService, JobRepository],
 })
